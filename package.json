@@ -2,7 +2,7 @@
   "name": "radial-tree-library",
   "version": "1.0.0",
   "description": "Radial Tree Library for Wayback Machine",
-  "main": "Gruntfile.js",
+  "main": "build/js/radial-tree.min.js",
   "directories": {
     "doc": "docs",
     "test": "test"
@@ -14,11 +14,6 @@
     "type": "git",
     "url": "git+https://github.com/internetarchive/wayback-radial-tree.git"
   },
-  "keywords": [
-    "radial-tree",
-    "wayback machine",
-    "internet archive"
-  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -26,16 +21,6 @@
   },
   "homepage": "https://github.com/internetarchive/wayback-radial-tree#readme",
   "devDependencies": {
-    "grunt": "latest",
-    "grunt-contrib-connect": "^1.0.1",
-    "grunt-contrib-jasmine": "^1.0.3",
-    "grunt-contrib-jshint": "latest",
-    "grunt-contrib-less": "latest",
-    "grunt-contrib-uglify": "latest",
-    "grunt-env": "^0.4.4",
-    "grunt-jscs": "latest",
-    "grunt-nuget": "^0.1.5",
-    "grunt-string-replace": "latest",
-    "load-grunt-tasks": "latest"
+    
   }
 }

@@ -14,13 +14,29 @@
     "type": "git",
     "url": "git+https://github.com/internetarchive/wayback-radial-tree.git"
   },
-  "author": "",
+  "author": "Eagle19243",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/internetarchive/wayback-radial-tree/issues"
   },
   "homepage": "https://github.com/internetarchive/wayback-radial-tree#readme",
+  "dependencies": {
+    "jquery": "*"
+  },
   "devDependencies": {
-    
+    "gulp": "^3.9.0",
+    "gulp-autoprefixer": "^3.1.0",
+    "gulp-header": "^1.7.1",
+    "gulp-load-plugins": "^1.2.0",
+    "gulp-minify-css": "1.2.4",
+    "gulp-plumber": "^1.0.1",
+    "gulp-sass": "^3.1.0",
+    "gulp-uglify": "^2.1.0",
+    "gulp-util": "^3.0.7",
+    "gulp-umd": "^0.2.0",
+    "gulp-wrap-js": "^0.4.1",
+    "gulp-rename": "^1.2.2",
+    "minimist": "^1.2.0",
+    "gulp-if": "^2.0.0"
   }
 }

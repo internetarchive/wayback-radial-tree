@@ -5,15 +5,19 @@
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
         <link rel = "stylesheet" href = "../build/css/radialTree.css">
         <script src="../node_modules/jquery/dist/jquery.js"></script>
-        <script src="../build/js/radialTree.js"></script>
+        <script src="../src/js/d3.js"></script>
+        <script src="../src/js/radialTree.js"></script>
     </head>
     <body>
-        <div id="container"></div>
+        <div id="container" style="background:red;">Radial Tree</div>
     </body>
     <script>
-        var rt = new RadialTree({
-            container: document.getElementById("container"),
-            url : "www.iskme.org"
-        });
+        var rt = new RadialTree(
+                    document.getElementById("container"),
+                    {
+                        url         : "www.iskme.org"
+                    }   
+                );
+        // rt.hide();
     </script>
 </html>

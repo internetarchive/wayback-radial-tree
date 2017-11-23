@@ -1,18 +1,15 @@
-var libraryName = "RadialTree";
-
 /**
  * Radial Tree Library
  * 
- * @param {Object} element
+ * @param {Object} option
  */
-function RadialTree(element){
+function RadialTree(option){
     var defaults = {
 
     }
 
-    this.element = element;
-    console.log("Radial Tree init-");
-    console.log("Element-", element);
+    this.option = option;
+    this.onChange = this.onChange.bind(this);
     this.onShown = this.onShown.bind(this);
     this.onHidden = this.onHidden.bind(this);
 }
@@ -21,26 +18,32 @@ function RadialTree(element){
  * Show Radial Tree element
  */
 RadialTree.prototype.show = function(){
-
+    console.log("show()");
 }
 
 /**
  * Hide Radial Tree element
  */
 RadialTree.prototype.hide = function(){
-
+    console.log("hide()");
 }
 
 /**
  * On Shown event 
  */
 RadialTree.prototype.onShown = function(event){
-    
+    console.log("onShown event");
 }
 
 /**
  * On Hidden event
  */
 RadialTree.prototype.onHidden = function(event){
-
+    console.log("onHidden event");
 }
+
+RadialTree.prototype.onChange = function(event){
+    
+}
+
+

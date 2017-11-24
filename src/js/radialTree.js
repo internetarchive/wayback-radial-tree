@@ -15,7 +15,7 @@ function RadialTree(element, option){
     GetData(option.url, function(success, err, allYears, yearData){
         if (!success) return;
 
-        CreateYearButtons(element, allYears, yearData);
+        CreateYearButtons(element, option, allYears, yearData);
     });
 
     function Init(container){
@@ -171,7 +171,7 @@ function RadialTree(element, option){
         xhr.send();
     }
 
-    function CreateYearButtons(element, allYears, yearData){
+    function CreateYearButtons(element, option, allYears, yearData){
         var GlobYear = 0;
         var divBtn = element.querySelector("#divBtn");
         if (!element.querySelector(".year-btn")){
@@ -183,25 +183,25 @@ function RadialTree(element, option){
                 btn.onclick = function(evt){
                     var target = evt.target;
                     if (element.querySelector(".active-btn")) {
-                        element.querySelector(".active-btn")[0].classList.remove("active-btn");
+                        element.querySelector(".active-btn").classList.remove("active-btn");
                     }
                     target.classList.add("active-btn");
                     GlobYear = target.id;
                     var num = allYears.indexOf(target.id);
                     var text = MakeNewText(num, yearData);
-                    DrawChart(element, text);
+                    DrawChart(element, option, text);
                 };
                 divBtn.appendChild(btn);
             });
         }
     }
 
-    function DrawChart(element, text){
+    function DrawChart(element, option, text){
         // Dimensions of sunburst.
         element.querySelector('#sequence').innerHTML    = "";
         element.querySelector('#chart').innerHTML       = "";
         element.querySelector('#message').innerHTML     = "";
-        var width = window.offsetWidth - 150;
+        var width = window.innerWidth - 150;
         var height = window.innerHeight - 150;
         var radius = Math.min(width, height) / 2;
         // Breadcrumb dimensions: width, height, spacing, width of tip/tail.
@@ -305,9 +305,10 @@ function RadialTree(element, option){
                 return a[0].length - b[0].length || a[0].localeCompare(b[0]);
             });
             var real_urls = {};
-            real_urls[base_url] = 1;
-            if (base_url.slice(-1) != '/') {
-                real_urls[base_url + '/'] = 1;
+            real_urls[option.url] = 1;
+            real_urls[option.url] = 1;
+            if (option.url.slice(-1) != '/') {
+                real_urls[option.url + '/'] = 1;
             }
             for (var i = 0, length = csv.length; i < length; i++) {
                 var key = String(csv[i][0]).trim().replace(":80/", "/");

@@ -207,7 +207,6 @@ function RadialTree(element, option){
             t: 10
         };
         var colors = d3.scaleOrdinal(d3.schemeCategory20b);
-        var totalSize = 0;
         var vis = d3.select("#chart")
             .append("svg:svg")
             .attr("width", width)
@@ -255,7 +254,6 @@ function RadialTree(element, option){
 
             d3.select("#d3_container")
             .on("mouseleave", mouseleave);
-            totalSize = path.datum().value;
         };
 
         function OpenTheUrl(d) {

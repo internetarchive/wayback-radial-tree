@@ -8,7 +8,11 @@ function RadialTree(element, option){
     this.element = element;
     this.option = option;
     var GlobYear = 0;
-
+    var baseURL = 'https://web.archive.org';
+    // Use typeof check to allow empty string in baseURL value
+    if (typeof option.baseURL !== 'undefined') {
+      baseURL = option.baseURL;
+    }
     if (!option.url) return;
 
     Init(element);
@@ -50,7 +54,7 @@ function RadialTree(element, option){
         url.replace(regexHTTPS, "");
         url.replace(regexLast, "");
 
-        var RequestURL = "https://web.archive.org/web/timemap/json?" + 
+        var RequestURL = baseURL + "/web/timemap/json?" +
             "url=" + url + "/&" + 
             "fl=timestamp:4,original,urlkey&" + 
             "matchType=prefix&" + 
@@ -207,7 +211,6 @@ function RadialTree(element, option){
             t: 10
         };
         var colors = d3.scaleOrdinal(d3.schemeCategory20b);
-        var totalSize = 0;
         var vis = d3.select("#chart")
             .append("svg:svg")
             .attr("width", width)
@@ -255,7 +258,6 @@ function RadialTree(element, option){
 
             d3.select("#d3_container")
             .on("mouseleave", mouseleave);
-            totalSize = path.datum().value;
         };
 
         function OpenTheUrl(d) {
@@ -268,8 +270,7 @@ function RadialTree(element, option){
                 }
                 url = url + '/' + anc[i].data.name;
             }
-            var wb_url = "https://web.archive.org/web/" + year + "0630" + url;
-            window.open(wb_url);
+            window.open(baseURL + "/web/" + year + "0630" + url);
         }
 
         function mouseover(d) {

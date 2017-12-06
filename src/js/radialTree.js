@@ -46,8 +46,8 @@ function RadialTree(element, option){
             var indicator = document.createElement("img");
             indicator.setAttribute("src", indicatorImg);
             indicator.setAttribute("class", "rt-indicator");
+            chart.appendChild(indicator);
         }
-        chart.appendChild(indicator);
         content.appendChild(divBtn);
         content.appendChild(sequence);
         content.appendChild(chart);

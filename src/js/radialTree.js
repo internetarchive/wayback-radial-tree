@@ -3,21 +3,30 @@ var pluginName = "radialtree";
  * Radial Tree Library
  * 
  * @param {Object} option
+ * Option baseURL defines the target Wayback Machine server.
+ * Option indicatorImg defines the graphic to display while loading data from
+ * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
 function RadialTree(element, option){
     this.element = element;
     this.option = option;
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
+    var indicatorImg;
     // Use typeof check to allow empty string in baseURL value
     if (typeof option.baseURL !== 'undefined') {
-      baseURL = option.baseURL;
+        baseURL = option.baseURL;
+    }
+    if (option.indicatorImg) {
+        indicatorImg = option.indicatorImg;
     }
     if (!option.url) return;
 
     Init(element);
     GetData(option.url, function(success, err, allYears, yearData){
-        element.querySelector(".rt-indicator").style.display = "none";
+        if(indicatorImg) {
+            element.querySelector(".rt-indicator").style.display = "none";
+        }
         if (!success) return;
 
         CreateYearButtons(element, option, allYears, yearData);
@@ -33,10 +42,11 @@ function RadialTree(element, option){
         sequence.setAttribute("class", "sequence");
         var chart = document.createElement("div");
         chart.setAttribute("id", "chart");
-        var indicator = document.createElement("img");
-        indicator.setAttribute("src", "../src/img/logo-animate.svg");
-        indicator.setAttribute("class", "rt-indicator");
-        
+        if(indicatorImg) {
+            var indicator = document.createElement("img");
+            indicator.setAttribute("src", indicatorImg);
+            indicator.setAttribute("class", "rt-indicator");
+        }
         chart.appendChild(indicator);
         content.appendChild(divBtn);
         content.appendChild(sequence);

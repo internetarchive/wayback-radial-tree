@@ -1,3 +1,6 @@
+import $ from 'jquery';
+import * as d3 from 'd3';
+
 var pluginName = "radialtree";
 /**
  * Radial Tree Library
@@ -79,7 +82,7 @@ function RadialTree(element, option){
 		};
 		xhr.ontimeout = function(){
 			cb(false, "Timeout, Please refresh the page and try again");
-        }
+        };
         xhr.onload = function(){
             var response = JSON.parse(xhr.responseText);
             if (response.length == 0) cb(true, []);
@@ -179,7 +182,7 @@ function RadialTree(element, option){
             }());
 
             cb(true, null, all_years, years);
-        }
+        };
         xhr.send();
     }
 
@@ -268,7 +271,7 @@ function RadialTree(element, option){
 
             d3.select("#d3_container")
             .on("mouseleave", mouseleave);
-        };
+        }
 
         function OpenTheUrl(d) {
             var year = GlobYear;
@@ -418,14 +421,14 @@ function RadialTree(element, option){
  */
 RadialTree.prototype.show = function(){
     this.element.style.display = "block";
-}
+};
 
 /**
  * Hide Radial Tree element
  */
 RadialTree.prototype.hide = function(){
     this.element.style.display = "none";
-}
+};
 
 $.fn[pluginName] = function(options){
     this.each(function(){
@@ -435,4 +438,4 @@ $.fn[pluginName] = function(options){
     });
 
     return this;
-}
+};

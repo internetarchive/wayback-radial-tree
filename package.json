@@ -21,18 +21,15 @@
   },
   "homepage": "https://github.com/internetarchive/wayback-radial-tree#readme",
   "dependencies": {
+    "d3": "^4.12.0",
+    "jquery": "^3.2.1"
+  },
+  "devDependencies": {
     "babel-core": "^6.26.0",
     "babel-loader": "^7.1.2",
     "babel-preset-env": "^1.6.1",
     "browserify": "^14.5.0",
     "browserify-gulp": "^1.0.0",
-    "d3": "^4.12.0",
-    "gulp-babel": "^7.0.0",
-    "jquery": "^3.2.1",
-    "webpack": "^3.10.0"
-  },
-  "devDependencies": {
-    "babel-core": "^6.26.0",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^7.0.0",
@@ -48,6 +45,7 @@
     "gulp-umd": "^0.2.0",
     "gulp-util": "^3.0.7",
     "gulp-wrap-js": "^0.4.1",
-    "minimist": "^1.2.0"
+    "minimist": "^1.2.0",
+    "webpack": "^3.10.0"
   }
 }

@@ -9,7 +9,8 @@
 import * as d3 from 'd3';
 
 
-export default function RadialTree(element, option){
+export function RadialTree(elementId, option){
+    var element = document.getElementById(elementId);
     this.element = element;
     this.option = option;
     var GlobYear = 0;

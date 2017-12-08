@@ -1,7 +1,3 @@
-import $ from 'jquery';
-import * as d3 from 'd3';
-
-var pluginName = "radialtree";
 /**
  * Radial Tree Library
  * 
@@ -10,6 +6,8 @@ var pluginName = "radialtree";
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
+import * as d3 from 'd3';
+
 function RadialTree(element, option){
     this.element = element;
     this.option = option;
@@ -428,14 +426,4 @@ RadialTree.prototype.show = function(){
  */
 RadialTree.prototype.hide = function(){
     this.element.style.display = "none";
-};
-
-$.fn[pluginName] = function(options){
-    this.each(function(){
-        if (!$.data(this, pluginName)){
-            $.data(this, pluginName, new RadialTree(this, options));
-        }
-    });
-
-    return this;
 };

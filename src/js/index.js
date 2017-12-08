@@ -413,17 +413,3 @@ function RadialTree(element, option){
         return text;
     }
 }
-
-/**
- * Show Radial Tree element
- */
-RadialTree.prototype.show = function(){
-    this.element.style.display = "block";
-};
-
-/**
- * Hide Radial Tree element
- */
-RadialTree.prototype.hide = function(){
-    this.element.style.display = "none";
-};

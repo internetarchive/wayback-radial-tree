@@ -19,20 +19,7 @@ banner      = [
     ' * (c) 2017 - <%= author %>',
     ' * =============================================================',
     ' */\n\n'
-].join('\n'),
-umdDeps = {
-    dependencies: function() {
-        return [
-            {
-                name: '$',
-                amd: 'jquery',
-                cjs: 'jquery',
-                global: 'jQuery',
-                param: '$'
-            }
-        ];
-    }
-};
+].join('\n');
 
 var onError = function (err) {
     $.util.beep();
@@ -63,7 +50,6 @@ return gulp.src([jsDir + '*.js'])
     .pipe(browserify())
     .pipe($.plumber({ errorHandler: onError }))
     // .pipe(gulp.dest(distDir + "/js")) //
-    .pipe($.umd(umdDeps))
     .pipe($.header(banner, meta))
     .pipe($.rename(meta.name + '.js'))
     // .pipe(gulp.dest(distDir + "/js")) 

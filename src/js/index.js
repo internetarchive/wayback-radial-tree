@@ -1,18 +1,17 @@
-import $ from 'jquery';
-import * as d3 from 'd3';
-
-var pluginName = "radialtree";
 /**
  * Radial Tree Library
  * 
+ * @param {DOMElement} element
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
-function RadialTree(element, option){
-    this.element = element;
-    this.option = option;
+import 'babel-polyfill';
+import * as d3 from 'd3';
+
+
+export function RadialTree(element, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
     var indicatorImg;
@@ -415,27 +414,3 @@ function RadialTree(element, option){
         return text;
     }
 }
-
-/**
- * Show Radial Tree element
- */
-RadialTree.prototype.show = function(){
-    this.element.style.display = "block";
-};
-
-/**
- * Hide Radial Tree element
- */
-RadialTree.prototype.hide = function(){
-    this.element.style.display = "none";
-};
-
-$.fn[pluginName] = function(options){
-    this.each(function(){
-        if (!$.data(this, pluginName)){
-            $.data(this, pluginName, new RadialTree(this, options));
-        }
-    });
-
-    return this;
-};

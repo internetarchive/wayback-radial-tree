@@ -6,11 +6,11 @@
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
+import 'babel-polyfill';
 import * as d3 from 'd3';
 
 
-export function RadialTree(elementId, option){
-    var element = document.getElementById(elementId);
+export function RadialTree(element, option){
     this.element = element;
     this.option = option;
     var GlobYear = 0;

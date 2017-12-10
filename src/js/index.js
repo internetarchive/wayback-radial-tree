@@ -1,6 +1,7 @@
 /**
  * Radial Tree Library
  * 
+ * @param {DOMElement} element
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
  * Option indicatorImg defines the graphic to display while loading data from
@@ -11,8 +12,6 @@ import * as d3 from 'd3';
 
 
 export function RadialTree(element, option){
-    this.element = element;
-    this.option = option;
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
     var indicatorImg;

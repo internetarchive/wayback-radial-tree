@@ -216,16 +216,10 @@ export function RadialTree(element, option){
     function DrawChart(element, option, text){
         element.querySelector(".sequence").innerHTML    = "";
         element.querySelector("#chart").innerHTML       = "";
-        var width = element.querySelector('#chart').offsetWidth;
-        var height = element.querySelector('#chart').offsetWidth;
-        var radius = Math.min(width, height) / 2;
-        var b = {
-            w: 100,
-            h: 30,
-            s: 3,
-            t: 10
-        };
-        var colors = d3.scaleOrdinal(d3.schemeCategory20b);
+        const width = element.querySelector('#chart').offsetWidth;
+        const height = width;
+        const radius = Math.min(width, height) / 2;
+        let colors = d3.scaleOrdinal(d3.schemeCategory20b);
         var vis = d3.select("#chart")
             .append("svg:svg")
             .attr("width", width)

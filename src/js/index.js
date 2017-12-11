@@ -321,7 +321,6 @@ export function RadialTree(element, option){
             });
             var real_urls = {};
             real_urls[option.url] = 1;
-            real_urls[option.url] = 1;
             if (option.url.slice(-1) != '/') {
                 real_urls[option.url + '/'] = 1;
             }
@@ -355,7 +354,7 @@ export function RadialTree(element, option){
                 }
                 return url;
             }
-            var root = { "name": "root", "children": [] };
+            var root = { name: "root", children: [] };
             for (var i = 0; i < length; i++) {
                 var sequence = FilterRealUrl(csv[i][0]);
                 var size = +csv[i][1];
@@ -366,25 +365,25 @@ export function RadialTree(element, option){
                 parts = parts.map(function(s) { return s.replace(/\|/g, '/'); });
                 var currentNode = root;
                 for (var j = 0; j < parts.length; j++) {
-                    var children = currentNode["children"];
+                    var children = currentNode.children;
                     var nodeName = parts[j];
                     var childNode;
                     if (j + 1 < parts.length) {
                         var foundChild = false;
                         for (var k = 0; k < children.length; k++) {
-                            if (children[k]["name"] == nodeName) {
+                            if (children[k].name == nodeName) {
                                 childNode = children[k];
                                 foundChild = true;
                                 break;
                             }
                         }
                         if (!foundChild) {
-                            childNode = { "name": nodeName, "children": [] };
+                            childNode = { name: nodeName, children: [] };
                             children.push(childNode);
                         }
                         currentNode = childNode;
                     } else {
-                        childNode = { "name": nodeName, "size": size };
+                        childNode = { name: nodeName, size: size };
                         children.push(childNode);
                     }
                 }

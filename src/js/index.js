@@ -301,20 +301,18 @@ export function RadialTree(element, option){
         }
 
         function UpdateBreadcrumbs(nodeArray) {
-            var anc_arr = nodeArray;
-            var trail = element.querySelector(".sequence");
             var text = "";
             var symb = document.createElement('span');
             symb.setAttribute('class', 'symb');
             symb.innerHTML = "/";
-            for (var i = 0; i < anc_arr.length; i++) {
+            for (var i = 0; i < nodeArray.length; i++) {
                 if (i == 0) {
-                    text = " " + anc_arr[i].data.name;
+                    text = " " + nodeArray[i].data.name;
                 } else {
-                    text = text + symb.innerHTML + anc_arr[i].data.name;
+                    text = text + symb.innerHTML + nodeArray[i].data.name;
                 }
             }
-            trail.innerHTML = text;
+            element.querySelector(".sequence").innerHTML = text;
         }
 
         function BuildHierarchy(csv) {

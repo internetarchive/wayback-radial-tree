@@ -120,16 +120,12 @@ export function RadialTree(element, option){
                     }());
     
                     if (i == 1) {
-                        ret[0] = new Array();
-                        ret[0].push(response[1][1]);
-                        ret[0].push(response[1][0]);
+                        ret[0] = [response[1][1], response[1][0]];
                     } else if (response[i-1][1] == response[i][1]) {
                         ret[index_Year].push(response[i][0]);
                     } else {
                         index_Year ++;
-                        ret[index_Year] = new Array();
-                        ret[index_Year].push(response[i][1]);
-                        ret[index_Year].push(response[i][0]);
+                        ret[index_Year] = [response[i][1], response[i][0]];
                     }
                 }
 
@@ -139,8 +135,7 @@ export function RadialTree(element, option){
             var years = (function(){
                 var ret = new Array();
                 for (var i=1; i<array_Year[0].length; i++) {
-                    ret[i-1] = new Array();
-                    ret[i-1].push(array_Year[0][i]);
+                    ret[i-1] = [array_Year[0][i]];
                 }
                 for (var i=0; i<array_Year.length; i++) {
                     var url = array_Year[i][0];

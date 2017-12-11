@@ -219,7 +219,7 @@ export function RadialTree(element, option){
         const width = element.querySelector('#chart').offsetWidth;
         const height = width;
         const radius = Math.min(width, height) / 2;
-        let colors = d3.scaleOrdinal(d3.schemeCategory20b);
+        var colors = d3.scaleOrdinal(d3.schemeCategory20b);
         var vis = d3.select("#chart")
             .append("svg:svg")
             .attr("width", width)

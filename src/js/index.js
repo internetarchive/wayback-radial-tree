@@ -4,6 +4,7 @@
  * @param {DOMElement} element
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
+ * Option limit defines the max number of CDX query results.
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
@@ -14,10 +15,14 @@ import * as d3 from 'd3';
 export function RadialTree(element, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
+    var limit;
     var indicatorImg;
     // Use typeof check to allow empty string in baseURL value
     if (typeof option.baseURL !== 'undefined') {
         baseURL = option.baseURL;
+    }
+    if(option.limit) {
+        limit = option.limit;
     }
     if (option.indicatorImg) {
         indicatorImg = option.indicatorImg;
@@ -74,6 +79,9 @@ export function RadialTree(element, option){
             "filter=mimetype:text/html&" + 
             "collapse=urlkey&" + 
             "collapse=timestamp:4";
+        if(limit) {
+            RequestURL += "&limit=" + limit;
+        }
         var xhr = new XMLHttpRequest();
         xhr.open("GET", RequestURL, true);
 		xhr.onerror = function(){

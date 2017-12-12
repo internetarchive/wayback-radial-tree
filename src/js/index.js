@@ -152,6 +152,7 @@ export function RadialTree(element, option){
                         }
                     }
                 }
+                // required
                 for (var i=0; i<ret.length; i++) {
                     for (var j=1; j<ret[i].length; j++) {
                         var url;
@@ -171,17 +172,12 @@ export function RadialTree(element, option){
 
                 return ret;
             }());
-            
-            var all_years = (function(){
-                var ret = new Array();
-                for (var i = 0; i < years.length; i++) {
-                    if (years[i].length > 1) {
-                        ret.push(years[i][0]);
-                    }
-                }
 
-                return ret;
-            }());
+            var all_years = years.map(function(year) {
+                if(year.length > 1) {
+                    return year[0];
+                }
+            });
 
             cb(true, null, all_years, years);
         };

@@ -120,16 +120,12 @@ export function RadialTree(element, option){
                     }());
     
                     if (i == 1) {
-                        ret[0] = new Array();
-                        ret[0].push(response[1][1]);
-                        ret[0].push(response[1][0]);
+                        ret[0] = [response[1][1], response[1][0]];
                     } else if (response[i-1][1] == response[i][1]) {
                         ret[index_Year].push(response[i][0]);
                     } else {
                         index_Year ++;
-                        ret[index_Year] = new Array();
-                        ret[index_Year].push(response[i][1]);
-                        ret[index_Year].push(response[i][0]);
+                        ret[index_Year] = [response[i][1], response[i][0]];
                     }
                 }
 
@@ -139,8 +135,7 @@ export function RadialTree(element, option){
             var years = (function(){
                 var ret = new Array();
                 for (var i=1; i<array_Year[0].length; i++) {
-                    ret[i-1] = new Array();
-                    ret[i-1].push(array_Year[0][i]);
+                    ret[i-1] = [array_Year[0][i]];
                 }
                 for (var i=0; i<array_Year.length; i++) {
                     var url = array_Year[i][0];
@@ -221,15 +216,9 @@ export function RadialTree(element, option){
     function DrawChart(element, option, text){
         element.querySelector(".sequence").innerHTML    = "";
         element.querySelector("#chart").innerHTML       = "";
-        var width = element.querySelector('#chart').offsetWidth;
-        var height = element.querySelector('#chart').offsetWidth;
-        var radius = Math.min(width, height) / 2;
-        var b = {
-            w: 100,
-            h: 30,
-            s: 3,
-            t: 10
-        };
+        const width = element.querySelector('#chart').offsetWidth;
+        const height = width;
+        const radius = Math.min(width, height) / 2;
         var colors = d3.scaleOrdinal(d3.schemeCategory20b);
         var vis = d3.select("#chart")
             .append("svg:svg")
@@ -312,20 +301,18 @@ export function RadialTree(element, option){
         }
 
         function UpdateBreadcrumbs(nodeArray) {
-            var anc_arr = nodeArray;
-            var trail = element.querySelector(".sequence");
             var text = "";
             var symb = document.createElement('span');
             symb.setAttribute('class', 'symb');
             symb.innerHTML = "/";
-            for (var i = 0; i < anc_arr.length; i++) {
+            for (var i = 0; i < nodeArray.length; i++) {
                 if (i == 0) {
-                    text = " " + anc_arr[i].data.name;
+                    text = " " + nodeArray[i].data.name;
                 } else {
-                    text = text + symb.innerHTML + anc_arr[i].data.name;
+                    text = text + symb.innerHTML + nodeArray[i].data.name;
                 }
             }
-            trail.innerHTML = text;
+            element.querySelector(".sequence").innerHTML = text;
         }
 
         function BuildHierarchy(csv) {
@@ -333,7 +320,6 @@ export function RadialTree(element, option){
                 return a[0].length - b[0].length || a[0].localeCompare(b[0]);
             });
             var real_urls = {};
-            real_urls[option.url] = 1;
             real_urls[option.url] = 1;
             if (option.url.slice(-1) != '/') {
                 real_urls[option.url + '/'] = 1;
@@ -368,7 +354,7 @@ export function RadialTree(element, option){
                 }
                 return url;
             }
-            var root = { "name": "root", "children": [] };
+            var root = { name: "root", children: [] };
             for (var i = 0; i < length; i++) {
                 var sequence = FilterRealUrl(csv[i][0]);
                 var size = +csv[i][1];
@@ -379,25 +365,25 @@ export function RadialTree(element, option){
                 parts = parts.map(function(s) { return s.replace(/\|/g, '/'); });
                 var currentNode = root;
                 for (var j = 0; j < parts.length; j++) {
-                    var children = currentNode["children"];
+                    var children = currentNode.children;
                     var nodeName = parts[j];
                     var childNode;
                     if (j + 1 < parts.length) {
                         var foundChild = false;
                         for (var k = 0; k < children.length; k++) {
-                            if (children[k]["name"] == nodeName) {
+                            if (children[k].name == nodeName) {
                                 childNode = children[k];
                                 foundChild = true;
                                 break;
                             }
                         }
                         if (!foundChild) {
-                            childNode = { "name": nodeName, "children": [] };
+                            childNode = { name: nodeName, children: [] };
                             children.push(childNode);
                         }
                         currentNode = childNode;
                     } else {
-                        childNode = { "name": nodeName, "size": size };
+                        childNode = { name: nodeName, size: size };
                         children.push(childNode);
                     }
                 }

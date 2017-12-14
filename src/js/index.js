@@ -107,7 +107,7 @@ export function RadialTree(element, option){
                 }
             }
             var ret = [];
-            for (let year in yearUrl) {
+            for (var year in yearUrl) {
                 ret.push([year].concat(yearUrl[year]));
             }
             /** ret has the following format:

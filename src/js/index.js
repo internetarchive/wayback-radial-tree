@@ -73,7 +73,7 @@ export function RadialTree(element, option){
 
         var RequestURL = baseURL + "/web/timemap/json?" +
             "url=" + url + "/&" + 
-            "fl=timestamp:4,original,urlkey&" + 
+            "fl=timestamp:4,original&" + 
             "matchType=prefix&" + 
             "filter=statuscode:200&" + 
             "filter=mimetype:text/html&" + 
@@ -93,74 +93,37 @@ export function RadialTree(element, option){
         xhr.onload = function(){
             var response = JSON.parse(xhr.responseText);
             if (response.length == 0) cb(true, []);
-            
-            var array_Year = (function(){
-                var ret = new Array();
-                var index_Year = 0;
-                for (var i=1; i<response.length; i++) {
-                    if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
-                        continue;
-                    }
-    
-                    response[i][1] = (function(){
-                        var tmpAry = response[i][2].split(",");
-                        var domain = "";
-        
-                        for (var k=0; k<tmpAry.length-1; k++) {
-                            if (k == 0) {
-                                domain = tmpAry[0];
-                            } else {
-                                domain = tmpAry[k] + "." + domain;
-                            } 
-                        }
-    
-                        return tmpAry[tmpAry.length - 1].slice(-1) == "/" ? 
-                            "http://www." + tmpAry[tmpAry.length - 1].replace(")/", "." + domain + "/") :
-                            "http://www." + tmpAry[tmpAry.length - 1].replace(")/", "." + domain + "/") + "/";
-                    }());
-    
-                    if (i == 1) {
-                        ret[0] = [response[1][1], response[1][0]];
-                    } else if (response[i-1][1] == response[i][1]) {
-                        ret[index_Year].push(response[i][0]);
-                    } else {
-                        index_Year ++;
-                        ret[index_Year] = [response[i][1], response[i][0]];
-                    }
+
+            var yearUrl = [];
+            for(var i=1; i<response.length; i++) {
+                if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
+                    continue;
                 }
-
-                return ret;
-            }());
-
+                response[i][1] = response[i][1].trim().replace(":80/", "/");
+                if(response[i][0] in yearUrl) {
+                    yearUrl[response[i][0]].push(response[i][1]);
+                } else {
+                    yearUrl[response[i][0]] = [response[i][1]];
+                }
+            }
+            var ret = [];
+            for (var year in yearUrl) {
+                ret.push([year].concat(yearUrl[year]));
+            }
+            /** ret has the following format:
+             *  array(
+             *    array(2005, url1, url2, .... urlN),
+             *    ...
+             *  ) **/
             var years = (function(){
-                var ret = new Array();
-                for (var i=1; i<array_Year[0].length; i++) {
-                    ret[i-1] = [array_Year[0][i]];
-                }
-                for (var i=0; i<array_Year.length; i++) {
-                    var url = array_Year[i][0];
-                    for (var j=1; j<array_Year[i].length; j++) {
-                        var date = array_Year[i][j];
-                        var k = 0; 
-                        if (ret[k] != undefined) {
-                            while(ret[k] != undefined && ret[k][0] != date) {
-                                k++;
-                            }
-                            if (ret[k] != undefined) {
-                                ret[k].push(url);
-                            }
-                        }
-                    }
-                }
                 for (var i=0; i<ret.length; i++) {
                     for (var j=1; j<ret[i].length; j++) {
                         var url;
-                        if (ret[i][j].includes("http")) { 
+                        if (ret[i][j].includes("http")) {
                             url = ret[i][j].substring(7);
                         } else if (ret[i][j].includes("https")) {
-                            url = ret[i][j].sugstring(8);
+                            url = ret[i][j].substring(8);
                         }
-                        url = url.slice(0, -1);
                         if (url.includes('//')) {
                             url = url.split('//').join('/');
                         }
@@ -171,17 +134,12 @@ export function RadialTree(element, option){
 
                 return ret;
             }());
-            
-            var all_years = (function(){
-                var ret = new Array();
-                for (var i = 0; i < years.length; i++) {
-                    if (years[i].length > 1) {
-                        ret.push(years[i][0]);
-                    }
-                }
 
-                return ret;
-            }());
+            var all_years = years.map(function(year) {
+                if(year.length > 1) {
+                    return year[0];
+                }
+            });
 
             cb(true, null, all_years, years);
         };

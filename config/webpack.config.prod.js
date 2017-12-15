@@ -12,6 +12,8 @@ module.exports = require('./webpack.config.base')({
     //by special plugin 'extract-text-webpack-plugin'
   },
 
+  devtool: 'source-map',
+
   externals: {
     d3: 'd3'
   },

@@ -34,7 +34,8 @@ module.exports = (options) => ({
         loader: 'babel-loader',
         query: options.babelQuery,
       }
-    )
+    ),
+    rules: options.module && options.module.rules,
   },
 
   plugins: [

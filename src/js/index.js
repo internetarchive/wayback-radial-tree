@@ -11,6 +11,8 @@
 // import 'babel-polyfill';
 import * as d3 from 'd3';
 
+import '../sass/radialTree.scss';
+
 
 export default function RadialTree(element, option){
     var GlobYear = 0;

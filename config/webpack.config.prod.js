@@ -14,6 +14,8 @@ module.exports = require('./webpack.config.base')({
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
     path: targetDirectory,
+    library: 'RadialTree',
+    libraryExport: 'default',
   },
 
   plugins: [

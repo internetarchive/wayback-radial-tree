@@ -8,7 +8,7 @@
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
-import 'babel-polyfill';
+// import 'babel-polyfill';
 import * as d3 from 'd3';
 
 

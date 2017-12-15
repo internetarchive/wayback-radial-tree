@@ -9,6 +9,7 @@
     "test": "test"
   },
   "scripts": {
+    "build": "NODE_ENV=production webpack --config config/webpack.config.prod.js",
     "test": "test"
   },
   "repository": {
@@ -31,6 +32,7 @@
     "babel-preset-env": "^1.6.1",
     "browserify": "^14.5.0",
     "browserify-gulp": "^1.0.0",
+    "css-loader": "^0.28.7",
     "gulp": "^3.9.1",
     "gulp-autoprefixer": "^3.1.0",
     "gulp-babel": "^7.0.0",
@@ -47,6 +49,8 @@
     "gulp-util": "^3.0.7",
     "gulp-wrap-js": "^0.4.1",
     "minimist": "^1.2.0",
+    "sass-loader": "^6.0.6",
+    "style-loader": "^0.19.1",
     "webpack": "^3.10.0"
   }
 }

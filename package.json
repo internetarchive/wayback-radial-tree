@@ -16,7 +16,7 @@
     "url": "git+https://github.com/internetarchive/wayback-radial-tree.git"
   },
   "author": "Eagle19243",
-  "license": "ISC",
+  "license": "AGPL-3.0",
   "bugs": {
     "url": "https://github.com/internetarchive/wayback-radial-tree/issues"
   },

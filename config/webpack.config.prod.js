@@ -9,6 +9,10 @@ module.exports = require('./webpack.config.base')({
     'js/radial-tree.min': [path.join(process.cwd(), 'src/js/index.js')],
   },
 
+  externals: {
+    d3: 'd3'
+  },
+
   // Utilize long-term caching by adding content hashes (not compilation hashes) to compiled assets
   output: {
     filename: '[name].js',

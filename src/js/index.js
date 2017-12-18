@@ -8,11 +8,12 @@
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
-import 'babel-polyfill';
 import * as d3 from 'd3';
 
+import '../sass/radialTree.scss';
 
-export function RadialTree(element, option){
+
+export default function RadialTree(element, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
     var limit;

@@ -7,7 +7,8 @@ const targetDirectory = path.resolve(__dirname, '..', 'build');
 
 module.exports = require('./webpack.config.base')({
   entry: {
-    'js/radial-tree.min': [path.join(process.cwd(), 'src', 'js', 'index.js')],
+    'js/radial-tree.min': [path.join(process.cwd(), 'src', 'js', 'index.js'),
+      path.join(process.cwd(), 'src', 'sass', 'radialTree.scss')],
     //css is being extracted as plain text
     //by special plugin 'extract-text-webpack-plugin'
   },

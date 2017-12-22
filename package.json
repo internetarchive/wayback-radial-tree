@@ -2,14 +2,15 @@
   "name": "radial-tree",
   "version": "1.0.0",
   "description": "Radial Tree Library for Wayback Machine",
-  "main": "build/js/radial-tree.min.js",
-  "module": "src/js/index.js",
+  "main": "build/radial-tree.cjs.js",
+  "module": "build/radial-tree.esm.js",
+  "browser": "build/radial-tree.umd.js",
   "directories": {
     "doc": "docs",
     "test": "test"
   },
   "scripts": {
-    "build": "NODE_ENV=production webpack --config config/webpack.config.prod.js",
+    "build": "rollup -c",
     "test": "test"
   },
   "repository": {

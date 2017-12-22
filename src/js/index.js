@@ -11,7 +11,6 @@
 import * as d3 from 'd3';
 
 
-
 export function RadialTree(element, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';

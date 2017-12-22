@@ -27,7 +27,7 @@ module.exports = require('./webpack.config.base')({
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
     path: path.resolve(__dirname, '..', 'build'),
-    library: 'wrt',
+    library: 'wb',
   },
 
   module: {

@@ -1,16 +1,19 @@
+var CleanWebpackPlugin = require('clean-webpack-plugin');
+var DelWebpackPlugin = require('del-webpack-plugin');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 var path = require('path');
 var webpack = require('webpack');
 
 
-const targetDirectory = path.resolve(__dirname, '..', 'build');
-
 module.exports = require('./webpack.config.base')({
   entry: {
-    'js/radial-tree.min': [path.join(process.cwd(), 'src', 'js', 'index.js'),
-      path.join(process.cwd(), 'src', 'sass', 'radialTree.scss')],
+    //we are removing all files which fall out of js or css directory
+    //to get more details read description of plugin DelWebpackPlugin
+
     //css is being extracted as plain text
     //by special plugin 'extract-text-webpack-plugin'
+    'js/radial-tree.min': path.join(process.cwd(), 'src', 'js', 'index.js'),
+    'del/style': path.join(process.cwd(), 'src', 'sass', 'radialTree.scss'),
   },
 
   devtool: 'source-map',
@@ -23,9 +26,8 @@ module.exports = require('./webpack.config.base')({
   output: {
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
-    path: targetDirectory,
-    library: 'RadialTree',
-    libraryExport: 'default',
+    path: path.resolve(__dirname, '..', 'build'),
+    library: 'wb',
   },
 
   module: {
@@ -58,6 +60,26 @@ module.exports = require('./webpack.config.base')({
       },
       mangle: true,
       sourceMap: true,
+    }),
+
+    new CleanWebpackPlugin([
+      'build/*',
+    ], {
+      root: `${__dirname}/..`,
+      allowExternal: true,
+      verbose: true,
+    }),
+
+    // Delete temporal files
+    // webpack create js for each entry even for style files
+    // it is well known issue
+    // https://github.com/webpack-contrib/extract-text-webpack-plugin/issues/518
+    new DelWebpackPlugin({
+      info: true,
+      exclude: [
+        'js',
+        'css',
+      ]
     }),
   ],
 });

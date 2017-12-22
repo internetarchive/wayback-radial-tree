@@ -12,7 +12,7 @@ import * as d3 from 'd3';
 
 
 
-export default function RadialTree(element, option){
+export function RadialTree(element, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
     var limit;

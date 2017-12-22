@@ -1,6 +1,7 @@
 import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
+import scss from 'rollup-plugin-scss'
 
 import pkg from './package.json';
 
@@ -54,5 +55,19 @@ export default [
         exclude: ['node_modules/**']
       }),
     ],
-  }
+  },
+
+  //styles
+  {
+    input: 'src/sass/radialTree.scss',
+    output: {
+      file: 'build/radial-tree.css',
+      format: 'es',
+    },
+    plugins: [
+      scss({
+        output: 'build/radial-tree.css',
+      })
+    ],
+  },
 ];

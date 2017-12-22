@@ -60,10 +60,7 @@ export default [
   //styles
   {
     input: 'src/sass/radialTree.scss',
-    output: {
-      file: 'build/radial-tree.css',
-      format: 'es',
-    },
+    output: [],
     plugins: [
       scss({
         output: 'build/radial-tree.css',

@@ -6,15 +6,20 @@ import pkg from './package.json';
 
 
 const index = 'src/js/index.js';
+const dependencies = Object.keys(pkg.dependencies);
 
 export default [
   // browser-friendly UMD build
   {
     input: index,
+    external: dependencies,
     output: {
       file: pkg.browser,
       format: 'umd',
       name: 'wb',
+      globals: {
+        d3: 'd3',
+      },
     },
     plugins: [
       commonjs(),
@@ -22,22 +27,23 @@ export default [
       babel({
         exclude: ['node_modules/**']
       }),
-    ]
+    ],
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   {
     input: index,
-    external: ['ms'],
+    external: dependencies,
     output: [
       {file: pkg.main, format: 'cjs'},
       {file: pkg.module, format: 'es'}
     ],
     plugins: [
+      commonjs(),
       resolve(),
       babel({
         exclude: ['node_modules/**']
       }),
-    ]
+    ],
   }
 ];

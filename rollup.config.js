@@ -6,37 +6,24 @@ import scss from 'rollup-plugin-scss'
 import pkg from './package.json';
 
 
-const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);
 
 export default [
-  // browser-friendly UMD build
   {
-    input: index,
-    external: dependencies,
-    output: {
-      file: pkg.browser,
-      format: 'umd',
-      name: 'wb',
-      globals: {
-        d3: 'd3',
-      },
-      sourcemap: true,
-    },
-    plugins: [
-      commonjs(),
-      resolve(),
-      babel({
-        exclude: ['node_modules/**']
-      }),
-    ],
-  },
-
-  // CommonJS (for Node) and ES module (for bundlers) build.
-  {
-    input: index,
+    input: 'src/js/index.js',
     external: dependencies,
     output: [
+      // browser-friendly UMD build
+      {
+        file: pkg.browser,
+        format: 'umd',
+        name: 'wb',
+        globals: {
+          d3: 'd3',
+        },
+        sourcemap: true,
+      },
+      // CommonJS (for Node) and ES module (for bundlers) build.
       {
         file: pkg.main,
         format: 'cjs',
@@ -60,7 +47,9 @@ export default [
   //styles
   {
     input: 'src/sass/radialTree.scss',
-    output: [],
+    output: {
+      format: 'es',
+    },
     plugins: [
       scss({
         output: 'build/radial-tree.css',

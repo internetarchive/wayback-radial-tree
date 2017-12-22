@@ -4,6 +4,10 @@ import resolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
 import uglify from 'rollup-plugin-uglify';
 
+import cssnano from 'cssnano';
+import postcss from 'postcss';
+
+
 import pkg from './package.json';
 
 
@@ -70,6 +74,9 @@ export default [
     },
     plugins: [
       scss({
+        processor: css => postcss([cssnano])
+          .process(css)
+          .then(result => result.css),
         output: 'build/radial-tree.css',
       })
     ],

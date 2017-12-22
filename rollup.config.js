@@ -2,18 +2,20 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
+import uglify from 'rollup-plugin-uglify';
 
 import pkg from './package.json';
 
 
+const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);
 
 export default [
+  // browser-friendly UMD build
   {
-    input: 'src/js/index.js',
+    input: index,
     external: dependencies,
     output: [
-      // browser-friendly UMD build
       {
         file: pkg.browser,
         format: 'umd',
@@ -23,7 +25,23 @@ export default [
         },
         sourcemap: true,
       },
-      // CommonJS (for Node) and ES module (for bundlers) build.
+    ],
+    plugins: [
+      commonjs(),
+      resolve(),
+      babel({
+        exclude: ['node_modules/**']
+      }),
+      uglify(),
+    ],
+  },
+
+
+  // CommonJS (for Node) and ES module (for bundlers) build.
+  {
+    input: index,
+    external: dependencies,
+    output: [
       {
         file: pkg.main,
         format: 'cjs',

@@ -2,26 +2,25 @@
  * Radial Tree Library
  * 
  * @param {DOMElement} element
+ @ @param {Array} cdx_data: decoded CDX Query data retrieved by:
+  ``/web/timemap/json?url=example.com/&fl=timestamp:4,original&matchType=prefix
+    &filter=statuscode:200&filter=mimetype:text/html&collapse=urlkey
+    &collapse=timestamp:4&limit=100000``.
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
- * Option limit defines the max number of CDX query results.
  * Option indicatorImg defines the graphic to display while loading data from
  * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
 import * as d3 from 'd3';
 
 
-export function RadialTree(element, option){
+export function RadialTree(element, cdx_data, option){
     var GlobYear = 0;
     var baseURL = 'https://web.archive.org';
-    var limit;
     var indicatorImg;
     // Use typeof check to allow empty string in baseURL value
     if (typeof option.baseURL !== 'undefined') {
         baseURL = option.baseURL;
-    }
-    if(option.limit) {
-        limit = option.limit;
     }
     if (option.indicatorImg) {
         indicatorImg = option.indicatorImg;
@@ -29,7 +28,7 @@ export function RadialTree(element, option){
     if (!option.url) return;
 
     Init(element);
-    GetData(option.url, function(success, err, allYears, yearData){
+    GetData(option.url, cdx_data, function(success, err, allYears, yearData){
         if(indicatorImg) {
             element.querySelector(".rt-indicator").style.display = "none";
         }
@@ -62,7 +61,7 @@ export function RadialTree(element, option){
         container.appendChild(content);
     }
 
-    function GetData(url, cb){
+    function GetData(url, response, cb){
         var regexHTTP   = /http:\/\//;
         var regexHTTPS  = /https:\/\//;
         var regexLast   = /\/$/;
@@ -70,79 +69,53 @@ export function RadialTree(element, option){
         url.replace(regexHTTPS, "");
         url.replace(regexLast, "");
 
-        var RequestURL = baseURL + "/web/timemap/json?" +
-            "url=" + url + "/&" + 
-            "fl=timestamp:4,original&" + 
-            "matchType=prefix&" + 
-            "filter=statuscode:200&" + 
-            "filter=mimetype:text/html&" + 
-            "collapse=urlkey&" + 
-            "collapse=timestamp:4";
-        if(limit) {
-            RequestURL += "&limit=" + limit;
+        if (response.length == 0) cb(true, []);
+
+        var yearUrl = [];
+        for(var i=1; i<response.length; i++) {
+            if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
+                continue;
+            }
+            response[i][1] = response[i][1].trim().replace(":80/", "/");
+            if(response[i][0] in yearUrl) {
+                yearUrl[response[i][0]].push(response[i][1]);
+            } else {
+                yearUrl[response[i][0]] = [response[i][1]];
+            }
         }
-        var xhr = new XMLHttpRequest();
-        xhr.open("GET", RequestURL, true);
-		xhr.onerror = function(){
-            cb(false, "An error occured. Please refresh the page and try again");
-		};
-		xhr.ontimeout = function(){
-			cb(false, "Timeout, Please refresh the page and try again");
-        };
-        xhr.onload = function(){
-            var response = JSON.parse(xhr.responseText);
-            if (response.length == 0) cb(true, []);
-
-            var yearUrl = [];
-            for(var i=1; i<response.length; i++) {
-                if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
-                    continue;
-                }
-                response[i][1] = response[i][1].trim().replace(":80/", "/");
-                if(response[i][0] in yearUrl) {
-                    yearUrl[response[i][0]].push(response[i][1]);
-                } else {
-                    yearUrl[response[i][0]] = [response[i][1]];
-                }
-            }
-            var ret = [];
-            for (var year in yearUrl) {
-                ret.push([year].concat(yearUrl[year]));
-            }
-            /** ret has the following format:
-             *  array(
-             *    array(2005, url1, url2, .... urlN),
-             *    ...
-             *  ) **/
-            var years = (function(){
-                for (var i=0; i<ret.length; i++) {
-                    for (var j=1; j<ret[i].length; j++) {
-                        var url;
-                        if (ret[i][j].includes("http")) {
-                            url = ret[i][j].substring(7);
-                        } else if (ret[i][j].includes("https")) {
-                            url = ret[i][j].substring(8);
-                        }
-                        if (url.includes('//')) {
-                            url = url.split('//').join('/');
-                        }
-                        url = url.split('/').join('/');
-                        ret[i][j] = url;
+        var ret = [];
+        for (var year in yearUrl) {
+            ret.push([year].concat(yearUrl[year]));
+        }
+        /** ret has the following format:
+          *  array(
+          *    array(2005, url1, url2, .... urlN),
+          *    ...
+          *  ) **/
+        var years = (function(){
+            for (var i=0; i<ret.length; i++) {
+                for (var j=1; j<ret[i].length; j++) {
+                    var url;
+                    if (ret[i][j].includes("http")) {
+                        url = ret[i][j].substring(7);
+                    } else if (ret[i][j].includes("https")) {
+                        url = ret[i][j].substring(8);
                     }
+                    if (url.includes('//')) {
+                        url = url.split('//').join('/');
+                    }
+                    url = url.split('/').join('/');
+                    ret[i][j] = url;
                 }
-
-                return ret;
-            }());
-
-            var all_years = years.map(function(year) {
-                if(year.length > 1) {
-                    return year[0];
-                }
-            });
-
-            cb(true, null, all_years, years);
-        };
-        xhr.send();
+            }
+            return ret;
+        }());
+        var all_years = years.map(function(year) {
+            if(year.length > 1) {
+                return year[0];
+            }
+        });
+        cb(true, null, all_years, years);
     }
 
     function CreateYearButtons(element, option, allYears, yearData){

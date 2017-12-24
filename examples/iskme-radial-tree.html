@@ -9,11 +9,25 @@
     </head>
     <body>
         <div id="rt_container1"></div>
-        <div id="rt_container2"></div>
     </body>
     <script>
-        var rt = new wb.RadialTree(document.getElementById("rt_container1"),{
-            url : "iskme.org"
-        });
+        /* Note that this example must run on a WBM server where the
+           /web/timemap/json endpoint returns CDX data in JSON format */
+        var url = "/web/timemap/json?" +
+            "url=iskme.org/&" +
+            "fl=timestamp:4,original&" +
+            "matchType=prefix&" +
+            "filter=statuscode:200&" +
+            "filter=mimetype:text/html&" +
+            "collapse=urlkey&" +
+            "collapse=timestamp:4";
+        var xhr = new XMLHttpRequest();
+        xhr.open("GET", url, true);
+        xhr.onload = function(e) {
+            var response = JSON.parse(xhr.responseText);
+            new wb.RadialTree(document.getElementById("rt_container1"),
+                              response , {url : "iskme.org"});
+        };
+        xhr.send();
     </script>
 </html>

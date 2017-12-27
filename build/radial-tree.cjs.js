@@ -185,13 +185,21 @@ function RadialTree(element, cdx_data, option) {
                 } else {
                     return colors((d.children ? d : d.parent).data.name);
                 }
-            }).style("opacity", 1).style("cursor", 'pointer').on("mouseover", mouseover).on("click", OpenTheUrl);
+            }).style("opacity", 1).style("cursor", 'pointer').on("mouseover", mouseover).on("touchstart", touchStart).on("click", OpenTheUrl);
 
             d3.select("#d3_container").on("mouseleave", mouseleave);
         }
 
-        function OpenTheUrl(d) {
-            var year = GlobYear;
+        /** on mobile devices, touching the RadialTree prevents the ``click``
+         *  event and shows the URL like on ``mouseover`` event. Users can click
+         *  on the URL to visit the target page */
+        function touchStart(d) {
+            d3.event.preventDefault();
+            d3.event.stopPropagation();
+            mouseover(d);
+        }
+
+        function currentUrl(d) {
             var anc = d.ancestors().reverse();
             var url = "";
             for (var i = 1; i < anc.length; i++) {
@@ -200,13 +208,18 @@ function RadialTree(element, cdx_data, option) {
                 }
                 url = url + '/' + anc[i].data.name;
             }
-            window.open(baseURL + "/web/" + year + "0630" + url);
+            return baseURL + '/web/' + GlobYear + '0630' + url;
+        }
+
+        function OpenTheUrl(d) {
+            window.location = currentUrl(d);
         }
 
         function mouseover(d) {
             var sequenceArray = d.ancestors().reverse();
             sequenceArray.shift();
-            UpdateBreadcrumbs(sequenceArray);
+            var url = currentUrl(d);
+            UpdateBreadcrumbs(sequenceArray, url);
             d3.selectAll("path").style("opacity", 0.3);
             vis.selectAll("path").filter(function (node) {
                 return sequenceArray.indexOf(node) >= 0;
@@ -221,7 +234,7 @@ function RadialTree(element, cdx_data, option) {
             });
         }
 
-        function UpdateBreadcrumbs(nodeArray) {
+        function UpdateBreadcrumbs(nodeArray, url) {
             var text = "";
             var symb = document.createElement('span');
             symb.setAttribute('class', 'symb');
@@ -233,7 +246,8 @@ function RadialTree(element, cdx_data, option) {
                     text = text + symb.innerHTML + nodeArray[i].data.name;
                 }
             }
-            element.querySelector(".sequence").innerHTML = text;
+            text = decodeURIComponent(text);
+            element.querySelector(".sequence").innerHTML = '<a href="' + url + '">' + text + '</a>';
         }
 
         function BuildHierarchy(csv) {

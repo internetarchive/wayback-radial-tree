@@ -9,7 +9,7 @@
         margin-top: 10px;
         height: 30px;
         font-size: 18px;
-        text-align: center;   
+        text-align: center;
     }
     #chart {
         width: 50%;
@@ -38,11 +38,10 @@
             font-weight: normal;
             border-radius: 0px;
         }
-        .active-btn {
+        .active-btn, .year-btn:hover {
             cursor: pointer;
             background: green;
             color: white;
-            font-size: 18px;
         }
     }
 }

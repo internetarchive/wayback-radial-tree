@@ -223,7 +223,7 @@ export function RadialTree(element, cdx_data, option){
         }
 
         function OpenTheUrl(d) {
-            window.open(currentUrl(d));
+            window.location = currentUrl(d);
         }
 
         function mouseover(d) {
@@ -257,6 +257,7 @@ export function RadialTree(element, cdx_data, option){
                     text = text + symb.innerHTML + nodeArray[i].data.name;
                 }
             }
+            text = decodeURIComponent(text);
             element.querySelector(".sequence").innerHTML = `<a href="${url}">${text}</a>`;
         }
 

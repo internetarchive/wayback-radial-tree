@@ -12,7 +12,7 @@
   "scripts": {
     "build": "rollup -c",
     "lint": "eslint --ignore-path .gitignore src",
-    "test": "test"
+    "test": "npm run lint && echo 'TODO: here should be unit tests'"
   },
   "repository": {
     "type": "git",

@@ -11,12 +11,7 @@ parserOptions:
     jsx: true
   sourceType: module
 rules:
-  no-console:
-    - error
-    - allow:
-      - warn
-      - error
-  no-var:
+  eqeqeq:
     - error
   indent:
     - error
@@ -24,6 +19,13 @@ rules:
   linebreak-style:
     - error
     - unix
+  no-console:
+    - error
+    - allow:
+      - warn
+      - error
+  no-var:
+    - error
   quotes:
     - error
     - single

@@ -69,7 +69,7 @@ export function RadialTree(element, cdx_data, option) {
     url.replace(regexHTTPS, '');
     url.replace(regexLast, '');
 
-    if (response.length == 0) cb(true, []);
+    if (response.length === 0) cb(true, []);
 
     let yearUrl = [];
     for (let i = 1; i < response.length; i++) {
@@ -138,7 +138,7 @@ export function RadialTree(element, cdx_data, option) {
           DrawChart(element, option, text);
         };
         divBtn.appendChild(btn);
-        if (i == allYears.length - 1) btn.click();
+        if (i === allYears.length - 1) btn.click();
       });
     }
   }
@@ -202,7 +202,7 @@ export function RadialTree(element, cdx_data, option) {
         .attr('d', arc)
         .attr('fill-rule', 'evenodd')
         .style('fill', function (d) {
-          if (d.data.name == 'end') {
+          if (d.data.name === 'end') {
             return '#000000';
           } else {
             return colors((d.children ? d : d.parent).data.name);
@@ -231,7 +231,7 @@ export function RadialTree(element, cdx_data, option) {
       const anc = d.ancestors().reverse();
       let url = '';
       for (let i = 1; i < anc.length; i++) {
-        if (anc[i].data.name == 'end') {
+        if (anc[i].data.name === 'end') {
           break;
         }
         url = url + '/' + anc[i].data.name;
@@ -268,7 +268,7 @@ export function RadialTree(element, cdx_data, option) {
       symb.setAttribute('class', 'symb');
       symb.innerHTML = '/';
       for (let i = 0; i < nodeArray.length; i++) {
-        if (i == 0) {
+        if (i === 0) {
           text = ' ' + nodeArray[i].data.name;
         } else {
           text = text + symb.innerHTML + nodeArray[i].data.name;
@@ -284,13 +284,13 @@ export function RadialTree(element, cdx_data, option) {
       });
       let real_urls = {};
       real_urls[option.url] = 1;
-      if (option.url.slice(-1) != '/') {
+      if (option.url.slice(-1) !== '/') {
         real_urls[option.url + '/'] = 1;
       }
       for (let i = 0, length = csv.length; i < length; i++) {
         let key = String(csv[i][0]).trim().replace(':80/', '/');
         real_urls[key] = 1;
-        if (key.slice(-1) != '/') {
+        if (key.slice(-1) !== '/') {
           real_urls[key + '/'] = 1;
         }
       }
@@ -337,7 +337,7 @@ export function RadialTree(element, cdx_data, option) {
           if (j + 1 < parts.length) {
             let foundChild = false;
             for (let k = 0; k < children.length; k++) {
-              if (children[k].name == nodeName) {
+              if (children[k].name === nodeName) {
                 childNode = children[k];
                 foundChild = true;
                 break;
@@ -361,11 +361,11 @@ export function RadialTree(element, cdx_data, option) {
   function MakeNewText(n, yearData) {
     let text = '';
     let x = 2;
-    if (yearData[n].length == 2) {
+    if (yearData[n].length === 2) {
       x = 1;
     }
     for (let i = x; i < yearData[n].length; i++) {
-      if (i != (yearData[n].length - 1)) {
+      if (i !== (yearData[n].length - 1)) {
         text = text + yearData[n][i] + ' ,1' + '\n';
       } else {
         text = text + yearData[n][i] + ' ,1';

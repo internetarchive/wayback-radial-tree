@@ -14,6 +14,7 @@ module.exports = require('./webpack.config.base')({
     filename: '[name].js',
     chunkFilename: '[name].chunk.js',
     library: 'wb',
+    libraryTarget: "umd",
   },
 
   // Tell babel that we want to hot-reload

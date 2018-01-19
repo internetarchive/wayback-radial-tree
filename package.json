@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "rollup -c",
+    "lint": "eslint --ignore-path .gitignore src",
     "test": "test"
   },
   "repository": {
@@ -28,6 +29,7 @@
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
+    "babel-eslint": "^8.2.1",
     "babel-loader": "^7.1.2",
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-polyfill": "^6.26.0",
@@ -36,6 +38,7 @@
     "css-loader": "^0.28.7",
     "cssnano": "^4.0.0-rc.2",
     "del-webpack-plugin": "^1.0.1",
+    "eslint": "^4.15.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "node-sass": "^4.7.2",
     "rollup": "^0.53.0",

@@ -10,9 +10,6 @@ parserOptions:
     experimentalObjectRestSpread: true
     jsx: true
   sourceType: module
-plugins:
-  - mocha
-  - react
 rules:
   no-console:
     - error
@@ -28,7 +25,6 @@ rules:
   quotes:
     - error
     - double
-  react/jsx-uses-vars: 1
   semi:
     - error
     - always

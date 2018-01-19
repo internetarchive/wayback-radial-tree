@@ -27,17 +27,18 @@ export function RadialTree(element, cdx_data, option) {
   }
   if (!option.url) return;
 
-  Init(element);
-  GetData(option.url, cdx_data, function (success, err, allYears, yearData) {
+  init(element);
+
+  getData(option.url, cdx_data, function (success, err, allYears, yearData) {
     if (indicatorImg) {
       element.querySelector('.rt-indicator').style.display = 'none';
     }
     if (!success) return;
 
-    CreateYearButtons(element, option, allYears, yearData);
+    createYearButtons(element, option, allYears, yearData);
   });
 
-  function Init(container) {
+  function init(container) {
     let content = document.createElement('div');
     content.setAttribute('class', 'rt-content');
     let divBtn = document.createElement('div');
@@ -61,7 +62,7 @@ export function RadialTree(element, cdx_data, option) {
     container.appendChild(content);
   }
 
-  function GetData(url, response, cb) {
+  function getData(url, response, cb) {
     let regexHTTP = /http:\/\//;
     let regexHTTPS = /https:\/\//;
     let regexLast = /\/$/;
@@ -118,7 +119,7 @@ export function RadialTree(element, cdx_data, option) {
     cb(true, null, all_years, years);
   }
 
-  function CreateYearButtons(element, option, allYears, yearData) {
+  function createYearButtons(element, option, allYears, yearData) {
     let divBtn = element.querySelector('.div-btn');
     if (!element.querySelector('.year-btn')) {
       allYears.forEach(function (year, i) {
@@ -134,8 +135,8 @@ export function RadialTree(element, cdx_data, option) {
           target.classList.add('active-btn');
           GlobYear = target.id;
           let num = allYears.indexOf(target.id);
-          let text = MakeNewText(num, yearData);
-          DrawChart(element, option, text);
+          let text = makeNewText(num, yearData);
+          drawChart(element, option, text);
         };
         divBtn.appendChild(btn);
         if (i === allYears.length - 1) btn.click();
@@ -143,7 +144,7 @@ export function RadialTree(element, cdx_data, option) {
     }
   }
 
-  function DrawChart(element, option, text) {
+  function drawChart(element, option, text) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
     const width = element.querySelector('#chart').offsetWidth;
@@ -174,10 +175,10 @@ export function RadialTree(element, cdx_data, option) {
       });
 
     let csv = d3.csvParseRows(text);
-    let json = BuildHierarchy(csv);
-    CreateVisualization(json);
+    let json = buildHierarchy(csv);
+    createVisualization(json);
 
-    function CreateVisualization(json) {
+    function createVisualization(json) {
       vis.append('svg:circle')
         .attr('r', radius)
         .style('opacity', 0);
@@ -212,7 +213,7 @@ export function RadialTree(element, cdx_data, option) {
         .style('cursor', 'pointer')
         .on('mouseover', mouseover)
         .on('touchstart', touchStart)
-        .on('click', OpenTheUrl);
+        .on('click', openTheUrl);
 
       d3.select('#d3_container')
         .on('mouseleave', mouseleave);
@@ -239,7 +240,7 @@ export function RadialTree(element, cdx_data, option) {
       return `${baseURL}/web/${GlobYear}0630${url}`;
     }
 
-    function OpenTheUrl(d) {
+    function openTheUrl(d) {
       window.location = currentUrl(d);
     }
 
@@ -247,7 +248,7 @@ export function RadialTree(element, cdx_data, option) {
       let sequenceArray = d.ancestors().reverse();
       sequenceArray.shift();
       let url = currentUrl(d);
-      UpdateBreadcrumbs(sequenceArray, url);
+      updateBreadcrumbs(sequenceArray, url);
       d3.selectAll('path').style('opacity', 0.3);
       vis.selectAll('path').filter(function (node) {
         return (sequenceArray.indexOf(node) >= 0);
@@ -262,7 +263,7 @@ export function RadialTree(element, cdx_data, option) {
       });
     }
 
-    function UpdateBreadcrumbs(nodeArray, url) {
+    function updateBreadcrumbs(nodeArray, url) {
       let text = '';
       let symb = document.createElement('span');
       symb.setAttribute('class', 'symb');
@@ -278,7 +279,7 @@ export function RadialTree(element, cdx_data, option) {
       element.querySelector('.sequence').innerHTML = `<a href="${url}">${text}</a>`;
     }
 
-    function BuildHierarchy(csv) {
+    function buildHierarchy(csv) {
       csv.sort(function (a, b) {
         return a[0].length - b[0].length || a[0].localeCompare(b[0]);
       });
@@ -297,7 +298,7 @@ export function RadialTree(element, cdx_data, option) {
 
       let DELIMITER = '|';
 
-      function FilterRealUrl(url) {
+      function filterRealUrl(url) {
         let parts = url.trim().split('/');
         let delimiter_index = [];
         for (let i = 1; i < parts.length; i++) {
@@ -320,7 +321,7 @@ export function RadialTree(element, cdx_data, option) {
 
       let root = {name: 'root', children: []};
       for (let i = 0; i < length; i++) {
-        let sequence = FilterRealUrl(csv[i][0]);
+        let sequence = filterRealUrl(csv[i][0]);
         let size = +csv[i][1];
         if (isNaN(size)) {
           continue;
@@ -358,7 +359,7 @@ export function RadialTree(element, cdx_data, option) {
     }
   }
 
-  function MakeNewText(n, yearData) {
+  function makeNewText(n, yearData) {
     let text = '';
     let x = 2;
     if (yearData[n].length === 2) {

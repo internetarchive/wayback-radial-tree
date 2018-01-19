@@ -15,9 +15,9 @@ import * as d3 from 'd3';
 
 
 export function RadialTree(element, cdx_data, option) {
-  var GlobYear = 0;
-  var baseURL = 'https://web.archive.org';
-  var indicatorImg;
+  let GlobYear = 0;
+  let baseURL = 'https://web.archive.org';
+  let indicatorImg;
   // Use typeof check to allow empty string in baseURL value
   if (typeof option.baseURL !== 'undefined') {
     baseURL = option.baseURL;
@@ -38,17 +38,17 @@ export function RadialTree(element, cdx_data, option) {
   });
 
   function Init(container) {
-    var content = document.createElement('div');
+    let content = document.createElement('div');
     content.setAttribute('class', 'rt-content');
-    var divBtn = document.createElement('div');
+    let divBtn = document.createElement('div');
     divBtn.setAttribute('class', 'div-btn');
 
-    var sequence = document.createElement('p');
+    let sequence = document.createElement('p');
     sequence.setAttribute('class', 'sequence');
-    var chart = document.createElement('div');
+    let chart = document.createElement('div');
     chart.setAttribute('id', 'chart');
     if (indicatorImg) {
-      var indicator = document.createElement('img');
+      let indicator = document.createElement('img');
       indicator.setAttribute('src', indicatorImg);
       indicator.setAttribute('class', 'rt-indicator');
       chart.appendChild(indicator);
@@ -62,17 +62,17 @@ export function RadialTree(element, cdx_data, option) {
   }
 
   function GetData(url, response, cb) {
-    var regexHTTP = /http:\/\//;
-    var regexHTTPS = /https:\/\//;
-    var regexLast = /\/$/;
+    let regexHTTP = /http:\/\//;
+    let regexHTTPS = /https:\/\//;
+    let regexLast = /\/$/;
     url.replace(regexHTTP, '');
     url.replace(regexHTTPS, '');
     url.replace(regexLast, '');
 
     if (response.length == 0) cb(true, []);
 
-    var yearUrl = [];
-    for (var i = 1; i < response.length; i++) {
+    let yearUrl = [];
+    for (let i = 1; i < response.length; i++) {
       if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
         continue;
       }
@@ -83,8 +83,8 @@ export function RadialTree(element, cdx_data, option) {
         yearUrl[response[i][0]] = [response[i][1]];
       }
     }
-    var ret = [];
-    for (var year in yearUrl) {
+    let ret = [];
+    for (let year in yearUrl) {
       ret.push([year].concat(yearUrl[year]));
     }
     /** ret has the following format:
@@ -92,10 +92,10 @@ export function RadialTree(element, cdx_data, option) {
      *    array(2005, url1, url2, .... urlN),
      *    ...
      *  ) **/
-    var years = (function () {
-      for (var i = 0; i < ret.length; i++) {
-        for (var j = 1; j < ret[i].length; j++) {
-          var url;
+    let years = (function () {
+      for (let i = 0; i < ret.length; i++) {
+        for (let j = 1; j < ret[i].length; j++) {
+          let url;
           if (ret[i][j].includes('http')) {
             url = ret[i][j].substring(7);
           } else if (ret[i][j].includes('https')) {
@@ -110,7 +110,7 @@ export function RadialTree(element, cdx_data, option) {
       }
       return ret;
     }());
-    var all_years = years.map(function (year) {
+    let all_years = years.map(function (year) {
       if (year.length > 1) {
         return year[0];
       }
@@ -119,22 +119,22 @@ export function RadialTree(element, cdx_data, option) {
   }
 
   function CreateYearButtons(element, option, allYears, yearData) {
-    var divBtn = element.querySelector('.div-btn');
+    let divBtn = element.querySelector('.div-btn');
     if (!element.querySelector('.year-btn')) {
       allYears.forEach(function (year, i) {
-        var btn = document.createElement('button');
+        let btn = document.createElement('button');
         btn.setAttribute('class', 'year-btn');
         btn.setAttribute('id', allYears[i]);
         btn.innerHTML = allYears[i];
         btn.onclick = function (evt) {
-          var target = evt.target;
+          let target = evt.target;
           if (element.querySelector('.active-btn')) {
             element.querySelector('.active-btn').classList.remove('active-btn');
           }
           target.classList.add('active-btn');
           GlobYear = target.id;
-          var num = allYears.indexOf(target.id);
-          var text = MakeNewText(num, yearData);
+          let num = allYears.indexOf(target.id);
+          let text = MakeNewText(num, yearData);
           DrawChart(element, option, text);
         };
         divBtn.appendChild(btn);
@@ -149,17 +149,17 @@ export function RadialTree(element, cdx_data, option) {
     const width = element.querySelector('#chart').offsetWidth;
     const height = width;
     const radius = Math.min(width, height) / 2;
-    var colors = d3.scaleOrdinal(d3.schemeCategory20b);
-    var vis = d3.select('#chart')
+    let colors = d3.scaleOrdinal(d3.schemeCategory20b);
+    let vis = d3.select('#chart')
       .append('svg:svg')
       .attr('width', width)
       .attr('height', height)
       .append('svg:g')
       .attr('id', 'd3_container')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
-    var partition = d3.partition()
+    let partition = d3.partition()
       .size([2 * Math.PI, radius * radius]);
-    var arc = d3.arc()
+    let arc = d3.arc()
       .startAngle(function (d) {
         return d.x0;
       })
@@ -173,22 +173,22 @@ export function RadialTree(element, cdx_data, option) {
         return Math.sqrt(d.y1);
       });
 
-    var csv = d3.csvParseRows(text);
-    var json = BuildHierarchy(csv);
+    let csv = d3.csvParseRows(text);
+    let json = BuildHierarchy(csv);
     CreateVisualization(json);
 
     function CreateVisualization(json) {
       vis.append('svg:circle')
         .attr('r', radius)
         .style('opacity', 0);
-      var root = d3.hierarchy(json)
+      let root = d3.hierarchy(json)
         .sum(function (d) {
           return d.size;
         })
         .sort(function (a, b) {
           return b.value - a.value;
         });
-      var nodes = partition(root)
+      let nodes = partition(root)
         .descendants();
 
       vis.data([json])
@@ -230,7 +230,7 @@ export function RadialTree(element, cdx_data, option) {
     function currentUrl(d) {
       const anc = d.ancestors().reverse();
       let url = '';
-      for (var i = 1; i < anc.length; i++) {
+      for (let i = 1; i < anc.length; i++) {
         if (anc[i].data.name == 'end') {
           break;
         }
@@ -244,9 +244,9 @@ export function RadialTree(element, cdx_data, option) {
     }
 
     function mouseover(d) {
-      var sequenceArray = d.ancestors().reverse();
+      let sequenceArray = d.ancestors().reverse();
       sequenceArray.shift();
-      var url = currentUrl(d);
+      let url = currentUrl(d);
       UpdateBreadcrumbs(sequenceArray, url);
       d3.selectAll('path').style('opacity', 0.3);
       vis.selectAll('path').filter(function (node) {
@@ -263,11 +263,11 @@ export function RadialTree(element, cdx_data, option) {
     }
 
     function UpdateBreadcrumbs(nodeArray, url) {
-      var text = '';
-      var symb = document.createElement('span');
+      let text = '';
+      let symb = document.createElement('span');
       symb.setAttribute('class', 'symb');
       symb.innerHTML = '/';
-      for (var i = 0; i < nodeArray.length; i++) {
+      for (let i = 0; i < nodeArray.length; i++) {
         if (i == 0) {
           text = ' ' + nodeArray[i].data.name;
         } else {
@@ -282,35 +282,35 @@ export function RadialTree(element, cdx_data, option) {
       csv.sort(function (a, b) {
         return a[0].length - b[0].length || a[0].localeCompare(b[0]);
       });
-      var real_urls = {};
+      let real_urls = {};
       real_urls[option.url] = 1;
       if (option.url.slice(-1) != '/') {
         real_urls[option.url + '/'] = 1;
       }
       for (let i = 0, length = csv.length; i < length; i++) {
-        var key = String(csv[i][0]).trim().replace(':80/', '/');
+        let key = String(csv[i][0]).trim().replace(':80/', '/');
         real_urls[key] = 1;
         if (key.slice(-1) != '/') {
           real_urls[key + '/'] = 1;
         }
       }
 
-      var DELIMITER = '|';
+      let DELIMITER = '|';
 
       function FilterRealUrl(url) {
-        var parts = url.trim().split('/');
-        var delimiter_index = [];
-        for (var i = 1; i < parts.length; i++) {
-          var potentialUrl = parts.slice(0, i).join('/');
+        let parts = url.trim().split('/');
+        let delimiter_index = [];
+        for (let i = 1; i < parts.length; i++) {
+          let potentialUrl = parts.slice(0, i).join('/');
           if (potentialUrl in real_urls === false && i > 0) {
-            var pos = parts.slice(0, i).join('/').length;
+            let pos = parts.slice(0, i).join('/').length;
             delimiter_index.push(pos);
           }
         }
         if (delimiter_index.length > 0) {
-          var result_url = url;
-          for (var j = 1; j < delimiter_index.length; j++) {
-            var index = delimiter_index[j];
+          let result_url = url;
+          for (let j = 1; j < delimiter_index.length; j++) {
+            let index = delimiter_index[j];
             result_url = result_url.substr(0, index) + DELIMITER + result_url.substr(index + 1);
           }
           return result_url;
@@ -318,25 +318,25 @@ export function RadialTree(element, cdx_data, option) {
         return url;
       }
 
-      var root = {name: 'root', children: []};
+      let root = {name: 'root', children: []};
       for (let i = 0; i < length; i++) {
-        var sequence = FilterRealUrl(csv[i][0]);
-        var size = +csv[i][1];
+        let sequence = FilterRealUrl(csv[i][0]);
+        let size = +csv[i][1];
         if (isNaN(size)) {
           continue;
         }
-        var parts = sequence.split('/');
+        let parts = sequence.split('/');
         parts = parts.map(function (s) {
           return s.replace(/\|/g, '/');
         });
-        var currentNode = root;
-        for (var j = 0; j < parts.length; j++) {
-          var children = currentNode.children;
-          var nodeName = parts[j];
-          var childNode;
+        let currentNode = root;
+        for (let j = 0; j < parts.length; j++) {
+          let children = currentNode.children;
+          let nodeName = parts[j];
+          let childNode;
           if (j + 1 < parts.length) {
-            var foundChild = false;
-            for (var k = 0; k < children.length; k++) {
+            let foundChild = false;
+            for (let k = 0; k < children.length; k++) {
               if (children[k].name == nodeName) {
                 childNode = children[k];
                 foundChild = true;
@@ -359,12 +359,12 @@ export function RadialTree(element, cdx_data, option) {
   }
 
   function MakeNewText(n, yearData) {
-    var text = '';
-    var x = 2;
+    let text = '';
+    let x = 2;
     if (yearData[n].length == 2) {
       x = 1;
     }
-    for (var i = x; i < yearData[n].length; i++) {
+    for (let i = x; i < yearData[n].length; i++) {
       if (i != (yearData[n].length - 1)) {
         text = text + yearData[n][i] + ' ,1' + '\n';
       } else {

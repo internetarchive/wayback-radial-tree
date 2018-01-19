@@ -16,6 +16,8 @@ rules:
     - allow:
       - warn
       - error
+  no-var:
+    - error
   indent:
     - error
     - 2

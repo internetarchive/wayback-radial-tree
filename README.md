@@ -8,6 +8,21 @@ npm install
 
 ## Developing
 
+### Testing
+
+Right now we run eslint for style checking and are going to use mocha
+for unit tests.
+
+```
+npm test
+```
+
+linting only
+
+```
+npm run lint
+```
+
 ### Local Build
 
 Build library and example on `webpack` and expose example on `8000`

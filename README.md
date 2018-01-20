@@ -16,3 +16,9 @@ port.
 ```
 npm run example:local
 ```
+
+if you need custom port. For example for 4567
+
+```
+npm run example:local -- --port 4567
+```

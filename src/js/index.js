@@ -288,7 +288,7 @@ export function RadialTree(element, cdx_data, option) {
       if (option.url.slice(-1) !== '/') {
         real_urls[option.url + '/'] = 1;
       }
-      for (let i = 0, length = csv.length; i < length; i++) {
+      for (let i = 0; i < csv.length; i++) {
         let key = String(csv[i][0]).trim().replace(':80/', '/');
         real_urls[key] = 1;
         if (key.slice(-1) !== '/') {
@@ -320,7 +320,7 @@ export function RadialTree(element, cdx_data, option) {
       }
 
       let root = {name: 'root', children: []};
-      for (let i = 0; i < length; i++) {
+      for (let i = 0; i < csv.length; i++) {
         let sequence = filterRealUrl(csv[i][0]);
         let size = +csv[i][1];
         if (isNaN(size)) {

@@ -1,4 +1,4 @@
-# Wayback Radial Tree
+# Wayback Radial Tree [![Build Status](https://travis-ci.org/internetarchive/wayback-radial-tree.svg?branch=master)](https://travis-ci.org/internetarchive/wayback-radial-tree)
 
 ## Install
 

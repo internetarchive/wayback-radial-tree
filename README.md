@@ -10,8 +10,7 @@ npm install
 
 ### Testing
 
-Right now we run eslint for style checking and are going to use mocha
-for unit tests.
+Right now we run eslint for style checking and mocha for unit tests.
 
 ```
 npm test
@@ -21,6 +20,12 @@ linting only
 
 ```
 npm run lint
+```
+
+unit testing
+
+```
+npm run mocha
 ```
 
 ### Local Build

@@ -1,4 +1,11 @@
-export function processTimeMapData(url, response) {
+/**
+ * Process timemap data from endpoint /web/timemap/json to the inner format
+ *
+ * @param url
+ * @param data
+ * @returns {*}
+ */
+export function processTimeMapData(url, data) {
   let regexHTTP = /http:\/\//;
   let regexHTTPS = /https:\/\//;
   let regexLast = /\/$/;
@@ -6,7 +13,7 @@ export function processTimeMapData(url, response) {
   url.replace(regexHTTPS, '');
   url.replace(regexLast, '');
 
-  if (response.length === 0) {
+  if (data.length === 0) {
     return {
       allYears: [],
       yearData: [],
@@ -14,15 +21,15 @@ export function processTimeMapData(url, response) {
   }
 
   let yearUrl = [];
-  for (let i = 1; i < response.length; i++) {
-    if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
+  for (let i = 1; i < data.length; i++) {
+    if (data[i][1].match(/jpg|pdf|png|form|gif/)) {
       continue;
     }
-    response[i][1] = response[i][1].trim().replace(':80/', '/');
-    if (response[i][0] in yearUrl) {
-      yearUrl[response[i][0]].push(response[i][1]);
+    data[i][1] = data[i][1].trim().replace(':80/', '/');
+    if (data[i][0] in yearUrl) {
+      yearUrl[data[i][0]].push(data[i][1]);
     } else {
-      yearUrl[response[i][0]] = [response[i][1]];
+      yearUrl[data[i][0]] = [data[i][1]];
     }
   }
   let ret = [];

@@ -13,7 +13,7 @@
     "build": "rollup -c",
     "example:local": "NODE_ENV=develop webpack-dev-server --config config/webpack.config.dev.js --hot",
     "lint": "eslint --ignore-path .gitignore src",
-    "mocha": "mocha-webpack",
+    "mocha": "mocha-webpack  --opts ./tests/mocha-webpack.opts --webpack-config ./config/webpack.config.test.js",
     "test": "npm run lint && npm run mocha"
   },
   "repository": {

@@ -8,8 +8,6 @@
  &collapse=timestamp:4&limit=100000``.
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
- * Option indicatorImg defines the graphic to display while loading data from
- * the Wayback Machine. If undefined, no loading graphic is displayed.
  */
 import * as d3 from 'd3';
 
@@ -17,23 +15,15 @@ import * as d3 from 'd3';
 export function RadialTree(element, cdx_data, option) {
   let GlobYear = 0;
   let baseURL = 'https://web.archive.org';
-  let indicatorImg;
   // Use typeof check to allow empty string in baseURL value
   if (typeof option.baseURL !== 'undefined') {
     baseURL = option.baseURL;
-  }
-  if (option.indicatorImg) {
-    indicatorImg = option.indicatorImg;
   }
   if (!option.url) return;
 
   init(element);
 
   let {allYears, yearData} = getData(option.url, cdx_data);
-
-  if (indicatorImg) {
-    element.querySelector('.rt-indicator').style.display = 'none';
-  }
 
   createYearButtons(element, option, allYears, yearData);
 
@@ -47,12 +37,6 @@ export function RadialTree(element, cdx_data, option) {
     sequence.setAttribute('class', 'sequence');
     let chart = document.createElement('div');
     chart.setAttribute('id', 'chart');
-    if (indicatorImg) {
-      let indicator = document.createElement('img');
-      indicator.setAttribute('src', indicatorImg);
-      indicator.setAttribute('class', 'rt-indicator');
-      chart.appendChild(indicator);
-    }
     content.appendChild(divBtn);
     content.appendChild(sequence);
     content.appendChild(chart);

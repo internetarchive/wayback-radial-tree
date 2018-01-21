@@ -29,14 +29,13 @@ export function RadialTree(element, cdx_data, option) {
 
   init(element);
 
-  getData(option.url, cdx_data, function (success, err, allYears, yearData) {
-    if (indicatorImg) {
-      element.querySelector('.rt-indicator').style.display = 'none';
-    }
-    if (!success) return;
+  let {allYears, yearData} = getData(option.url, cdx_data);
 
-    createYearButtons(element, option, allYears, yearData);
-  });
+  if (indicatorImg) {
+    element.querySelector('.rt-indicator').style.display = 'none';
+  }
+
+  createYearButtons(element, option, allYears, yearData);
 
   function init(container) {
     let content = document.createElement('div');
@@ -70,7 +69,12 @@ export function RadialTree(element, cdx_data, option) {
     url.replace(regexHTTPS, '');
     url.replace(regexLast, '');
 
-    if (response.length === 0) cb(true, []);
+    if (response.length === 0) {
+      return {
+        allYears: [],
+        yearData: [],
+      };
+    }
 
     let yearUrl = [];
     for (let i = 1; i < response.length; i++) {
@@ -116,7 +120,11 @@ export function RadialTree(element, cdx_data, option) {
         return year[0];
       }
     });
-    cb(true, null, all_years, years);
+
+    return {
+      allYears: all_years,
+      yearData: years,
+    };
   }
 
   function createYearButtons(element, option, allYears, yearData) {

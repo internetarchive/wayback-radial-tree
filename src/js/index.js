@@ -198,6 +198,7 @@ export function RadialTree(element, cdx_data, option) {
         .enter()
         .append('a')
         .attr('xlink:href', currentUrl)
+        .on('touchstart', touchStart)
         .append('svg:path')
         .attr('display', function (d) {
           return d.depth ? null : 'none';
@@ -213,8 +214,7 @@ export function RadialTree(element, cdx_data, option) {
         })
         .style('opacity', 1)
         .style('cursor', 'pointer')
-        .on('mouseover', mouseover)
-        .on('touchstart', touchStart);
+        .on('mouseover', mouseover);
 
       d3.select('#d3_container')
         .on('mouseleave', mouseleave);
@@ -227,6 +227,7 @@ export function RadialTree(element, cdx_data, option) {
       d3.event.preventDefault();
       d3.event.stopPropagation();
       mouseover(d);
+      return false;
     }
 
     function currentUrl(d) {

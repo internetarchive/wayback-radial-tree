@@ -196,6 +196,8 @@ export function RadialTree(element, cdx_data, option) {
         .selectAll('path')
         .data(nodes)
         .enter()
+        .append('a')
+        .attr('xlink:href', currentUrl)
         .append('svg:path')
         .attr('display', function (d) {
           return d.depth ? null : 'none';
@@ -212,8 +214,7 @@ export function RadialTree(element, cdx_data, option) {
         .style('opacity', 1)
         .style('cursor', 'pointer')
         .on('mouseover', mouseover)
-        .on('touchstart', touchStart)
-        .on('click', openTheUrl);
+        .on('touchstart', touchStart);
 
       d3.select('#d3_container')
         .on('mouseleave', mouseleave);
@@ -238,10 +239,6 @@ export function RadialTree(element, cdx_data, option) {
         url = url + '/' + anc[i].data.name;
       }
       return `${baseURL}/web/${GlobYear}0630${url}`;
-    }
-
-    function openTheUrl(d) {
-      window.location = currentUrl(d);
     }
 
     function mouseover(d) {

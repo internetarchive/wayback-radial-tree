@@ -1,3 +1,6 @@
+import _ from 'lodash';
+
+
 /**
  * Process timemap data from endpoint /web/timemap/json to the inner format
  *
@@ -43,6 +46,8 @@ export function processTimeMapData(url, data) {
    *  ) **/
   let years = (function () {
     for (let i = 0; i < ret.length; i++) {
+      let urls = [];
+
       for (let j = 1; j < ret[i].length; j++) {
         let url;
         if (ret[i][j].includes('http')) {
@@ -54,11 +59,19 @@ export function processTimeMapData(url, data) {
           url = url.split('//').join('/');
         }
         url = url.split('/').join('/');
-        ret[i][j] = url;
+        urls.push(url);
       }
+
+      urls = _.uniq(urls.sort());
+
+      //year should be the 1st
+      urls.unshift(ret[i][0]);
+
+      ret[i] = urls;
     }
     return ret;
   }());
+
   let all_years = years.map(function (year) {
     if (year.length > 1) {
       return year[0];

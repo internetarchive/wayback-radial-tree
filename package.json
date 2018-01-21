@@ -27,7 +27,8 @@
   },
   "homepage": "https://github.com/internetarchive/wayback-radial-tree#readme",
   "dependencies": {
-    "d3": "^4.12.0"
+    "d3": "^4.12.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",

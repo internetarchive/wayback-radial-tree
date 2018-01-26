@@ -13,7 +13,8 @@
     "build": "rollup -c",
     "example:local": "NODE_ENV=develop webpack-dev-server --config config/webpack.config.dev.js --hot",
     "lint": "eslint --ignore-path .gitignore src",
-    "test": "npm run lint && echo 'TODO: here should be unit tests'"
+    "mocha": "mocha-webpack  --opts ./tests/mocha-webpack.opts --webpack-config ./config/webpack.config.test.js",
+    "test": "npm run lint && npm run mocha"
   },
   "repository": {
     "type": "git",
@@ -26,7 +27,8 @@
   },
   "homepage": "https://github.com/internetarchive/wayback-radial-tree#readme",
   "dependencies": {
-    "d3": "^4.12.0"
+    "d3": "^4.12.0",
+    "lodash": "^4.17.4"
   },
   "devDependencies": {
     "babel-core": "^6.26.0",
@@ -35,6 +37,7 @@
     "babel-plugin-external-helpers": "^6.22.0",
     "babel-polyfill": "^6.26.0",
     "babel-preset-env": "^1.6.1",
+    "chai": "^4.1.2",
     "clean-webpack-plugin": "^0.1.17",
     "css-loader": "^0.28.7",
     "cssnano": "^4.0.0-rc.2",
@@ -42,6 +45,8 @@
     "eslint": "^4.15.0",
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^2.30.1",
+    "mocha": "^5.0.0",
+    "mocha-webpack": "^1.0.1",
     "node-sass": "^4.7.2",
     "rollup": "^0.53.0",
     "rollup-plugin-babel": "^3.0.3",

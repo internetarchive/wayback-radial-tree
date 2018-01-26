@@ -6,12 +6,31 @@
 npm install
 ```
 
+## Usage
+
+The component has few dependencies which should be loaded
+when it is been used a browser (UMD build):
+
+- [lodash](https://lodash.com)
+- [d3](https://d3js.org/)
+
+Usually it is enough to add them at the header of html
+before <script> of the component:
+
+```html
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
+<script src="https://unpkg.com/d3@4.12.0/build/d3.js"></script>
+```
+
+If you use this component in an application which uses webpack
+you don't to worry about dependencies they will be melted
+inside of build.
+
 ## Developing
 
 ### Testing
 
-Right now we run eslint for style checking and are going to use mocha
-for unit tests.
+Right now we run `eslint` for style checking and `mocha` for unit tests.
 
 ```
 npm test
@@ -21,6 +40,12 @@ linting only
 
 ```
 npm run lint
+```
+
+unit testing
+
+```
+npm run mocha
 ```
 
 ### Local Build

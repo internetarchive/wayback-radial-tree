@@ -1,4 +1,8 @@
+import * as d3 from 'd3';
+import {processTimeMapData} from './processing/timemap';
+
 /**
+ *
  * Radial Tree Library
  *
  * @param {DOMElement} element
@@ -8,35 +12,22 @@
  &collapse=timestamp:4&limit=100000``.
  * @param {Object} option
  * Option baseURL defines the target Wayback Machine server.
- * Option indicatorImg defines the graphic to display while loading data from
- * the Wayback Machine. If undefined, no loading graphic is displayed.
+ *
  */
-import * as d3 from 'd3';
-
-
 export function RadialTree(element, cdx_data, option) {
   let GlobYear = 0;
   let baseURL = 'https://web.archive.org';
-  let indicatorImg;
   // Use typeof check to allow empty string in baseURL value
   if (typeof option.baseURL !== 'undefined') {
     baseURL = option.baseURL;
-  }
-  if (option.indicatorImg) {
-    indicatorImg = option.indicatorImg;
   }
   if (!option.url) return;
 
   init(element);
 
-  getData(option.url, cdx_data, function (success, err, allYears, yearData) {
-    if (indicatorImg) {
-      element.querySelector('.rt-indicator').style.display = 'none';
-    }
-    if (!success) return;
+  let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
 
-    createYearButtons(element, option, allYears, yearData);
-  });
+  createYearButtons(element, option, allYears, yearData);
 
   function init(container) {
     let content = document.createElement('div');
@@ -48,75 +39,12 @@ export function RadialTree(element, cdx_data, option) {
     sequence.setAttribute('class', 'sequence');
     let chart = document.createElement('div');
     chart.setAttribute('id', 'chart');
-    if (indicatorImg) {
-      let indicator = document.createElement('img');
-      indicator.setAttribute('src', indicatorImg);
-      indicator.setAttribute('class', 'rt-indicator');
-      chart.appendChild(indicator);
-    }
     content.appendChild(divBtn);
     content.appendChild(sequence);
     content.appendChild(chart);
     content.style.display = 'block';
 
     container.appendChild(content);
-  }
-
-  function getData(url, response, cb) {
-    let regexHTTP = /http:\/\//;
-    let regexHTTPS = /https:\/\//;
-    let regexLast = /\/$/;
-    url.replace(regexHTTP, '');
-    url.replace(regexHTTPS, '');
-    url.replace(regexLast, '');
-
-    if (response.length === 0) cb(true, []);
-
-    let yearUrl = [];
-    for (let i = 1; i < response.length; i++) {
-      if (response[i][1].match(/jpg|pdf|png|form|gif/)) {
-        continue;
-      }
-      response[i][1] = response[i][1].trim().replace(':80/', '/');
-      if (response[i][0] in yearUrl) {
-        yearUrl[response[i][0]].push(response[i][1]);
-      } else {
-        yearUrl[response[i][0]] = [response[i][1]];
-      }
-    }
-    let ret = [];
-    for (let year in yearUrl) {
-      ret.push([year].concat(yearUrl[year]));
-    }
-    /** ret has the following format:
-     *  array(
-     *    array(2005, url1, url2, .... urlN),
-     *    ...
-     *  ) **/
-    let years = (function () {
-      for (let i = 0; i < ret.length; i++) {
-        for (let j = 1; j < ret[i].length; j++) {
-          let url;
-          if (ret[i][j].includes('http')) {
-            url = ret[i][j].substring(7);
-          } else if (ret[i][j].includes('https')) {
-            url = ret[i][j].substring(8);
-          }
-          if (url.includes('//')) {
-            url = url.split('//').join('/');
-          }
-          url = url.split('/').join('/');
-          ret[i][j] = url;
-        }
-      }
-      return ret;
-    }());
-    let all_years = years.map(function (year) {
-      if (year.length > 1) {
-        return year[0];
-      }
-    });
-    cb(true, null, all_years, years);
   }
 
   function createYearButtons(element, option, allYears, yearData) {
@@ -196,6 +124,9 @@ export function RadialTree(element, cdx_data, option) {
         .selectAll('path')
         .data(nodes)
         .enter()
+        .append('a')
+        .attr('xlink:href', currentUrl)
+        .on('touchstart', touchStart)
         .append('svg:path')
         .attr('display', function (d) {
           return d.depth ? null : 'none';
@@ -211,9 +142,7 @@ export function RadialTree(element, cdx_data, option) {
         })
         .style('opacity', 1)
         .style('cursor', 'pointer')
-        .on('mouseover', mouseover)
-        .on('touchstart', touchStart)
-        .on('click', openTheUrl);
+        .on('mouseover', mouseover);
 
       d3.select('#d3_container')
         .on('mouseleave', mouseleave);
@@ -226,6 +155,7 @@ export function RadialTree(element, cdx_data, option) {
       d3.event.preventDefault();
       d3.event.stopPropagation();
       mouseover(d);
+      return false;
     }
 
     function currentUrl(d) {
@@ -238,10 +168,6 @@ export function RadialTree(element, cdx_data, option) {
         url = url + '/' + anc[i].data.name;
       }
       return `${baseURL}/web/${GlobYear}0630${url}`;
-    }
-
-    function openTheUrl(d) {
-      window.location = currentUrl(d);
     }
 
     function mouseover(d) {

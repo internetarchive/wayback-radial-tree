@@ -25,6 +25,7 @@ export default [
         format: 'umd',
         name: 'wb',
         globals: {
+          _: '_',
           d3: 'd3',
         },
         sourcemap: true,

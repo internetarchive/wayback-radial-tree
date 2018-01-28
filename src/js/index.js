@@ -67,7 +67,13 @@ export function RadialTree(element, cdx_data, option) {
           drawChart(element, option, text);
         };
         divBtn.appendChild(btn);
-        if (i === allYears.length - 1) btn.click();
+        // highlight the 2nd last year if available, else hightlight the last.
+        // necessary because the last year may not have much data.
+        if(allYears.length >= 2) {
+          if (i === allYears.length - 2) btn.click();
+        } else {
+          if (i === allYears.length - 1) btn.click();
+        }
       });
     }
   }

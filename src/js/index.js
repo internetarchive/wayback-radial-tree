@@ -23,11 +23,12 @@ export function RadialTree(element, cdx_data, option) {
   }
   if (!option.url) return;
 
+  // render
+
   const container = renderContainer();
   element.appendChild(container);
 
   let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
-
   renderYearButtons(element, option, allYears, selectYear);
 
   // highlight the 2nd last year if available, else hightlight the last.
@@ -55,6 +56,7 @@ export function RadialTree(element, cdx_data, option) {
     const width = element.querySelector('#chart').offsetWidth;
     const height = width;
     const radius = Math.min(width, height) / 2;
+
     let vis = d3.select('#chart')
       .append('svg:svg')
       .attr('width', width)
@@ -62,6 +64,10 @@ export function RadialTree(element, cdx_data, option) {
       .append('svg:g')
       .attr('id', 'd3_container')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+
+    vis.append('svg:circle')
+      .attr('r', radius)
+      .style('opacity', 0);
 
     let yearIdx = allYears.indexOf(currentYear);
     let json = buildHierarchy(yearData[yearIdx], option.url);

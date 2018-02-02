@@ -74,7 +74,7 @@ export function buildHierarchy(oneYearData, targetURL) {
         }
         currentNode = childNode;
       } else {
-        childNode = {name: nodeName, size: size};
+        childNode = {name: nodeName};
         children.push(childNode);
       }
     }

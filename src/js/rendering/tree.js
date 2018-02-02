@@ -1,37 +1,20 @@
 import * as d3 from 'd3';
 
+const arc = d3.arc()
+  .startAngle(d => d.x0)
+  .endAngle(d => d.x1)
+  .innerRadius(d => Math.sqrt(d.y0))
+  .outerRadius(d => Math.sqrt(d.y1));
+
 const colors = d3.scaleOrdinal(d3.schemeCategory20b);
 
 export function createVisualization(element, vis, radius, baseURL, currentYear, json) {
-  vis.append('svg:circle')
-    .attr('r', radius)
-    .style('opacity', 0);
-
-
-  let arc = d3.arc()
-    .startAngle(function (d) {
-      return d.x0;
-    })
-    .endAngle(function (d) {
-      return d.x1;
-    })
-    .innerRadius(function (d) {
-      return Math.sqrt(d.y0);
-    })
-    .outerRadius(function (d) {
-      return Math.sqrt(d.y1);
-    });
-
-  let root = d3.hierarchy(json)
-    .sum(function (d) {
-      return d.size;
-    })
-    .sort(function (a, b) {
-      return b.value - a.value;
-    });
-
   let partition = d3.partition()
     .size([2 * Math.PI, radius * radius]);
+
+  let root = d3.hierarchy(json)
+    .sum(d => !d.children)
+    .sort((a, b) => b.value - a.value);
 
   let nodes = partition(root)
     .descendants();
@@ -44,12 +27,10 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     .attr('xlink:href', currentUrl)
     .on('touchstart', touchStart)
     .append('svg:path')
-    .attr('display', function (d) {
-      return d.depth ? null : 'none';
-    })
+    .attr('display', d => d.depth ? null : 'none')
     .attr('d', arc)
     .attr('fill-rule', 'evenodd')
-    .style('fill', function (d) {
+    .style('fill', d => {
       if (d.data.name === 'end') {
         return '#000000';
       } else {
@@ -91,17 +72,25 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     let url = currentUrl(d);
     updateBreadcrumbs(sequenceArray, url);
     d3.selectAll('path').style('opacity', 0.3);
-    vis.selectAll('path').filter(function (node) {
-      return (sequenceArray.indexOf(node) >= 0);
-    }).style('opacity', 1);
+
+    vis
+      .selectAll('path')
+      .filter(node => sequenceArray.indexOf(node) >= 0)
+      .style('opacity', 1);
   }
 
   function mouseleave() {
     element.querySelector('.sequence').innerHTML = '';
-    d3.selectAll('path').on('mouseover', null);
-    d3.selectAll('path').transition().style('opacity', 1).on('end', function () {
-      d3.select(this).on('mouseover', mouseover);
-    });
+
+    d3.selectAll('path')
+      .on('mouseover', null);
+
+    d3.selectAll('path')
+      .transition()
+      .style('opacity', 1)
+      .on('end', function () {
+        d3.select(this).on('mouseover', mouseover);
+      });
   }
 
   function updateBreadcrumbs(nodeArray, url) {
@@ -120,4 +109,3 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     element.querySelector('.sequence').innerHTML = `<a href="${url}">${text}</a>`;
   }
 }
-

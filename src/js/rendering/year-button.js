@@ -3,7 +3,7 @@ export function renderYearButton(year) {
   btn.setAttribute('class', 'year-btn');
   btn.setAttribute('id', year);
   btn.innerHTML = year;
-  return btn
+  return btn;
 }
 
 export function getYearByBtn(btn) {

@@ -5,7 +5,7 @@ export function renderYearButtons(element, option, allYears, onYearSelect) {
   divBtn.onclick = (evt) => onYearSelect(getYearByBtn(evt.target));
 
   if (!element.querySelector('.year-btn')) {
-    allYears.forEach((year, i) =>
+    allYears.forEach(year =>
       divBtn.appendChild(renderYearButton(year))
     );
   }

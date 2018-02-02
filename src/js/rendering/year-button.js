@@ -1,4 +1,4 @@
-export function buildYearButton(year) {
+export function renderYearButton(year) {
   let btn = document.createElement('button');
   btn.setAttribute('class', 'year-btn');
   btn.setAttribute('id', year);

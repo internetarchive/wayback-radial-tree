@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import {buildHierarchy, processTimeMapData} from './processing';
-import {buildYearButton, createVisualization, getButtonByYear, getYearByBtn, renderContainer} from './rendering';
+import {createVisualization, getButtonByYear, renderContainer, renderYearButtons} from './rendering';
 
 /**
  *
@@ -28,17 +28,12 @@ export function RadialTree(element, cdx_data, option) {
 
   let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
 
-  renderYearButtons(element, option, allYears);
+  renderYearButtons(element, option, allYears, selectYear);
 
   // highlight the 2nd last year if available, else hightlight the last.
   // necessary because the last year may not have much data.
   const lastButOneYear = allYears[allYears.length - 2] || allYears[0];
   selectYear(lastButOneYear);
-
-  function onYearClick(evt) {
-    let target = evt.target;
-    selectYear(getYearByBtn(target));
-  }
 
   function selectYear(year) {
     // hide active button
@@ -51,17 +46,6 @@ export function RadialTree(element, cdx_data, option) {
     btn.classList.add('active-btn');
 
     renderChart(element, option, year);
-  }
-
-  function renderYearButtons(element, option, allYears) {
-    let divBtn = element.querySelector('.div-btn');
-    divBtn.onclick = onYearClick;
-
-    if (!element.querySelector('.year-btn')) {
-      allYears.forEach((year, i) =>
-        divBtn.appendChild(buildYearButton(year))
-      );
-    }
   }
 
   function renderChart(element, option, currentYear) {

@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import {buildHierarchy, processTimeMapData} from './processing';
-import {createVisualization} from './rendering/tree';
+import {buildYearButton, createVisualization} from './rendering';
 
 /**
  *
@@ -61,11 +61,8 @@ export function RadialTree(element, cdx_data, option) {
     divBtn.onclick = onYearClick;
 
     if (!element.querySelector('.year-btn')) {
-      allYears.forEach(function (year, i) {
-        let btn = document.createElement('button');
-        btn.setAttribute('class', 'year-btn');
-        btn.setAttribute('id', allYears[i]);
-        btn.innerHTML = allYears[i];
+      allYears.map((year, i) => {
+        let btn = buildYearButton(year);
         divBtn.appendChild(btn);
         // highlight the 2nd last year if available, else hightlight the last.
         // necessary because the last year may not have much data.

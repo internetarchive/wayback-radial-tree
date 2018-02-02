@@ -61,9 +61,7 @@ export function RadialTree(element, cdx_data, option) {
             element.querySelector('.active-btn').classList.remove('active-btn');
           }
           target.classList.add('active-btn');
-          let num = allYears.indexOf(target.id);
-          let text = makeNewText(num, yearData);
-          drawChart(element, option, text, target.id);
+          drawChart(element, option, target.id);
         };
         divBtn.appendChild(btn);
         // highlight the 2nd last year if available, else hightlight the last.
@@ -77,9 +75,11 @@ export function RadialTree(element, cdx_data, option) {
     }
   }
 
-  function drawChart(element, option, text, currentYear) {
+  function drawChart(element, option, currentYear) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
+    let yearIdx = allYears.indexOf(currentYear);
+    let text = makeNewText(yearIdx, yearData);
     const width = element.querySelector('#chart').offsetWidth;
     const height = width;
     const radius = Math.min(width, height) / 2;

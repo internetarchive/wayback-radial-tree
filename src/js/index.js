@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import {buildHierarchy, processTimeMapData} from './processing';
-import {buildYearButton, createVisualization} from './rendering';
+import {buildYearButton, createVisualization, renderContainer} from './rendering';
 
 /**
  *
@@ -23,29 +23,12 @@ export function RadialTree(element, cdx_data, option) {
   }
   if (!option.url) return;
 
-  init(element);
+  const container = renderContainer();
+  element.appendChild(container);
 
   let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
 
   createYearButtons(element, option, allYears);
-
-  function init(container) {
-    let content = document.createElement('div');
-    content.setAttribute('class', 'rt-content');
-    let divBtn = document.createElement('div');
-    divBtn.setAttribute('class', 'div-btn');
-
-    let sequence = document.createElement('p');
-    sequence.setAttribute('class', 'sequence');
-    let chart = document.createElement('div');
-    chart.setAttribute('id', 'chart');
-    content.appendChild(divBtn);
-    content.appendChild(sequence);
-    content.appendChild(chart);
-    content.style.display = 'block';
-
-    container.appendChild(content);
-  }
 
   function onYearClick(evt) {
     let target = evt.target;

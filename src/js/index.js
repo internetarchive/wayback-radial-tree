@@ -1,6 +1,6 @@
 import * as d3 from 'd3';
 import {buildHierarchy, processTimeMapData} from './processing';
-import {buildYearButton, createVisualization, renderContainer} from './rendering';
+import {buildYearButton, createVisualization, getButtonByYear, getYearByBtn, renderContainer} from './rendering';
 
 /**
  *
@@ -28,37 +28,43 @@ export function RadialTree(element, cdx_data, option) {
 
   let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
 
-  createYearButtons(element, option, allYears);
+  renderYearButtons(element, option, allYears);
+
+  // highlight the 2nd last year if available, else hightlight the last.
+  // necessary because the last year may not have much data.
+  const lastButOneYear = allYears[allYears.length - 2] || allYears[0];
+  selectYear(lastButOneYear);
 
   function onYearClick(evt) {
     let target = evt.target;
+    selectYear(getYearByBtn(target));
+  }
+
+  function selectYear(year) {
+    // hide active button
     if (element.querySelector('.active-btn')) {
       element.querySelector('.active-btn').classList.remove('active-btn');
     }
-    target.classList.add('active-btn');
-    drawChart(element, option, target.id);
+
+    // show active button
+    const btn = getButtonByYear(element, year);
+    btn.classList.add('active-btn');
+
+    renderChart(element, option, year);
   }
 
-  function createYearButtons(element, option, allYears) {
+  function renderYearButtons(element, option, allYears) {
     let divBtn = element.querySelector('.div-btn');
     divBtn.onclick = onYearClick;
 
     if (!element.querySelector('.year-btn')) {
-      allYears.map((year, i) => {
-        let btn = buildYearButton(year);
-        divBtn.appendChild(btn);
-        // highlight the 2nd last year if available, else hightlight the last.
-        // necessary because the last year may not have much data.
-        if (allYears.length >= 2) {
-          if (i === allYears.length - 2) btn.click();
-        } else {
-          if (i === allYears.length - 1) btn.click();
-        }
-      });
+      allYears.forEach((year, i) =>
+        divBtn.appendChild(buildYearButton(year))
+      );
     }
   }
 
-  function drawChart(element, option, currentYear) {
+  function renderChart(element, option, currentYear) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
 

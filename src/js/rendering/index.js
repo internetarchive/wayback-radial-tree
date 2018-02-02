@@ -1,3 +1,3 @@
 export {renderContainer} from './container';
 export {createVisualization} from './tree';
-export {buildYearButton} from './year-button';
+export {buildYearButton, getButtonByYear, getYearByBtn} from './year-button';

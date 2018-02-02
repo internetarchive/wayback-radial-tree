@@ -5,3 +5,11 @@ export function buildYearButton(year) {
   btn.innerHTML = year;
   return btn
 }
+
+export function getYearByBtn(btn) {
+  return btn.id;
+}
+
+export function getButtonByYear(container, year) {
+  return container.ownerDocument.getElementById(year);
+}

@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
 
 
-export function buildHierarchy(text, targetURL) {
-  let csv = d3.csvParseRows(text);
+export function buildHierarchy(oneYearData, targetURL) {
+  let csv = d3.csvParseRows(makeNewText(oneYearData));
 
   csv.sort(function (a, b) {
     return a[0].length - b[0].length || a[0].localeCompare(b[0]);
@@ -80,4 +80,20 @@ export function buildHierarchy(text, targetURL) {
     }
   }
   return root;
+}
+
+function makeNewText(oneYearData) {
+  let text = '';
+  let x = 2;
+  if (oneYearData.length === 2) {
+    x = 1;
+  }
+  for (let i = x; i < oneYearData.length; i++) {
+    if (i !== (oneYearData.length - 1)) {
+      text = text + oneYearData[i] + ' ,1' + '\n';
+    } else {
+      text = text + oneYearData[i] + ' ,1';
+    }
+  }
+  return text;
 }

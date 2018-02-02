@@ -61,8 +61,7 @@ export function RadialTree(element, cdx_data, option) {
   function drawChart(element, option, currentYear) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
-    let yearIdx = allYears.indexOf(currentYear);
-    let text = makeNewText(yearIdx, yearData);
+
     const width = element.querySelector('#chart').offsetWidth;
     const height = width;
     const radius = Math.min(width, height) / 2;
@@ -74,24 +73,9 @@ export function RadialTree(element, cdx_data, option) {
       .attr('id', 'd3_container')
       .attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
-    let json = buildHierarchy(text, option.url);
+    let yearIdx = allYears.indexOf(currentYear);
+    let json = buildHierarchy(yearData[yearIdx], option.url);
 
     createVisualization(element, vis, radius, baseURL, currentYear, json);
-  }
-
-  function makeNewText(n, yearData) {
-    let text = '';
-    let x = 2;
-    if (yearData[n].length === 2) {
-      x = 1;
-    }
-    for (let i = x; i < yearData[n].length; i++) {
-      if (i !== (yearData[n].length - 1)) {
-        text = text + yearData[n][i] + ' ,1' + '\n';
-      } else {
-        text = text + yearData[n][i] + ' ,1';
-      }
-    }
-    return text;
   }
 }

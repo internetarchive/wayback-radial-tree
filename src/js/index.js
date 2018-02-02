@@ -27,7 +27,7 @@ export function RadialTree(element, cdx_data, option) {
 
   let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
 
-  createYearButtons(element, option, allYears, yearData);
+  createYearButtons(element, option, allYears);
 
   function init(container) {
     let content = document.createElement('div');
@@ -47,26 +47,29 @@ export function RadialTree(element, cdx_data, option) {
     container.appendChild(content);
   }
 
-  function createYearButtons(element, option, allYears, yearData) {
+  function onYearClick(evt) {
+    let target = evt.target;
+    if (element.querySelector('.active-btn')) {
+      element.querySelector('.active-btn').classList.remove('active-btn');
+    }
+    target.classList.add('active-btn');
+    drawChart(element, option, target.id);
+  }
+
+  function createYearButtons(element, option, allYears) {
     let divBtn = element.querySelector('.div-btn');
+    divBtn.onclick = onYearClick;
+
     if (!element.querySelector('.year-btn')) {
       allYears.forEach(function (year, i) {
         let btn = document.createElement('button');
         btn.setAttribute('class', 'year-btn');
         btn.setAttribute('id', allYears[i]);
         btn.innerHTML = allYears[i];
-        btn.onclick = function (evt) {
-          let target = evt.target;
-          if (element.querySelector('.active-btn')) {
-            element.querySelector('.active-btn').classList.remove('active-btn');
-          }
-          target.classList.add('active-btn');
-          drawChart(element, option, target.id);
-        };
         divBtn.appendChild(btn);
         // highlight the 2nd last year if available, else hightlight the last.
         // necessary because the last year may not have much data.
-        if(allYears.length >= 2) {
+        if (allYears.length >= 2) {
           if (i === allYears.length - 2) btn.click();
         } else {
           if (i === allYears.length - 1) btn.click();

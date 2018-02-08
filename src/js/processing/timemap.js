@@ -13,7 +13,9 @@ import stripUrl from './strip-url';
  *  <year>: [<urls>]
  * }
  *
- * @param data
+ * @param data timemap format
+ *
+ * @return object with urls by yearg
  */
 export function packTimeMapToKeyValue(data) {
   if (!data) {

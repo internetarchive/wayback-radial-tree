@@ -22,6 +22,9 @@ export function groupByYear(data) {
     return row[indexByFieldName(key)];
   }
 
+  const deduplicateBy = 'key';
+  const orderBy = 'key';
+
   const res = data
     .slice(1)
     .map(row => ({
@@ -33,8 +36,8 @@ export function groupByYear(data) {
       const urls = result[row.year] || {};
 
       // don't add if we already have it
-      if(!urls[row.url]) {
-        urls[row.url] = row;
+      if(!urls[row[deduplicateBy]]) {
+        urls[row[deduplicateBy]] = row;
       }
 
       result[row.year] = urls;
@@ -45,7 +48,7 @@ export function groupByYear(data) {
   // we could make insertion with sorthing above
   return _(res)
     .mapValues(value => Object.values(value))
-    .mapValues(value => _.sortBy(value, 'url'))
+    .mapValues(value => _.sortBy(value, orderBy))
     .value();
 }
 

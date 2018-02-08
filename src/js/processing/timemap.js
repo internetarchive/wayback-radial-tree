@@ -2,6 +2,38 @@ import _ from 'lodash';
 import stripUrl from './strip-url';
 
 /**
+ * extract fields from time map data
+ *
+ */
+export class Fields {
+  constructor(data) {
+    this.fields = data[0];
+    this.getIndexByName = _.memoize(this.getIndexByName);
+  }
+
+  /**
+   * get index of field by name
+   *
+   * @param name
+   */
+  getIndexByName(name) {
+    return this.fields.indexOf(name);
+  }
+
+  /**
+   * get value of field in row by name
+   *
+   * @param row
+   * @param name
+   * @returns {*}
+   */
+  getValueByName(row, name) {
+    return row[this.getIndexByName(name)];
+  }
+}
+
+
+/**
  * data processing pipeline for time map:
  *
  * [[<keys>], [values]....[values]]
@@ -18,30 +50,25 @@ import stripUrl from './strip-url';
  *
  * @return processed data
  */
-export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null}={}) {
+export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null} = {}) {
   if (!data) {
     return data;
   }
 
-  const fields = data[0];
-  const indexByFieldName = _.memoize(fieldName => fields.indexOf(fieldName));
-
-  function fieldValueByName(row, key) {
-    return row[indexByFieldName(key)];
-  }
+  const fields = new Fields(data);
 
   const res = data
     .slice(1)
     .reduce((result, row) => {
-      const oneGroup = result[fieldValueByName(row, groupBy)] || {};
+      const oneGroup = result[fields.getValueByName(row, groupBy)] || {};
 
       // don't add if we already have it
-      if(!oneGroup[fieldValueByName(row, dedupBy)]) {
-        row[indexByFieldName(strip)] = stripUrl(row[indexByFieldName(strip)]);
-        oneGroup[fieldValueByName(row, dedupBy)] = row;
+      if (!oneGroup[fields.getValueByName(row, dedupBy)]) {
+        row[fields.getIndexByName(strip)] = stripUrl(row[fields.getIndexByName(strip)]);
+        oneGroup[fields.getValueByName(row, dedupBy)] = row;
       }
 
-      result[fieldValueByName(row, groupBy)] = oneGroup;
+      result[fields.getValueByName(row, groupBy)] = oneGroup;
       return result;
     }, {});
 
@@ -49,7 +76,7 @@ export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null}={
   // we could make insertion with sorthing above
   return _(res)
     .mapValues(value => Object.values(value))
-    .mapValues(value => _.sortBy(value, indexByFieldName(orderBy)))
+    .mapValues(value => _.sortBy(value, fields.getIndexByName(orderBy)))
     .value();
 }
 

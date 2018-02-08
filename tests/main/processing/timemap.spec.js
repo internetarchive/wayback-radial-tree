@@ -1,9 +1,23 @@
 import {expect} from 'chai';
-import {processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
+import {Fields, processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
 import fixture from './iskme-timemap-fixture.json';
 
 
 describe('time map processing', () => {
+  describe('fields', () => {
+    it('should extract index by field name', () => {
+      expect(
+        new Fields(fixture).getIndexByName('urlkey')
+      ).to.be.equal(1);
+    });
+
+    it('should extract value by field name', () => {
+      expect(
+        new Fields(fixture).getValueByName(fixture[1], 'urlkey')
+      ).to.be.equal('org,iskme)/');
+    });
+  });
+
   it('should pack null or timemap to null', () => {
     expect(processTimeMap(null)).to.be.equal(null);
   });

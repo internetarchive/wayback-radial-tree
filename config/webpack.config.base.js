@@ -32,7 +32,7 @@ module.exports = (options) => ({
         test: /\.jsx?$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
-        query: options.babelQuery,
+        options: options.babelOptions,
       }
     ),
     rules: options.module && options.module.rules,

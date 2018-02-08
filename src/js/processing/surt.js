@@ -9,6 +9,9 @@
  * @returns {String}
  */
 export function surtToUrl(surt) {
+  if (!surt) {
+    return surt;
+  }
   //drop last ')'
   surt = surt.slice(0, surt.length - 1);
   return surt.split(',').reverse().join('.');

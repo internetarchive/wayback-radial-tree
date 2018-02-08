@@ -18,6 +18,15 @@ module.exports = require('./webpack.config.base')({
   },
 
   babelOptions: {
+    babelrc: false,
+    "presets": [
+      ["env", {
+        "modules": false
+      }]
+    ],
+
+    //don't use `external-helpers` module here because for test purpose we need all in place
+    "plugins": [],
   },
 
   devServer: {

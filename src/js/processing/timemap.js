@@ -18,8 +18,10 @@ import stripUrl from './strip-url';
 export function packTimeMapToKeyValue(data) {
   const mapping = data[0];
 
+  const indexByKey = _.memoize(key => mapping.indexOf(key));
+
   function keyToValue(row, key) {
-    return row[mapping.indexOf(key)];
+    return row[indexByKey(key)];
   }
 
   const res = data

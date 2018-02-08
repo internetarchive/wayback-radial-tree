@@ -2,48 +2,39 @@ import _ from 'lodash';
 import stripUrl from './strip-url';
 
 /**
- * repack time map format:
+ * group time map format by year:
  *
  * [[<keys>], [values]....[values]]
- *
- *
- * to js friendly:
- *
- * {
- *  <year>: [<urls>]
- * }
  *
  * @param data timemap format
  *
  * @return object with urls by yearg
  */
-export function packTimeMapToKeyValue(data) {
+export function groupByYear(data) {
   if (!data) {
     return data;
   }
 
-  const mapping = data[0];
+  const fields = data[0];
+  const indexByFieldName = _.memoize(fieldName => fields.indexOf(fieldName));
 
-  const indexByKey = _.memoize(key => mapping.indexOf(key));
-
-  function keyToValue(row, key) {
-    return row[indexByKey(key)];
+  function fieldValueByName(row, key) {
+    return row[indexByFieldName(key)];
   }
 
   const res = data
     .slice(1)
     .map(row => ({
-      year: keyToValue(row, 'timestamp:4'),
-      url: stripUrl(keyToValue(row, 'original')),
+      key: fieldValueByName(row, 'urlkey'),
+      year: fieldValueByName(row, 'timestamp:4'),
+      url: stripUrl(fieldValueByName(row, 'original')),
     }))
     .reduce((result, row) => {
       const urls = result[row.year] || {};
 
       // don't add if we already have it
       if(!urls[row.url]) {
-        urls[row.url] = {
-          url: row.url,
-        };
+        urls[row.url] = row;
       }
 
       result[row.year] = urls;

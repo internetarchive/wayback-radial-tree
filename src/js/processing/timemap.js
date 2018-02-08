@@ -1,4 +1,48 @@
 import _ from 'lodash';
+import stripUrl from './strip-url';
+
+/**
+ * repack time map format:
+ *
+ * [[<keys>], [values]....[values]]
+ *
+ *
+ * to js friendly:
+ *
+ * {
+ *  <year>: [<urls>]
+ * }
+ *
+ * @param data
+ */
+export function packTimeMapToKeyValue(data) {
+  const mapping = data[0];
+
+  function keyToValue(row, key) {
+    return row[mapping.indexOf(key)];
+  }
+
+  const res = data
+    .slice(1)
+    .map(row => ({
+      year: keyToValue(row, 'timestamp:4'),
+      url: stripUrl(keyToValue(row, 'original')),
+    }))
+    .reduce((result, row) => {
+      const l = result[row.year] || [];
+
+      // don't add if we already have it
+      if (l.indexOf(row.url) < 0) {
+        l.push(row.url);
+      }
+      result[row.year] = l;
+      return result;
+    }, {});
+
+  // if someday we would get bad performance here
+  // we could make insertion with sorthing above
+  return _(res).mapValues(value => value.sort()).value();
+}
 
 
 /**

@@ -1,25 +1,33 @@
 import {expect} from 'chai';
-import {groupByYear, processTimeMapData} from '../../../src/js/processing/timemap';
+import {processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
 import fixture from './iskme-timemap-fixture.json';
 
 
 describe('time map processing', () => {
   it('should pack null or timemap to null', () => {
-    expect(groupByYear(null)).to.be.equal(null);
+    expect(processTimeMap(null)).to.be.equal(null);
   });
 
-  it('should pack timemap to key-value storage', () => {
-    expect(groupByYear(fixture)).to.be.deep.equal({
+  it('should group by year, dedup by urlkey and order by urlkey', () => {
+    expect(processTimeMap(
+      fixture,
+      {
+        groupBy: 'timestamp:4',
+        dedupBy: 'urlkey',
+        orderBy: 'urlkey',
+        strip: 'original',
+      },
+    )).to.be.deep.equal({
       2003: [
-        {key: 'org,iskme)/', url: 'www.iskme.org:80', year: '2003'},
+        ['2003', 'org,iskme)/', 'www.iskme.org:80'],
       ],
       2004: [
-        {key: 'org,iskme)/', url: 'www.iskme.org:80', year: '2004'},
+        ['2004', 'org,iskme)/', 'www.iskme.org:80'],
       ],
       2005: [
-        {key: 'org,iskme)/', url: 'iskme.org:80', year: '2005'},
-        {key: 'org,iskme)/about-us', url: 'iskme.org/about-us', year: '2005'},
-        {key: 'org,iskme)/about-us/about-iskme', url: 'iskme.org/about-us/about-iskme', year: '2005'},
+        ['2005', 'org,iskme)/', 'iskme.org:80'],
+        ['2005', 'org,iskme)/about-us', 'iskme.org/about-us'],
+        ['2005', 'org,iskme)/about-us/about-iskme', 'iskme.org/about-us/about-iskme'],
       ],
     });
   });

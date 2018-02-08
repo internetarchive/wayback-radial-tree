@@ -2,15 +2,23 @@ import _ from 'lodash';
 import stripUrl from './strip-url';
 
 /**
- * group time map format by year:
+ * data processing pipeline for time map:
  *
  * [[<keys>], [values]....[values]]
  *
- * @param data timemap format
+ * - group by one field
+ * - dedup by another field
+ * - order by one field
  *
- * @return object with urls by yearg
+ * @param data timemap format
+ * @param groupBy
+ * @param dedupBy
+ * @param orderBy
+ * @param strip
+ *
+ * @return processed data
  */
-export function groupByYear(data) {
+export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null}={}) {
   if (!data) {
     return data;
   }
@@ -22,25 +30,18 @@ export function groupByYear(data) {
     return row[indexByFieldName(key)];
   }
 
-  const deduplicateBy = 'key';
-  const orderBy = 'key';
-
   const res = data
     .slice(1)
-    .map(row => ({
-      key: fieldValueByName(row, 'urlkey'),
-      year: fieldValueByName(row, 'timestamp:4'),
-      url: stripUrl(fieldValueByName(row, 'original')),
-    }))
     .reduce((result, row) => {
-      const urls = result[row.year] || {};
+      const oneGroup = result[fieldValueByName(row, groupBy)] || {};
 
       // don't add if we already have it
-      if(!urls[row[deduplicateBy]]) {
-        urls[row[deduplicateBy]] = row;
+      if(!oneGroup[fieldValueByName(row, dedupBy)]) {
+        row[indexByFieldName(strip)] = stripUrl(row[indexByFieldName(strip)]);
+        oneGroup[fieldValueByName(row, dedupBy)] = row;
       }
 
-      result[row.year] = urls;
+      result[fieldValueByName(row, groupBy)] = oneGroup;
       return result;
     }, {});
 
@@ -48,7 +49,7 @@ export function groupByYear(data) {
   // we could make insertion with sorthing above
   return _(res)
     .mapValues(value => Object.values(value))
-    .mapValues(value => _.sortBy(value, orderBy))
+    .mapValues(value => _.sortBy(value, indexByFieldName(orderBy)))
     .value();
 }
 

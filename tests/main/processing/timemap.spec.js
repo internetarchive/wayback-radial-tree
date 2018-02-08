@@ -4,6 +4,10 @@ import fixture from './iskme-timemap-fixture.json';
 
 
 describe('time map processing', () => {
+  it('should pack null or timemap to null', () => {
+    expect(packTimeMapToKeyValue(null)).to.be.equal(null);
+  });
+
   it('should pack timemap to key-value storage', () => {
     expect(packTimeMapToKeyValue(fixture)).to.be.deep.equal({
       2003: [

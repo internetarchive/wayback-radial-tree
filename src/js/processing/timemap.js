@@ -16,6 +16,10 @@ import stripUrl from './strip-url';
  * @param data
  */
 export function packTimeMapToKeyValue(data) {
+  if (!data) {
+    return data;
+  }
+
   const mapping = data[0];
 
   const indexByKey = _.memoize(key => mapping.indexOf(key));

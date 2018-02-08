@@ -37,19 +37,25 @@ export function packTimeMapToKeyValue(data) {
       url: stripUrl(keyToValue(row, 'original')),
     }))
     .reduce((result, row) => {
-      const l = result[row.year] || [];
+      const urls = result[row.year] || {};
 
       // don't add if we already have it
-      if (l.indexOf(row.url) < 0) {
-        l.push(row.url);
+      if(!urls[row.url]) {
+        urls[row.url] = {
+          url: row.url,
+        };
       }
-      result[row.year] = l;
+
+      result[row.year] = urls;
       return result;
     }, {});
 
   // if someday we would get bad performance here
   // we could make insertion with sorthing above
-  return _(res).mapValues(value => value.sort()).value();
+  return _(res)
+    .mapValues(value => Object.values(value))
+    .mapValues(value => _.sortBy(value, 'url'))
+    .value();
 }
 
 

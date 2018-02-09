@@ -56,19 +56,18 @@ describe('time map processing', () => {
         groupBy: 'timestamp:4',
         dedupBy: 'urlkey',
         orderBy: 'urlkey',
-        strip: 'original',
       },
     )).to.be.deep.equal({
       2003: [
-        ['2003', 'org,iskme)/', 'www.iskme.org:80'],
+        ['2003', 'org,iskme)/'],
       ],
       2004: [
-        ['2004', 'org,iskme)/', 'www.iskme.org:80'],
+        ['2004', 'org,iskme)/'],
       ],
       2005: [
-        ['2005', 'org,iskme)/', 'iskme.org:80'],
-        ['2005', 'org,iskme)/about-us', 'iskme.org/about-us'],
-        ['2005', 'org,iskme)/about-us/about-iskme', 'iskme.org/about-us/about-iskme'],
+        ['2005', 'org,iskme)/'],
+        ['2005', 'org,iskme)/about-us'],
+        ['2005', 'org,iskme)/about-us/about-iskme'],
       ],
     });
   });

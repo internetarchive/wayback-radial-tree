@@ -1,5 +1,4 @@
 import _ from 'lodash';
-import stripUrl from './strip-url';
 
 /**
  * extract fields from time map data
@@ -62,11 +61,10 @@ export function getYearsFromGroupedTimeMap(data) {
  * @param groupBy
  * @param dedupBy
  * @param orderBy
- * @param strip
  *
  * @return processed data
  */
-export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null} = {}) {
+export function processTimeMap(data, {groupBy, dedupBy, orderBy} = {}) {
   if (!data) {
     return data;
   }
@@ -80,7 +78,6 @@ export function processTimeMap(data, {groupBy, dedupBy, orderBy, strip = null} =
 
       // don't add if we already have it
       if (!oneGroup[fields.getValueByName(row, dedupBy)]) {
-        row[fields.getIndexByName(strip)] = stripUrl(row[fields.getIndexByName(strip)]);
         oneGroup[fields.getValueByName(row, dedupBy)] = row;
       }
 

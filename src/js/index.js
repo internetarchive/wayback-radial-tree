@@ -21,7 +21,6 @@ export function RadialTree(element, cdx_data, option) {
   if (typeof option.baseURL !== 'undefined') {
     baseURL = option.baseURL;
   }
-  if (!option.url) return;
 
   // render
 
@@ -36,7 +35,7 @@ export function RadialTree(element, cdx_data, option) {
   });
   const years = extractYearsFromGroupedTimeMap(urlsByYear);
 
-  renderYearButtons(element, option, years, selectYear);
+  renderYearButtons(element, years, selectYear);
 
   // highlight the 2nd last year if available, else hightlight the last.
   // necessary because the last year may not have much data.
@@ -54,10 +53,10 @@ export function RadialTree(element, cdx_data, option) {
     const btn = getButtonByYear(element, year);
     btn.classList.add('active-btn');
 
-    renderChart(element, option, year);
+    renderChart(element, year);
   }
 
-  function renderChart(element, option, currentYear) {
+  function renderChart(element, currentYear) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
 

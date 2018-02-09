@@ -40,7 +40,6 @@ fetch(`https://web.archive.org/web/timemap/json?
   .then(data => new wb.RadialTree(
     document.getElementById("rt_container"),
     data,
-    {url : "iskme.org"},
   ));
 ```
 

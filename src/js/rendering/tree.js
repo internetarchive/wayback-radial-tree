@@ -8,18 +8,31 @@ const arc = d3.arc()
 
 const colors = d3.scaleOrdinal(d3.schemeCategory20b);
 
-export function createVisualization(element, vis, radius, baseURL, currentYear, json) {
+/**
+ * Render d3.hierarchy from passed hierarchical data
+ *
+ * @param element
+ * @param vis
+ * @param radius
+ * @param baseURL
+ * @param currentYear
+ * @param data
+ */
+export function createVisualization(element, vis, radius, baseURL, currentYear, data) {
+  //append 'root' and exclude it on rendering
+  const rootData = {name: 'root', children: [data]};
+
   let partition = d3.partition()
     .size([2 * Math.PI, radius * radius]);
 
-  let root = d3.hierarchy(json)
+  let root = d3.hierarchy(rootData)
     .sum(d => !d.children)
     .sort((a, b) => b.value - a.value);
 
   let nodes = partition(root)
     .descendants();
 
-  vis.data([json])
+  vis.data([rootData])
     .selectAll('path')
     .data(nodes)
     .enter()

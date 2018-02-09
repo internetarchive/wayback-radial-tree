@@ -1,5 +1,5 @@
 import {expect} from 'chai';
-import {_buildHierarchy} from '../../../src/js/processing/hierarchy';
+import {buildHierarchy} from '../../../src/js/processing/hierarchy';
 import {Fields, processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
 
 
@@ -14,7 +14,7 @@ const data = [
 
 describe('hierarchy', () => {
   it('should create hierarchy from regular year structure', () => {
-    expect(_buildHierarchy(
+    expect(buildHierarchy(
       fields,
       data,
       {

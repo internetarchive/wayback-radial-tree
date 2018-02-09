@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import {buildHierarchy, processTimeMapData} from './processing';
+import {buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap} from './processing';
 import {createVisualization, getButtonByYear, renderContainer, renderYearButtons} from './rendering';
 
 /**
@@ -28,13 +28,21 @@ export function RadialTree(element, cdx_data, option) {
   const container = renderContainer();
   element.appendChild(container);
 
-  let {allYears, yearData} = processTimeMapData(option.url, cdx_data);
-  renderYearButtons(element, option, allYears, selectYear);
+  const fields = new Fields(cdx_data);
+  const urlsByYear = processTimeMap(cdx_data, {
+    groupBy: 'timestamp:4',
+    dedupBy: 'urlkey',
+    orderBy: 'urlkey',
+  });
+  const years = extractYearsFromGroupedTimeMap(urlsByYear);
+
+  renderYearButtons(element, option, years, selectYear);
 
   // highlight the 2nd last year if available, else hightlight the last.
   // necessary because the last year may not have much data.
-  const lastButOneYear = allYears[allYears.length - 2] || allYears[0];
-  selectYear(lastButOneYear);
+  // const lastButOneYear = allYears[allYears.length - 2] || allYears[0];
+  const selectedBtn = years[years.length - 2] || years[0];
+  selectYear(selectedBtn);
 
   function selectYear(year) {
     // hide active button
@@ -69,9 +77,11 @@ export function RadialTree(element, cdx_data, option) {
       .attr('r', radius)
       .style('opacity', 0);
 
-    let yearIdx = allYears.indexOf(currentYear);
-    let json = buildHierarchy(yearData[yearIdx], option.url);
+    const urls = urlsByYear[currentYear];
+    const hierarchy = buildHierarchy(fields, urls, {
+      targetField: 'urlkey',
+    });
 
-    createVisualization(element, vis, radius, baseURL, currentYear, json);
+    createVisualization(element, vis, radius, baseURL, currentYear, hierarchy);
   }
 }

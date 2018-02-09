@@ -1,7 +1,7 @@
 import {expect} from 'chai';
 import {
   Fields,
-  getYearsFromGroupedTimeMap,
+  extractYearsFromGroupedTimeMap,
   processTimeMap,
   processTimeMapData
 } from '../../../src/js/processing/timemap';
@@ -25,11 +25,11 @@ describe('time map processing', () => {
 
   describe('getYearsFromGroupedTimeMap', () => {
     it('should return null years for null data', () => {
-      expect(getYearsFromGroupedTimeMap(null)).to.be.null;
+      expect(extractYearsFromGroupedTimeMap(null)).to.be.null;
     });
 
     it('should return sorted years from data', () => {
-      expect(getYearsFromGroupedTimeMap({
+      expect(extractYearsFromGroupedTimeMap({
         2003: [
           ['2003', 'org,iskme)/', 'www.iskme.org:80'],
         ],

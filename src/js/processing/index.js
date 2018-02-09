@@ -1,2 +1,2 @@
 export {buildHierarchy} from './hierarchy';
-export {processTimeMapData} from './timemap';
+export {extractYearsFromGroupedTimeMap, Fields, processTimeMap} from './timemap';

@@ -22,6 +22,28 @@ before <script> of the component:
 <script src="https://unpkg.com/d3@4.12.0/build/d3.js"></script>
 ```
 
+Fetch data and create site map radial tree
+
+```javascript
+
+url='example.com'
+fetch(`https://web.archive.org/web/timemap/json?
+       url=${url}/&
+       fl=timestamp:4,urlkey&
+       atchType=prefix&
+       filter=statuscode:200&
+       filter=mimetype:text/html&
+       collapse=timestamp:4&
+       collapse=urlkey&
+       limit=100000`)
+  .then(res => res.json())
+  .then(data => new wb.RadialTree(
+    document.getElementById("rt_container"),
+    data,
+    {url : "iskme.org"},
+  ));
+```
+
 If you use this component in an application which uses webpack
 you don't to worry about dependencies they will be melted
 inside of build.

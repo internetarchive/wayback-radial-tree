@@ -32,6 +32,22 @@ export class Fields {
   }
 }
 
+/**
+ * get all sorted years from grouped time map data
+ *
+ * @param data time map data
+ * @returns {Array} years
+ */
+export function getYearsFromGroupedTimeMap(data) {
+  if (!data) {
+    return data;
+  }
+
+  return Object.keys(data)
+    .map(y => Number.parseInt(y))
+    .sort();
+}
+
 
 /**
  * data processing pipeline for time map:

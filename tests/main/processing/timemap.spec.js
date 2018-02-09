@@ -1,5 +1,10 @@
 import {expect} from 'chai';
-import {Fields, processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
+import {
+  Fields,
+  getYearsFromGroupedTimeMap,
+  processTimeMap,
+  processTimeMapData
+} from '../../../src/js/processing/timemap';
 import fixture from './iskme-timemap-fixture.json';
 
 
@@ -18,8 +23,30 @@ describe('time map processing', () => {
     });
   });
 
+  describe('getYearsFromGroupedTimeMap', () => {
+    it('should return null years for null data', () => {
+      expect(getYearsFromGroupedTimeMap(null)).to.be.null;
+    });
+
+    it('should return sorted years from data', () => {
+      expect(getYearsFromGroupedTimeMap({
+        2003: [
+          ['2003', 'org,iskme)/', 'www.iskme.org:80'],
+        ],
+        2004: [
+          ['2004', 'org,iskme)/', 'www.iskme.org:80'],
+        ],
+        2005: [
+          ['2005', 'org,iskme)/', 'iskme.org:80'],
+          ['2005', 'org,iskme)/about-us', 'iskme.org/about-us'],
+          ['2005', 'org,iskme)/about-us/about-iskme', 'iskme.org/about-us/about-iskme'],
+        ],
+      })).to.be.deep.equal([2003, 2004, 2005]);
+    });
+  });
+
   it('should pack null or timemap to null', () => {
-    expect(processTimeMap(null)).to.be.equal(null);
+    expect(processTimeMap(null)).to.be.null;
   });
 
   it('should group by year, dedup by urlkey and order by urlkey', () => {

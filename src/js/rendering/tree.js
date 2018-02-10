@@ -23,7 +23,7 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     .size([2 * Math.PI, radius * radius]);
 
   //append 'root' we will exclude it on rendering
-  let root = d3.hierarchy({invisible: true, children: [data]})
+  let root = d3.hierarchy({children: [data]})
     .sum(d => !d.children)
     .sort((a, b) => b.value - a.value);
 
@@ -37,7 +37,7 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     .attr('xlink:href', currentUrl)
     .on('touchstart', touchStart)
     .append('svg:path')
-    .attr('display', d => d.invisible ? 'none': null)
+    .attr('display', d => d.depth ? null : 'none')
     .attr('d', arc)
     .attr('fill-rule', 'evenodd')
     .style('fill', d => colors((d.children ? d : d.parent).data.name))

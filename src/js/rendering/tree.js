@@ -19,37 +19,28 @@ const colors = d3.scaleOrdinal(d3.schemeCategory20b);
  * @param data
  */
 export function createVisualization(element, vis, radius, baseURL, currentYear, data) {
-  //append 'root' and exclude it on rendering
-  const rootData = {name: 'root', children: [data]};
-
   let partition = d3.partition()
     .size([2 * Math.PI, radius * radius]);
 
-  let root = d3.hierarchy(rootData)
+  //append 'root' we will exclude it on rendering
+  let root = d3.hierarchy({invisible: true, children: [data]})
     .sum(d => !d.children)
     .sort((a, b) => b.value - a.value);
 
   let nodes = partition(root)
     .descendants();
 
-  vis.data([rootData])
-    .selectAll('path')
+  vis.selectAll('path')
     .data(nodes)
     .enter()
     .append('a')
     .attr('xlink:href', currentUrl)
     .on('touchstart', touchStart)
     .append('svg:path')
-    .attr('display', d => d.depth ? null : 'none')
+    .attr('display', d => d.invisible ? 'none': null)
     .attr('d', arc)
     .attr('fill-rule', 'evenodd')
-    .style('fill', d => {
-      if (d.data.name === 'end') {
-        return '#000000';
-      } else {
-        return colors((d.children ? d : d.parent).data.name);
-      }
-    })
+    .style('fill', d => colors((d.children ? d : d.parent).data.name))
     .style('opacity', 1)
     .style('cursor', 'pointer')
     .on('mouseover', mouseover);

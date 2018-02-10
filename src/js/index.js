@@ -7,20 +7,16 @@ import {createVisualization, getButtonByYear, renderContainer, renderYearButtons
  * Radial Tree Library
  *
  * @param {DOMElement} element
- @ @param {Array} cdx_data: decoded CDX Query data retrieved by:
+ * @param {Array} cdx_data: decoded CDX Query data retrieved by:
  ``/web/timemap/json?url=example.com/&fl=timestamp:4,urlkey&matchType=prefix
  &filter=statuscode:200&filter=mimetype:text/html&collapse=urlkey
  &collapse=timestamp:4&limit=100000``.
- * @param {Object} option
+ * @param {Object} [options]
  * Option baseURL defines the target Wayback Machine server.
  *
  */
-export function RadialTree(element, cdx_data, option) {
-  let baseURL = 'https://web.archive.org';
-  // Use typeof check to allow empty string in baseURL value
-  if (typeof option.baseURL !== 'undefined') {
-    baseURL = option.baseURL;
-  }
+export function RadialTree(element, cdx_data, options = {}) {
+  let baseURL = options.baseURL || 'https://web.archive.org';
 
   // render
 

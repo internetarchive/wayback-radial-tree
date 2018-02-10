@@ -16,7 +16,7 @@
            /web/timemap/json endpoint returns CDX data in JSON format */
         var url = "/web/timemap/json?" +
             "url=iskme.org/&" +
-            "fl=timestamp:4,original&" +
+            "fl=timestamp:4,urlkey&" +
             "matchType=prefix&" +
             "filter=statuscode:200&" +
             "filter=mimetype:text/html&" +
@@ -26,8 +26,10 @@
         xhr.open("GET", url, true);
         xhr.onload = function(e) {
             var response = JSON.parse(xhr.responseText);
-            new wb.RadialTree(document.getElementById("rt_container1"),
-                              response , {url : "iskme.org"});
+            new wb.RadialTree(
+                document.getElementById("rt_container1"),
+                response,
+            );
         };
         xhr.send();
     </script>

@@ -17,9 +17,16 @@ module.exports = require('./webpack.config.base')({
     libraryTarget: "umd",
   },
 
-  // Tell babel that we want to hot-reload
-  babelQuery: {
-    // presets: ['react-hmre'],
+  babelOptions: {
+    babelrc: false,
+    "presets": [
+      ["env", {
+        "modules": false
+      }]
+    ],
+
+    //don't use `external-helpers` module here because for test purpose we need all in place
+    "plugins": [],
   },
 
   devServer: {

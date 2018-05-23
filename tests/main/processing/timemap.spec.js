@@ -55,7 +55,7 @@ describe('time map processing', () => {
         groupBy: 'timestamp:4',
         dedupBy: 'urlkey',
         orderBy: 'urlkey',
-      },
+      }
     )).to.be.deep.equal({
       2003: [
         ['2003', 'org,iskme)/'],

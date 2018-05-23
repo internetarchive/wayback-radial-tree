@@ -4,6 +4,8 @@ var webpack = require('webpack');
 
 
 module.exports = require('./webpack.config.base')({
+  mode: 'development',
+
   // Add hot reloading in development
   entry: {
     'js/radial-tree': path.join(process.cwd(), 'src', 'js', 'index.js'),

@@ -46,7 +46,7 @@
     "extract-text-webpack-plugin": "^3.0.2",
     "html-webpack-plugin": "^3.2.0",
     "mocha": "^5.2.0",
-    "mocha-webpack": "^1.1.0",
+    "mocha-webpack": "^2.0.0-beta.0",
     "node-sass": "^4.9.0",
     "rollup": "^0.59.2",
     "rollup-plugin-babel": "^3.0.4",
@@ -56,8 +56,9 @@
     "rollup-plugin-terser": "^1.0.1",
     "sass-loader": "^7.0.1",
     "style-loader": "^0.21.0",
-    "webpack": "^3.12.0",
-    "webpack-dev-server": "^2.11.2",
+    "webpack": "^4.8.3",
+    "webpack-cli": "^2.1.4",
+    "webpack-dev-server": "^3.1.4",
     "webpack-hot-middleware": "^2.22.2"
   }
 }

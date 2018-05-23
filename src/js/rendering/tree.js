@@ -6,7 +6,7 @@ const arc = d3.arc()
   .innerRadius(d => Math.sqrt(d.y0))
   .outerRadius(d => Math.sqrt(d.y1));
 
-const colors = d3.scaleOrdinal(d3.schemeCategory20b);
+const colors = d3.scaleOrdinal(d3.schemePaired);
 
 /**
  * Render d3.hierarchy from passed hierarchical data

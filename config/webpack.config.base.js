@@ -15,23 +15,25 @@ module.exports = (options) => ({
     publicPath: '/',
   }, options.output),
 
+  mode: options.mode,
+
   module: {
-    loaders: [].concat(
+    rules: [].concat(
       isCoverage ? {
         test: /\.js$/,
         // instrument only testing sources with Istanbul, after ts-loader runs
         include: path.resolve(__dirname, '..', 'src'),
-        loader: 'istanbul-instrumenter-loader'
+        use: 'istanbul-instrumenter-loader'
       } : [], {
         test: /\.css$/,
-        loaders: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       }, {
         test: /\.scss/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+        use: ['style-loader', 'css-loader', 'sass-loader'],
       }, {
         test: /\.jsx?$/,
         exclude: /node_modules/,
-        loader: 'babel-loader',
+        use: 'babel-loader',
         options: options.babelOptions,
       }
     ),

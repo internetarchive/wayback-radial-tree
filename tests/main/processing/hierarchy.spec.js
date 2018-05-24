@@ -19,7 +19,7 @@ describe('hierarchy', () => {
       data,
       {
         targetField: 'urlkey',
-      },
+      }
     )).to.be.deep.equal({
       name: 'iskme.org',
       children: [{
@@ -30,6 +30,6 @@ describe('hierarchy', () => {
           name: 'about-iskme-2',
         },]
       }]
-    })
+    });
   });
 });

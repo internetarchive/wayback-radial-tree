@@ -2,7 +2,7 @@ import babel from 'rollup-plugin-babel';
 import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
-import uglify from 'rollup-plugin-uglify';
+import { terser } from "rollup-plugin-terser";
 
 import cssnano from 'cssnano';
 import postcss from 'postcss';
@@ -37,7 +37,7 @@ export default [
       babel({
         exclude: ['node_modules/**']
       }),
-      uglify(),
+      terser(),
     ],
   },
 

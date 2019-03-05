@@ -1,16 +1,20 @@
 export function renderContainer() {
-  let content = document.createElement('div');
+  let content = creatDiv();
   content.setAttribute('class', 'rt-content');
-  let divBtn = document.createElement('div');
+  let divBtn = creatDiv();
   divBtn.setAttribute('class', 'div-btn');
 
-  let sequence = document.createElement('p');
+  let sequence = creatDiv();
   sequence.setAttribute('class', 'sequence');
-  let chart = document.createElement('div');
+  let chart = creatDiv();
   chart.setAttribute('id', 'chart');
   content.appendChild(divBtn);
   content.appendChild(sequence);
   content.appendChild(chart);
   content.style.display = 'block';
   return content;
+}
+function creatDiv(){
+  let newDiv=document.createElement('div');
+  return newDiv;
 }

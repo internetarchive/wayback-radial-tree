@@ -236,20 +236,24 @@ function processTimeMap(data) {
 }
 
 function renderContainer() {
-  var content = document.createElement('div');
+  var content = creatDiv();
   content.setAttribute('class', 'rt-content');
-  var divBtn = document.createElement('div');
+  var divBtn = creatDiv();
   divBtn.setAttribute('class', 'div-btn');
 
-  var sequence = document.createElement('p');
+  var sequence = creatDiv();
   sequence.setAttribute('class', 'sequence');
-  var chart = document.createElement('div');
+  var chart = creatDiv();
   chart.setAttribute('id', 'chart');
   content.appendChild(divBtn);
   content.appendChild(sequence);
   content.appendChild(chart);
   content.style.display = 'block';
   return content;
+}
+function creatDiv() {
+  var newDiv = document.createElement('div');
+  return newDiv;
 }
 
 var arc = d3.arc().startAngle(function (d) {

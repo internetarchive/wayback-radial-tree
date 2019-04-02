@@ -43,7 +43,6 @@ export function extractYearsFromGroupedTimeMap(data) {
   }
 
   return Object.keys(data)
-    .map(y => Number.parseInt(y))
     .sort();
 }
 
@@ -84,7 +83,7 @@ export function processTimeMap(data, {groupBy, dedupBy, orderBy} = {}) {
       result[fields.getValueByName(row, groupBy)] = oneGroup;
       return result;
     }, {});
-
+    
   // if someday we would get bad performance here
   // we could make insertion with sorthing above
   return _(res)

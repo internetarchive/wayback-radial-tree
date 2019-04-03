@@ -40,7 +40,7 @@ describe('time map processing', () => {
           ['2005', 'org,iskme)/about-us', 'iskme.org/about-us'],
           ['2005', 'org,iskme)/about-us/about-iskme', 'iskme.org/about-us/about-iskme'],
         ],
-      })).to.be.deep.equal([2003, 2004, 2005]);
+      })).to.be.deep.equal(['2003', '2004', '2005']);
     });
   });
 

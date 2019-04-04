@@ -175,9 +175,7 @@ function extractYearsFromGroupedTimeMap(data) {
     return data;
   }
 
-  return Object.keys(data).map(function (y) {
-    return Number.parseInt(y);
-  }).sort();
+  return Object.keys(data).sort();
 }
 
 /**

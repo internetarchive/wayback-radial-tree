@@ -47,7 +47,9 @@ export function RadialTree(element, cdx_data, options = {}) {
 
     // show active button
     const btn = getButtonByYear(element, year);
-    btn.classList.add('active-btn');
+    if (btn) {
+      btn.classList.add('active-btn');
+    }
 
     renderChart(element, year);
   }

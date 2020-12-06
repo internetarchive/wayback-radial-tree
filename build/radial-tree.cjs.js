@@ -4,8 +4,8 @@ Object.defineProperty(exports, '__esModule', { value: true });
 
 function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
 
-var _ = _interopDefault(require('lodash'));
 var d3 = require('d3');
+var _ = _interopDefault(require('lodash'));
 
 /**
  * get SURT (Sort-friendly URI Reordering Transform)

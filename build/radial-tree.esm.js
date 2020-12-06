@@ -1,5 +1,5 @@
+import { arc as arc$1, scaleOrdinal, schemePaired, partition, hierarchy, select, event, selectAll } from 'd3';
 import _ from 'lodash';
-import { select, arc, scaleOrdinal, schemePaired, partition, hierarchy, event, selectAll } from 'd3';
 
 /**
  * get SURT (Sort-friendly URI Reordering Transform)
@@ -246,7 +246,7 @@ function renderContainer() {
   return content;
 }
 
-var arc$1 = arc().startAngle(function (d) {
+var arc = arc$1().startAngle(function (d) {
   return d.x0;
 }).endAngle(function (d) {
   return d.x1;
@@ -269,7 +269,7 @@ var colors = scaleOrdinal(schemePaired);
  * @param data
  */
 function createVisualization(element, vis, radius, baseURL, currentYear, data) {
-  var partition$$1 = partition().size([2 * Math.PI, radius * radius]);
+  var partition$1 = partition().size([2 * Math.PI, radius * radius]);
 
   //append 'root' we will exclude it on rendering
   var root = hierarchy({ children: [data] }).sum(function (d) {
@@ -278,11 +278,11 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     return b.value - a.value;
   });
 
-  var nodes = partition$$1(root).descendants();
+  var nodes = partition$1(root).descendants();
 
   vis.selectAll('path').data(nodes).enter().append('a').attr('xlink:href', currentUrl).on('touchstart', touchStart).append('svg:path').attr('display', function (d) {
     return d.depth ? null : 'none';
-  }).attr('d', arc$1).attr('fill-rule', 'evenodd').style('fill', function (d) {
+  }).attr('d', arc).attr('fill-rule', 'evenodd').style('fill', function (d) {
     return colors((d.children ? d : d.parent).data.name);
   }).style('opacity', 1).style('cursor', 'pointer').on('mouseover', mouseover);
 
@@ -443,11 +443,11 @@ function RadialTree(element, cdx_data) {
     vis.append('svg:circle').attr('r', radius).style('opacity', 0);
 
     var urls = urlsByYear[currentYear];
-    var hierarchy$$1 = buildHierarchy(fields, urls, {
+    var hierarchy = buildHierarchy(fields, urls, {
       targetField: 'urlkey'
     });
 
-    createVisualization(element, vis, radius, baseURL, currentYear, hierarchy$$1);
+    createVisualization(element, vis, radius, baseURL, currentYear, hierarchy);
   }
 }
 

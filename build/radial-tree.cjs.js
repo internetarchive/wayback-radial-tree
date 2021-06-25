@@ -181,9 +181,7 @@ function extractYearsFromGroupedTimeMap(data) {
     return data;
   }
 
-  return Object.keys(data).map(function (y) {
-    return Number.parseInt(y);
-  }).sort();
+  return Object.keys(data).sort();
 }
 
 /**
@@ -431,7 +429,9 @@ function RadialTree(element, cdx_data) {
 
     // show active button
     var btn = getButtonByYear(element, year);
-    btn.classList.add('active-btn');
+    if (btn) {
+      btn.classList.add('active-btn');
+    }
 
     renderChart(element, year);
   }

@@ -42,7 +42,7 @@ module.exports = require('./webpack.config.base')({
     },
     host: '0.0.0.0',
     hot: true,
-    port: 8000,
+    port: 8093,
   },
 
   // Emit a source map for easier debugging

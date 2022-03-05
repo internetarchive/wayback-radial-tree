@@ -32,17 +32,18 @@ module.exports = require('./webpack.config.base')({
   },
 
   devServer: {
-    clientLogLevel: "info",
+    allowedHosts: 'all',
     //(!) shouldn't use this option in production
     //https://github.com/webpack/webpack-dev-server/releases/tag/v2.4.3
-    disableHostCheck: true,
     historyApiFallback: {
       disableDotRule: true,
       verbose: true,
     },
     host: '0.0.0.0',
     hot: true,
-    port: 8093,
+    compress: true,
+    liveReload: true,
+    port: 8093
   },
 
   // Emit a source map for easier debugging
@@ -55,7 +56,7 @@ module.exports = require('./webpack.config.base')({
   plugins: [
     new HtmlWebpackPlugin({
       inject: 'body',
-      template: 'examples/iskme-radial-tree-local.html',
+      template: 'public/examples/iskme-radial-tree-local.html',
     }),
     new webpack.LoaderOptionsPlugin({
       // test: /\.css$/, // optionally pass test, include and exclude, default affects all loaders

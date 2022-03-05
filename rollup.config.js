@@ -3,13 +3,10 @@ import commonjs from 'rollup-plugin-commonjs';
 import resolve from 'rollup-plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
 import { terser } from "rollup-plugin-terser";
-
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 
-
 import pkg from './package.json';
-
 
 const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);
@@ -40,7 +37,6 @@ export default [
       terser(),
     ],
   },
-
 
   // CommonJS (for Node) and ES module (for bundlers) build.
   {

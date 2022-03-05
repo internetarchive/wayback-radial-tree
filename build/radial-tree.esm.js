@@ -1,4 +1,4 @@
-import { arc as arc$1, scaleOrdinal, schemePaired, partition, hierarchy, select, event, selectAll } from 'd3';
+import * as d3 from 'd3';
 import _ from 'lodash';
 
 /**
@@ -244,7 +244,7 @@ function renderContainer() {
   return content;
 }
 
-var arc = arc$1().startAngle(function (d) {
+var arc = d3.arc().startAngle(function (d) {
   return d.x0;
 }).endAngle(function (d) {
   return d.x1;
@@ -254,7 +254,7 @@ var arc = arc$1().startAngle(function (d) {
   return Math.sqrt(d.y1);
 });
 
-var colors = scaleOrdinal(schemePaired);
+var colors = d3.scaleOrdinal(d3.schemePaired);
 
 /**
  * Render d3.hierarchy from passed hierarchical data
@@ -267,16 +267,16 @@ var colors = scaleOrdinal(schemePaired);
  * @param data
  */
 function createVisualization(element, vis, radius, baseURL, currentYear, data) {
-  var partition$1 = partition().size([2 * Math.PI, radius * radius]);
+  var partition = d3.partition().size([2 * Math.PI, radius * radius]);
 
   //append 'root' we will exclude it on rendering
-  var root = hierarchy({ children: [data] }).sum(function (d) {
+  var root = d3.hierarchy({ children: [data] }).sum(function (d) {
     return !d.children;
   }).sort(function (a, b) {
     return b.value - a.value;
   });
 
-  var nodes = partition$1(root).descendants();
+  var nodes = partition(root).descendants();
 
   vis.selectAll('path').data(nodes).enter().append('a').attr('xlink:href', currentUrl).on('touchstart', touchStart).append('svg:path').attr('display', function (d) {
     return d.depth ? null : 'none';
@@ -284,14 +284,14 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     return colors((d.children ? d : d.parent).data.name);
   }).style('opacity', 1).style('cursor', 'pointer').on('mouseover', mouseover);
 
-  select('#d3_container').on('mouseleave', mouseleave);
+  d3.select('#d3_container').on('mouseleave', mouseleave);
 
   /** on mobile devices, touching the RadialTree prevents the ``click``
    *  event and shows the URL like on ``mouseover`` event. Users can click
    *  on the URL to visit the target page */
   function touchStart(d) {
-    event.preventDefault();
-    event.stopPropagation();
+    d3.event.preventDefault();
+    d3.event.stopPropagation();
     mouseover(d);
     return false;
   }
@@ -313,7 +313,7 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     sequenceArray.shift();
     var url = currentUrl(d);
     updateBreadcrumbs(sequenceArray, url);
-    selectAll('path').style('opacity', 0.3);
+    d3.selectAll('path').style('opacity', 0.3);
 
     vis.selectAll('path').filter(function (node) {
       return sequenceArray.indexOf(node) >= 0;
@@ -323,10 +323,10 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   function mouseleave() {
     element.querySelector('.sequence').innerHTML = '';
 
-    selectAll('path').on('mouseover', null);
+    d3.selectAll('path').on('mouseover', null);
 
-    selectAll('path').transition().style('opacity', 1).on('end', function () {
-      select(this).on('mouseover', mouseover);
+    d3.selectAll('path').transition().style('opacity', 1).on('end', function () {
+      d3.select(this).on('mouseover', mouseover);
     });
   }
 
@@ -438,7 +438,7 @@ function RadialTree(element, cdx_data) {
     var height = width;
     var radius = Math.min(width, height) / 2;
 
-    var vis = select('#chart').append('svg:svg').attr('width', width).attr('height', height).append('svg:g').attr('id', 'd3_container').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+    var vis = d3.select('#chart').append('svg:svg').attr('width', width).attr('height', height).append('svg:g').attr('id', 'd3_container').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
     vis.append('svg:circle').attr('r', radius).style('opacity', 0);
 

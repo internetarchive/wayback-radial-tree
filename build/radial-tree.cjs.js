@@ -2,10 +2,31 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-function _interopDefault (ex) { return (ex && (typeof ex === 'object') && 'default' in ex) ? ex['default'] : ex; }
-
 var d3 = require('d3');
-var _ = _interopDefault(require('lodash'));
+var _ = require('lodash');
+
+function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
+
+function _interopNamespace(e) {
+  if (e && e.__esModule) return e;
+  var n = Object.create(null);
+  if (e) {
+    Object.keys(e).forEach(function (k) {
+      if (k !== 'default') {
+        var d = Object.getOwnPropertyDescriptor(e, k);
+        Object.defineProperty(n, k, d.get ? d : {
+          enumerable: true,
+          get: function () { return e[k]; }
+        });
+      }
+    });
+  }
+  n["default"] = e;
+  return Object.freeze(n);
+}
+
+var d3__namespace = /*#__PURE__*/_interopNamespace(d3);
+var ___default = /*#__PURE__*/_interopDefaultLegacy(_);
 
 /**
  * get SURT (Sort-friendly URI Reordering Transform)
@@ -137,7 +158,7 @@ var Fields = function () {
     classCallCheck(this, Fields);
 
     this.fields = data[0];
-    this.getIndexByName = _.memoize(this.getIndexByName);
+    this.getIndexByName = ___default["default"].memoize(this.getIndexByName);
   }
 
   /**
@@ -226,10 +247,10 @@ function processTimeMap(data) {
 
   // if someday we would get bad performance here
   // we could make insertion with sorthing above
-  return _(res).mapValues(function (value) {
+  return ___default["default"](res).mapValues(function (value) {
     return Object.values(value);
   }).mapValues(function (value) {
-    return _.sortBy(value, fields.getIndexByName(orderBy));
+    return ___default["default"].sortBy(value, fields.getIndexByName(orderBy));
   }).value();
 }
 
@@ -250,7 +271,7 @@ function renderContainer() {
   return content;
 }
 
-var arc = d3.arc().startAngle(function (d) {
+var arc = d3__namespace.arc().startAngle(function (d) {
   return d.x0;
 }).endAngle(function (d) {
   return d.x1;
@@ -260,7 +281,7 @@ var arc = d3.arc().startAngle(function (d) {
   return Math.sqrt(d.y1);
 });
 
-var colors = d3.scaleOrdinal(d3.schemePaired);
+var colors = d3__namespace.scaleOrdinal(d3__namespace.schemePaired);
 
 /**
  * Render d3.hierarchy from passed hierarchical data
@@ -273,10 +294,10 @@ var colors = d3.scaleOrdinal(d3.schemePaired);
  * @param data
  */
 function createVisualization(element, vis, radius, baseURL, currentYear, data) {
-  var partition = d3.partition().size([2 * Math.PI, radius * radius]);
+  var partition = d3__namespace.partition().size([2 * Math.PI, radius * radius]);
 
   //append 'root' we will exclude it on rendering
-  var root = d3.hierarchy({ children: [data] }).sum(function (d) {
+  var root = d3__namespace.hierarchy({ children: [data] }).sum(function (d) {
     return !d.children;
   }).sort(function (a, b) {
     return b.value - a.value;
@@ -290,14 +311,14 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     return colors((d.children ? d : d.parent).data.name);
   }).style('opacity', 1).style('cursor', 'pointer').on('mouseover', mouseover);
 
-  d3.select('#d3_container').on('mouseleave', mouseleave);
+  d3__namespace.select('#d3_container').on('mouseleave', mouseleave);
 
   /** on mobile devices, touching the RadialTree prevents the ``click``
    *  event and shows the URL like on ``mouseover`` event. Users can click
    *  on the URL to visit the target page */
   function touchStart(d) {
-    d3.event.preventDefault();
-    d3.event.stopPropagation();
+    d3__namespace.event.preventDefault();
+    d3__namespace.event.stopPropagation();
     mouseover(d);
     return false;
   }
@@ -319,7 +340,7 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     sequenceArray.shift();
     var url = currentUrl(d);
     updateBreadcrumbs(sequenceArray, url);
-    d3.selectAll('path').style('opacity', 0.3);
+    d3__namespace.selectAll('path').style('opacity', 0.3);
 
     vis.selectAll('path').filter(function (node) {
       return sequenceArray.indexOf(node) >= 0;
@@ -329,10 +350,10 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   function mouseleave() {
     element.querySelector('.sequence').innerHTML = '';
 
-    d3.selectAll('path').on('mouseover', null);
+    d3__namespace.selectAll('path').on('mouseover', null);
 
-    d3.selectAll('path').transition().style('opacity', 1).on('end', function () {
-      d3.select(this).on('mouseover', mouseover);
+    d3__namespace.selectAll('path').transition().style('opacity', 1).on('end', function () {
+      d3__namespace.select(this).on('mouseover', mouseover);
     });
   }
 
@@ -444,7 +465,7 @@ function RadialTree(element, cdx_data) {
     var height = width;
     var radius = Math.min(width, height) / 2;
 
-    var vis = d3.select('#chart').append('svg:svg').attr('width', width).attr('height', height).append('svg:g').attr('id', 'd3_container').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
+    var vis = d3__namespace.select('#chart').append('svg:svg').attr('width', width).attr('height', height).append('svg:g').attr('id', 'd3_container').attr('transform', 'translate(' + width / 2 + ',' + height / 2 + ')');
 
     vis.append('svg:circle').attr('r', radius).style('opacity', 0);
 

@@ -32,6 +32,8 @@ export default [
       commonjs(),
       resolve(),
       babel({
+        babelrc: false,
+        presets: ['@babel/preset-env'],
         exclude: ['node_modules/**']
       }),
       terser(),
@@ -58,6 +60,8 @@ export default [
       commonjs(),
       resolve(),
       babel({
+        babelrc: false,
+        presets: ['@babel/env'],
         exclude: ['node_modules/**']
       }),
     ],

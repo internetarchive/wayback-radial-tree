@@ -5,7 +5,7 @@ import _ from 'lodash';
  *
  */
 export class Fields {
-  constructor(data) {
+  constructor (data) {
     this.fields = data[0];
     this.getIndexByName = _.memoize(this.getIndexByName);
   }
@@ -15,7 +15,7 @@ export class Fields {
    *
    * @param name
    */
-  getIndexByName(name) {
+  getIndexByName (name) {
     return this.fields.indexOf(name);
   }
 
@@ -26,7 +26,7 @@ export class Fields {
    * @param name
    * @returns {*}
    */
-  getValueByName(row, name) {
+  getValueByName (row, name) {
     return row[this.getIndexByName(name)];
   }
 }
@@ -37,15 +37,13 @@ export class Fields {
  * @param data time map data
  * @returns {Array} years
  */
-export function extractYearsFromGroupedTimeMap(data) {
+export function extractYearsFromGroupedTimeMap (data) {
   if (!data) {
     return data;
   }
 
-  return Object.keys(data)
-    .sort();
+  return Object.keys(data).sort();
 }
-
 
 /**
  * data processing pipeline for time map:
@@ -63,13 +61,11 @@ export function extractYearsFromGroupedTimeMap(data) {
  *
  * @return processed data
  */
-export function processTimeMap(data, {groupBy, dedupBy, orderBy} = {}) {
+export function processTimeMap (data, { groupBy, dedupBy, orderBy } = {}) {
   if (!data) {
     return data;
   }
-
   const fields = new Fields(data);
-
   const res = data
     .slice(1)
     .reduce((result, row) => {
@@ -83,7 +79,7 @@ export function processTimeMap(data, {groupBy, dedupBy, orderBy} = {}) {
       result[fields.getValueByName(row, groupBy)] = oneGroup;
       return result;
     }, {});
-    
+
   // if someday we would get bad performance here
   // we could make insertion with sorthing above
   return _(res)

@@ -1,12 +1,12 @@
-export function renderContainer() {
-  let content = document.createElement('div');
+export function renderContainer () {
+  const content = document.createElement('div');
   content.setAttribute('class', 'rt-content');
-  let divBtn = document.createElement('div');
+  const divBtn = document.createElement('div');
   divBtn.setAttribute('class', 'div-btn');
 
-  let sequence = document.createElement('p');
+  const sequence = document.createElement('p');
   sequence.setAttribute('class', 'sequence');
-  let chart = document.createElement('div');
+  const chart = document.createElement('div');
   chart.setAttribute('id', 'chart');
   content.appendChild(divBtn);
   content.appendChild(sequence);

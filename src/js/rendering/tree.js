@@ -18,17 +18,16 @@ const colors = d3.scaleOrdinal(d3.schemePaired);
  * @param currentYear
  * @param data
  */
-export function createVisualization(element, vis, radius, baseURL, currentYear, data) {
-  let partition = d3.partition()
+export function createVisualization (element, vis, radius, baseURL, currentYear, data) {
+  const partition = d3.partition()
     .size([2 * Math.PI, radius * radius]);
 
-  //append 'root' we will exclude it on rendering
-  let root = d3.hierarchy({children: [data]})
+  // append 'root' we will exclude it on rendering
+  const root = d3.hierarchy({ children: [data] })
     .sum(d => !d.children)
     .sort((a, b) => b.value - a.value);
 
-  let nodes = partition(root)
-    .descendants();
+  const nodes = partition(root).descendants();
 
   vis.selectAll('path')
     .data(nodes)
@@ -51,14 +50,15 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
   /** on mobile devices, touching the RadialTree prevents the ``click``
    *  event and shows the URL like on ``mouseover`` event. Users can click
    *  on the URL to visit the target page */
-  function touchStart(d) {
+  function touchStart (d) {
     d3.event.preventDefault();
     d3.event.stopPropagation();
     mouseover(d);
     return false;
   }
 
-  function currentUrl(d) {
+  function currentUrl (d) {
+    // TODO skip the reverse to speed it up.
     const anc = d.ancestors().reverse();
     let url = '';
     for (let i = 1; i < anc.length; i++) {
@@ -70,20 +70,19 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
     return `${baseURL}/web/${currentYear}0630${url}`;
   }
 
-  function mouseover(d) {
-    let sequenceArray = d.ancestors().reverse();
+  function mouseover (d) {
+    const sequenceArray = d.ancestors().reverse();
     sequenceArray.shift();
-    let url = currentUrl(d);
+    const url = currentUrl(d);
     updateBreadcrumbs(sequenceArray, url);
     d3.selectAll('path').style('opacity', 0.3);
 
-    vis
-      .selectAll('path')
+    vis.selectAll('path')
       .filter(node => sequenceArray.indexOf(node) >= 0)
       .style('opacity', 1);
   }
 
-  function mouseleave() {
+  function mouseleave () {
     element.querySelector('.sequence').innerHTML = '';
 
     d3.selectAll('path')
@@ -97,9 +96,9 @@ export function createVisualization(element, vis, radius, baseURL, currentYear, 
       });
   }
 
-  function updateBreadcrumbs(nodeArray, url) {
+  function updateBreadcrumbs (nodeArray, url) {
     let text = '';
-    let symb = document.createElement('span');
+    const symb = document.createElement('span');
     symb.setAttribute('class', 'symb');
     symb.innerHTML = '/';
     for (let i = 0; i < nodeArray.length; i++) {

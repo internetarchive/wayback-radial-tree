@@ -1,7 +1,7 @@
-import {renderYearButton, getYearByBtn} from './year-button';
+import { renderYearButton, getYearByBtn } from './year-button';
 
-export function renderYearButtons(element, allYears, onYearSelect) {
-  let divBtn = element.querySelector('.div-btn');
+export function renderYearButtons (element, allYears, onYearSelect) {
+  const divBtn = element.querySelector('.div-btn');
   divBtn.onclick = (evt) => onYearSelect(getYearByBtn(evt.target));
 
   if (!element.querySelector('.year-btn')) {

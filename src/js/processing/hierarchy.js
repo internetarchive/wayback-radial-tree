@@ -1,5 +1,4 @@
-import {surtToUrl} from './surt';
-
+import { surtToUrl } from './surt';
 
 /**
  * @private
@@ -10,7 +9,7 @@ import {surtToUrl} from './surt';
  * @param path is array of names
  * @returns {*}
  */
-function buildHierarchInDepth(parent, path) {
+function buildHierarchInDepth (parent, path) {
   if (!path || path.length === 0) {
     return;
   }
@@ -31,9 +30,8 @@ function buildHierarchInDepth(parent, path) {
 
   if (!nextParent) {
     nextParent = {
-      name,
+      name
     };
-
     parent.children.push(nextParent);
   }
 
@@ -54,7 +52,7 @@ function buildHierarchInDepth(parent, path) {
  *
  * @returns {Object}
  */
-export function buildHierarchy(fields, data, {targetField}) {
+export function buildHierarchy (fields, data, { targetField }) {
   return data.reduce((res, row) => {
     const value = fields.getValueByName(row, targetField);
     const [host, ...path] = value.split('/');

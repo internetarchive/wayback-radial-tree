@@ -2,9 +2,14 @@ env:
   browser: true
   es6: true
   node: true
-extends: 'eslint:recommended'
-parser: 'babel-eslint'
+
+extends:
+  - 'standard'
+
+parser: '@babel/eslint-parser'
+
 parserOptions:
+  ecmaVersion: 2019
   ecmaFeatures:
     classes: true
     experimentalObjectRestSpread: true
@@ -24,6 +29,8 @@ rules:
     - allow:
       - warn
       - error
+      - info
+      - time
   no-var:
     - error
   quotes:
@@ -32,3 +39,6 @@ rules:
   semi:
     - error
     - always
+  complexity:
+    - warn
+    - 10

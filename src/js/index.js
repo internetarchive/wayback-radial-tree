@@ -1,13 +1,16 @@
 import * as d3 from 'd3';
-import {buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap} from './processing';
-import {createVisualization, getButtonByYear, renderContainer, renderYearButtons} from './rendering';
+import {
+  buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap
+} from './processing';
+import {
+  createVisualization, getButtonByYear, renderContainer, renderYearButtons
+} from './rendering';
 
 /**
- *
  * Radial Tree Library
  *
  * @param {DOMElement} element
- * @param {Array} cdx_data: decoded CDX Query data retrieved by:
+ * @param {Array} cdxData: decoded CDX Query data retrieved by:
  ``/web/timemap/json?url=example.com/&fl=timestamp:4,urlkey&matchType=prefix
  &filter=statuscode:200&filter=mimetype:text/html&collapse=urlkey
  &collapse=timestamp:4&limit=100000``.
@@ -15,19 +18,18 @@ import {createVisualization, getButtonByYear, renderContainer, renderYearButtons
  * Option baseURL defines the target Wayback Machine server.
  *
  */
-export function RadialTree(element, cdx_data, options = {}) {
-  let baseURL = options.baseURL || 'https://web.archive.org';
+export function RadialTree (element, cdxData, options = {}) {
+  const baseURL = options.baseURL || 'https://web.archive.org';
 
   // render
-
   const container = renderContainer();
   element.appendChild(container);
 
-  const fields = new Fields(cdx_data);
-  const urlsByYear = processTimeMap(cdx_data, {
+  const fields = new Fields(cdxData);
+  const urlsByYear = processTimeMap(cdxData, {
     groupBy: 'timestamp:4',
     dedupBy: 'urlkey',
-    orderBy: 'urlkey',
+    orderBy: 'urlkey'
   });
   const years = extractYearsFromGroupedTimeMap(urlsByYear);
 
@@ -39,7 +41,7 @@ export function RadialTree(element, cdx_data, options = {}) {
   const selectedBtn = years[years.length - 2] || years[0];
   selectYear(selectedBtn);
 
-  function selectYear(year) {
+  function selectYear (year) {
     // hide active button
     if (element.querySelector('.active-btn')) {
       element.querySelector('.active-btn').classList.remove('active-btn');
@@ -54,7 +56,7 @@ export function RadialTree(element, cdx_data, options = {}) {
     renderChart(element, year);
   }
 
-  function renderChart(element, currentYear) {
+  function renderChart (element, currentYear) {
     element.querySelector('.sequence').innerHTML = '';
     element.querySelector('#chart').innerHTML = '';
 
@@ -62,7 +64,7 @@ export function RadialTree(element, cdx_data, options = {}) {
     const height = width;
     const radius = Math.min(width, height) / 2;
 
-    let vis = d3.select('#chart')
+    const vis = d3.select('#chart')
       .append('svg:svg')
       .attr('width', width)
       .attr('height', height)
@@ -76,7 +78,7 @@ export function RadialTree(element, cdx_data, options = {}) {
 
     const urls = urlsByYear[currentYear];
     const hierarchy = buildHierarchy(fields, urls, {
-      targetField: 'urlkey',
+      targetField: 'urlkey'
     });
 
     createVisualization(element, vis, radius, baseURL, currentYear, hierarchy);

@@ -1,6 +1,6 @@
 {
   "name": "@internetarchive/radial-tree",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "Radial Tree Library for Wayback Machine",
   "main": "build/radial-tree.cjs.js",
   "module": "build/radial-tree.esm.js",

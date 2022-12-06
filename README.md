@@ -18,8 +18,8 @@ Usually it is enough to add them at the header of html
 before <script> of the component:
 
 ```html
-<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.4/lodash.min.js"></script>
-<script src="https://unpkg.com/d3@4.12.0/build/d3.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js"></script>
+<script src="https://unpkg.com/d3@7.17.0/build/d3.js"></script>
 ```
 
 Fetch data and create site map radial tree

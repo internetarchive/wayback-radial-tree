@@ -314,10 +314,10 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   /** on mobile devices, touching the RadialTree prevents the ``click``
    *  event and shows the URL like on ``mouseover`` event. Users can click
    *  on the URL to visit the target page */
-  function touchStart(d) {
-    d3__namespace.event.preventDefault();
-    d3__namespace.event.stopPropagation();
-    mouseover(d);
+  function touchStart(e, d) {
+    e.preventDefault();
+    e.stopPropagation();
+    mouseover();
     return false;
   }
   function currentUrl(d) {
@@ -332,7 +332,7 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     }
     return "".concat(baseURL, "/web/").concat(currentYear, "0630").concat(url);
   }
-  function mouseover(d) {
+  function mouseover(e, d) {
     var sequenceArray = d.ancestors().reverse();
     sequenceArray.shift();
     var url = currentUrl(d);

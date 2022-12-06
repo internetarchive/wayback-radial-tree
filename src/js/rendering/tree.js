@@ -50,9 +50,9 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   /** on mobile devices, touching the RadialTree prevents the ``click``
    *  event and shows the URL like on ``mouseover`` event. Users can click
    *  on the URL to visit the target page */
-  function touchStart (d) {
-    d3.event.preventDefault();
-    d3.event.stopPropagation();
+  function touchStart (e, d) {
+    e.preventDefault();
+    e.stopPropagation();
     mouseover(d);
     return false;
   }
@@ -70,7 +70,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     return `${baseURL}/web/${currentYear}0630${url}`;
   }
 
-  function mouseover (d) {
+  function mouseover (e, d) {
     const sequenceArray = d.ancestors().reverse();
     sequenceArray.shift();
     const url = currentUrl(d);

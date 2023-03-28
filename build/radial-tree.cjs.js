@@ -1,14 +1,9 @@
 'use strict';
 
-Object.defineProperty(exports, '__esModule', { value: true });
-
 var d3 = require('d3');
 var _ = require('lodash');
 
-function _interopDefaultLegacy (e) { return e && typeof e === 'object' && 'default' in e ? e : { 'default': e }; }
-
-function _interopNamespace(e) {
-  if (e && e.__esModule) return e;
+function _interopNamespaceDefault(e) {
   var n = Object.create(null);
   if (e) {
     Object.keys(e).forEach(function (k) {
@@ -21,12 +16,11 @@ function _interopNamespace(e) {
       }
     });
   }
-  n["default"] = e;
+  n.default = e;
   return Object.freeze(n);
 }
 
-var d3__namespace = /*#__PURE__*/_interopNamespace(d3);
-var ___default = /*#__PURE__*/_interopDefaultLegacy(_);
+var d3__namespace = /*#__PURE__*/_interopNamespaceDefault(d3);
 
 function _classCallCheck(instance, Constructor) {
   if (!(instance instanceof Constructor)) {
@@ -39,7 +33,7 @@ function _defineProperties(target, props) {
     descriptor.enumerable = descriptor.enumerable || false;
     descriptor.configurable = true;
     if ("value" in descriptor) descriptor.writable = true;
-    Object.defineProperty(target, descriptor.key, descriptor);
+    Object.defineProperty(target, _toPropertyKey(descriptor.key), descriptor);
   }
 }
 function _createClass(Constructor, protoProps, staticProps) {
@@ -74,6 +68,20 @@ function _arrayLikeToArray(arr, len) {
 }
 function _nonIterableRest() {
   throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method.");
+}
+function _toPrimitive(input, hint) {
+  if (typeof input !== "object" || input === null) return input;
+  var prim = input[Symbol.toPrimitive];
+  if (prim !== undefined) {
+    var res = prim.call(input, hint || "default");
+    if (typeof res !== "object") return res;
+    throw new TypeError("@@toPrimitive must return a primitive value.");
+  }
+  return (hint === "string" ? String : Number)(input);
+}
+function _toPropertyKey(arg) {
+  var key = _toPrimitive(arg, "string");
+  return typeof key === "symbol" ? key : String(key);
 }
 
 /**
@@ -167,7 +175,7 @@ var Fields = /*#__PURE__*/function () {
   function Fields(data) {
     _classCallCheck(this, Fields);
     this.fields = data[0];
-    this.getIndexByName = ___default["default"].memoize(this.getIndexByName);
+    this.getIndexByName = _.memoize(this.getIndexByName);
   }
 
   /**
@@ -248,10 +256,10 @@ function processTimeMap(data) {
 
   // if someday we would get bad performance here
   // we could make insertion with sorthing above
-  return ___default["default"](res).mapValues(function (value) {
+  return _(res).mapValues(function (value) {
     return Object.values(value);
   }).mapValues(function (value) {
-    return ___default["default"].sortBy(value, fields.getIndexByName(orderBy));
+    return _.sortBy(value, fields.getIndexByName(orderBy));
   }).value();
 }
 

@@ -2,7 +2,7 @@ module.exports = require('./webpack.config.base')({
   mode: 'development',
 
   // Emit a source map for easier debugging
-  devtool: 'source-map-support',
+  devtool: 'eval-cheap-module-source-map',
 
   babelOptions: {
     babelrc: false,

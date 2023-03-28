@@ -1,12 +1,12 @@
-import babel from 'rollup-plugin-babel';
-import commonjs from 'rollup-plugin-commonjs';
-import resolve from 'rollup-plugin-node-resolve';
+import { babel } from '@rollup/plugin-babel';
+import commonjs from '@rollup/plugin-commonjs';
+import resolve from '@rollup/plugin-node-resolve';
 import scss from 'rollup-plugin-scss'
-import { terser } from "rollup-plugin-terser";
+import terser from "@rollup/plugin-terser";
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 
-import pkg from './package.json';
+import pkg from './package.json' assert { type: 'json' };
 
 const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);

@@ -47,7 +47,7 @@ module.exports = require('./webpack.config.base')({
   },
 
   // Emit a source map for easier debugging
-  devtool: 'cheap-module-eval-source-map',
+  devtool: 'eval-cheap-module-source-map',
 
   externals: {
     d3: 'd3'
@@ -63,7 +63,6 @@ module.exports = require('./webpack.config.base')({
       minimize: true,
       debug: false,
     }),
-    new webpack.optimize.OccurrenceOrderPlugin(),
     // new webpack.optimize.UglifyJsPlugin({
     //   comments: false,
     //   compress: {

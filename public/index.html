@@ -3,15 +3,17 @@
     <head>
         <meta charset="utf-8">
         <meta http-equiv="X-UA-Compatible" content="IE=edge">
-        <link rel = "stylesheet" href = "../build/radial-tree.css">
+        <link rel = "stylesheet" href = "build/radial-tree.css">
         <script src="https://unpkg.com/d3@7.7.0/dist/d3.js"></script>
+        <script src="https://unpkg.com/lodash@4.17.21/lodash.js"></script>
     </head>
     <body>
         <div id="rt_container1"></div>
     </body>
+    <script src="build/radial-tree.umd.js"></script>
     <script>
         // this version work with prefetched data timemap
-        var url = '/examples/iskme.org-timemap.json';
+        var url = 'examples/iskme.org-timemap.json';
         var xhr = new XMLHttpRequest();
         xhr.open('GET', url, true);
         xhr.onload = function(e) {

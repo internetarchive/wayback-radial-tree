@@ -11,7 +11,7 @@
   },
   "scripts": {
     "build": "rollup -c rollup.config.mjs",
-    "example:local": "NODE_ENV=development webpack serve --config config/webpack.config.dev.js --hot",
+    "example": "rollup -c rollup.example.mjs",
     "lint": "eslint --ignore-path .gitignore src",
     "mocha": "mochapack --webpack-config ./config/webpack.config.test.js --recursive ./tests",
     "test": "npm run lint && npm run mocha"
@@ -61,12 +61,10 @@
     "postcss": "^8.4.21",
     "rollup": "^3.20",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-scss": "^4.0.0",
+    "rollup-plugin-scss": "^3.0.0",
+    "rollup-plugin-serve": "^1.1.1",
     "sass-loader": "^13.2.2",
     "style-loader": "^3.3.2",
-    "webpack": "^5.76.3",
-    "webpack-cli": "^5.0.1",
-    "webpack-dev-server": "^4.13.1",
-    "webpack-hot-middleware": "^2.25.3"
+    "webpack": "^5.76.3"
   }
 }

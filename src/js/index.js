@@ -62,7 +62,7 @@ export function RadialTree (element, cdxData, options = {}) {
 
     const width = element.querySelector('#chart').offsetWidth;
     const height = width;
-    const radius = Math.min(width, height) / 2;
+    const radius = width / 2;
 
     const vis = d3.select('#chart')
       .append('svg:svg')

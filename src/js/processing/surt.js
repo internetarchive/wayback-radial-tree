@@ -13,6 +13,5 @@ export function surtToUrl (surt) {
     return surt;
   }
   // drop last ')'
-  surt = surt.slice(0, surt.length - 1);
-  return surt.split(',').reverse().join('.');
+  return surt.slice(0, surt.length - 1).split(',').reverse().join('.');
 }

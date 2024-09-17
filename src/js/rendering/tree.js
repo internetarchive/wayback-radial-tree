@@ -19,8 +19,7 @@ const colors = d3.scaleOrdinal(d3.schemePaired);
  * @param data
  */
 export function createVisualization (element, vis, radius, baseURL, currentYear, data) {
-  const partition = d3.partition()
-    .size([2 * Math.PI, radius * radius]);
+  const partition = d3.partition().size([2 * Math.PI, radius * radius]);
 
   // append 'root' we will exclude it on rendering
   const root = d3.hierarchy({ children: [data] })
@@ -28,6 +27,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     .sort((a, b) => b.value - a.value);
 
   const nodes = partition(root).descendants();
+  const sequenceEl = element.querySelector('.sequence');
 
   vis.selectAll('path')
     .data(nodes)
@@ -83,7 +83,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   }
 
   function mouseleave () {
-    element.querySelector('.sequence').innerHTML = '';
+    sequenceEl.innerHTML = '';
 
     d3.selectAll('path')
       .on('mouseover', null);
@@ -109,6 +109,6 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
       }
     }
     text = decodeURIComponent(text);
-    element.querySelector('.sequence').innerHTML = `<a href="${url}">${text}</a>`;
+    sequenceEl.innerHTML = `<a href="${url}">${text}</a>`;
   }
 }

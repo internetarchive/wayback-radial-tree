@@ -65,25 +65,42 @@ export function processTimeMap (data, { groupBy, dedupBy, orderBy } = {}) {
   if (!data) {
     return data;
   }
+
   const fields = new Fields(data);
-  const res = data
-    .slice(1)
-    .reduce((result, row) => {
-      const oneGroup = result[fields.getValueByName(row, groupBy)] || {};
+  const groupByIndex = fields.getIndexByName(groupBy);
+  const dedupByIndex = fields.getIndexByName(dedupBy);
+  const orderByIndex = fields.getIndexByName(orderBy);
 
-      // don't add if we already have it
-      if (!oneGroup[fields.getValueByName(row, dedupBy)]) {
-        oneGroup[fields.getValueByName(row, dedupBy)] = row;
-      }
+  // Use an object to group and deduplicate rows
+  const groupedData = data.slice(1).reduce((result, row) => {
+    const groupKey = row[groupByIndex];
+    const dedupKey = row[dedupByIndex];
 
-      result[fields.getValueByName(row, groupBy)] = oneGroup;
-      return result;
-    }, {});
+    // Initialize group if not exists
+    if (!result[groupKey]) {
+      result[groupKey] = {};
+    }
 
-  // if someday we would get bad performance here
-  // we could make insertion with sorthing above
-  return _(res)
-    .mapValues(value => Object.values(value))
-    .mapValues(value => _.sortBy(value, fields.getIndexByName(orderBy)))
-    .value();
+    // Add row if it hasn't been deduplicated already
+    if (!result[groupKey][dedupKey]) {
+      result[groupKey][dedupKey] = row;
+    }
+
+    return result;
+  }, {});
+
+  // Convert groups to arrays and sort by orderBy field
+  return Object.keys(groupedData).reduce((acc, key) => {
+    const values = Object.values(groupedData[key]);
+
+    // Sort values by the 'orderBy' field
+    values.sort((a, b) => {
+      const valA = a[orderByIndex];
+      const valB = b[orderByIndex];
+      return valA < valB ? -1 : valA > valB ? 1 : 0;
+    });
+
+    acc[key] = values;
+    return acc;
+  }, {});
 }

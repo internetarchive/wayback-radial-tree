@@ -1,8 +1,8 @@
 export function renderYearButton (year) {
   const btn = document.createElement('button');
-  btn.setAttribute('class', 'year-btn');
-  btn.setAttribute('id', year);
-  btn.innerHTML = year;
+  btn.className = 'year-btn';
+  btn.id = year;
+  btn.textContent = year;
   return btn;
 }
 

@@ -14,28 +14,33 @@ function buildHierarchInDepth (parent, path) {
     return;
   }
 
-  const [name, ...rest] = path;
+  let currentParent = parent;
+  let currentPath = path;
 
-  if (!name) {
-    return;
+  while (currentPath.length > 0) {
+    const [name, ...rest] = currentPath;
+
+    if (!name) {
+      return;
+    }
+
+    // Cache the children reference to avoid repeated lookups
+    if (!currentParent.children) {
+      currentParent.children = [];
+    }
+
+    // Find the child node or create a new one
+    let nextParent = currentParent.children.find(child => child.name === name);
+
+    if (!nextParent) {
+      nextParent = { name };
+      currentParent.children.push(nextParent);
+    }
+
+    // Move down the hierarchy
+    currentParent = nextParent;
+    currentPath = rest;
   }
-
-  let nextParent;
-
-  if (parent.children) {
-    nextParent = parent.children.filter(c => c.name === name)[0];
-  } else {
-    parent.children = [];
-  }
-
-  if (!nextParent) {
-    nextParent = {
-      name
-    };
-    parent.children.push(nextParent);
-  }
-
-  buildHierarchInDepth(nextParent, rest);
 }
 
 /**

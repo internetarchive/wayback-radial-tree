@@ -5,6 +5,7 @@
   "main": "build/radial-tree.cjs.js",
   "module": "build/radial-tree.esm.js",
   "browser": "build/radial-tree.umd.js",
+  "browserslist": "> 0.25%, not dead",
   "directories": {
     "doc": "docs",
     "test": "test"

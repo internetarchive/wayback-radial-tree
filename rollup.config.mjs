@@ -11,6 +11,12 @@ import pkg from './package.json' assert { type: 'json' };
 const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);
 
+const createBabelConfig = (babelrc, presets) => ({
+  babelrc,
+  presets,
+  exclude: ['node_modules/**']
+});
+
 export default [
   // browser-friendly UMD build
   {
@@ -31,11 +37,7 @@ export default [
     plugins: [
       commonjs(),
       resolve(),
-      babel({
-        babelrc: false,
-        presets: ['@babel/preset-env'],
-        exclude: ['node_modules/**']
-      }),
+      babel(createBabelConfig(false, ['@babel/preset-env'])),
       terser(),
     ],
   },
@@ -59,11 +61,7 @@ export default [
     plugins: [
       commonjs(),
       resolve(),
-      babel({
-        babelrc: false,
-        presets: ['@babel/env'],
-        exclude: ['node_modules/**']
-      }),
+      babel(createBabelConfig(false, ['@babel/env']))
     ],
   },
 

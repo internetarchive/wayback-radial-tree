@@ -7,7 +7,7 @@ module.exports = require('./webpack.config.base')({
   babelOptions: {
     babelrc: false,
     "presets": [
-      ["env", {
+      ["@babel/preset-env", {
         "modules": false
       }]
     ],

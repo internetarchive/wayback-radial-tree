@@ -4,41 +4,14 @@ env:
   node: true
 
 extends:
-  - 'standard'
+  - 'eslint:recommended'
 
-parser: '@babel/eslint-parser'
+# parser: '@babel/eslint-parser'
 
 parserOptions:
   ecmaVersion: 2019
+  sourceType: module
   ecmaFeatures:
     classes: true
     experimentalObjectRestSpread: true
     jsx: true
-  sourceType: module
-rules:
-  eqeqeq:
-    - error
-  indent:
-    - error
-    - 2
-  linebreak-style:
-    - error
-    - unix
-  no-console:
-    - error
-    - allow:
-      - warn
-      - error
-      - info
-      - time
-  no-var:
-    - error
-  quotes:
-    - error
-    - single
-  semi:
-    - error
-    - always
-  complexity:
-    - warn
-    - 10

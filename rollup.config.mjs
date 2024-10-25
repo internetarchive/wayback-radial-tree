@@ -61,7 +61,7 @@ export default [
     plugins: [
       commonjs(),
       resolve(),
-      babel(createBabelConfig(false, ['@babel/env']))
+      babel(createBabelConfig(false, ['@babel/preset-env']))
     ],
   },
 

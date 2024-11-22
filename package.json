@@ -1,5 +1,5 @@
 {
-  "name": "@internetarchive/radial-tree",
+  "name": "@internetarchive/wayback-radial-tree",
   "version": "1.0.9",
   "description": "Radial Tree Library for Wayback Machine",
   "main": "build/radial-tree.cjs.js",

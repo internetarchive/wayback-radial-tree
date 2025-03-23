@@ -60,14 +60,8 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   function currentUrl (d) {
     // TODO skip the reverse to speed it up.
     const anc = d.ancestors().reverse();
-    let url = '';
-    for (let i = 1; i < anc.length; i++) {
-      if (anc[i].data.name === 'end') {
-        break;
-      }
-      url = url + '/' + anc[i].data.name;
-    }
-    return `${baseURL}/web/${currentYear}0630${url}`;
+    let url = anc.slice(1).map(node => node.data.name).join('/');
+    return `${baseURL}/web/${currentYear}0630/${url}`;
   }
 
   function mouseover (e, d) {
@@ -96,19 +90,8 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
       });
   }
 
-  function updateBreadcrumbs (nodeArray, url) {
-    let text = '';
-    const symb = document.createElement('span');
-    symb.setAttribute('class', 'symb');
-    symb.innerHTML = '/';
-    for (let i = 0; i < nodeArray.length; i++) {
-      if (i === 0) {
-        text = ' ' + nodeArray[i].data.name;
-      } else {
-        text = text + symb.innerHTML + nodeArray[i].data.name;
-      }
-    }
-    text = decodeURIComponent(text);
-    sequenceEl.innerHTML = `<a href="${url}">${text}</a>`;
+  function updateBreadcrumbs(nodeArray, url) {
+    const text = nodeArray.map(node => node.data.name).join('/');
+    sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
   }
 }

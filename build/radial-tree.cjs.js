@@ -100,8 +100,7 @@ function buildHierarchy(fields, data, _ref) {
     targetField
   } = _ref;
   return data.reduce((res, row) => {
-    const value = fields.getValueByName(row, targetField);
-    const [host, ...path] = value.split('/');
+    const [host, ...path] = fields.getValueByName(row, targetField).split('/');
     res.name = surtToUrl(host);
     buildHierarchInDepth(res, path);
     return res;
@@ -110,7 +109,6 @@ function buildHierarchy(fields, data, _ref) {
 
 /**
  * extract fields from time map data
- *
  */
 class Fields {
   constructor(data) {
@@ -202,14 +200,7 @@ function processTimeMap(data) {
   // Convert groups to arrays and sort by orderBy field
   return Object.keys(groupedData).reduce((acc, key) => {
     const values = Object.values(groupedData[key]);
-
-    // Sort values by the 'orderBy' field
-    values.sort((a, b) => {
-      const valA = a[orderByIndex];
-      const valB = b[orderByIndex];
-      return valA < valB ? -1 : valA > valB ? 1 : 0;
-    });
-    acc[key] = values;
+    acc[key] = values.sort((a, b) => a[orderByIndex] - b[orderByIndex]);
     return acc;
   }, {});
 }
@@ -267,14 +258,8 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   function currentUrl(d) {
     // TODO skip the reverse to speed it up.
     const anc = d.ancestors().reverse();
-    let url = '';
-    for (let i = 1; i < anc.length; i++) {
-      if (anc[i].data.name === 'end') {
-        break;
-      }
-      url = url + '/' + anc[i].data.name;
-    }
-    return `${baseURL}/web/${currentYear}0630${url}`;
+    let url = anc.slice(1).map(node => node.data.name).join('/');
+    return `${baseURL}/web/${currentYear}0630/${url}`;
   }
   function mouseover(e, d) {
     const sequenceArray = d.ancestors().reverse();
@@ -292,19 +277,8 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     });
   }
   function updateBreadcrumbs(nodeArray, url) {
-    let text = '';
-    const symb = document.createElement('span');
-    symb.setAttribute('class', 'symb');
-    symb.innerHTML = '/';
-    for (let i = 0; i < nodeArray.length; i++) {
-      if (i === 0) {
-        text = ' ' + nodeArray[i].data.name;
-      } else {
-        text = text + symb.innerHTML + nodeArray[i].data.name;
-      }
-    }
-    text = decodeURIComponent(text);
-    sequenceEl.innerHTML = `<a href="${url}">${text}</a>`;
+    const text = nodeArray.map(node => node.data.name).join('/');
+    sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
   }
 }
 

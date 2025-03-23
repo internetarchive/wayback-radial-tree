@@ -1,4 +1,6 @@
-module.exports = require('./webpack.config.base')({
+import baseConfig from './webpack.config.base.js';
+
+export default baseConfig({
   mode: 'development',
 
   // Emit a source map for easier debugging
@@ -6,13 +8,13 @@ module.exports = require('./webpack.config.base')({
 
   babelOptions: {
     babelrc: false,
-    "presets": [
-      ["@babel/preset-env", {
-        "modules": false
-      }]
+    presets: [
+      ['@babel/preset-env', {
+        modules: false,
+      }],
     ],
 
-    //don't use `external-helpers` module here because for test purpose we need all in place
-    "plugins": [],
+    // Don't use `external-helpers` module here because for test purpose we need all in place
+    plugins: [],
   },
 });

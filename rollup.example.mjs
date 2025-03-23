@@ -8,7 +8,9 @@ import serve from 'rollup-plugin-serve';
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 
-import pkg from './package.json' assert { type: 'json' };
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url); // E: Parsing error: Unexpected token import
+const pkg = require('./package.json');
 
 const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);
@@ -43,7 +45,7 @@ export default [
         verbose: true,
         contentBase: 'public',
         host: '0.0.0.0',
-        port: 8093
+        port: 5000
       })
     ],
   },

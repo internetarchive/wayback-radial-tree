@@ -6,7 +6,9 @@ import terser from "@rollup/plugin-terser";
 import cssnano from 'cssnano';
 import postcss from 'postcss';
 
-import pkg from './package.json' assert { type: 'json' };
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+const pkg = require('./package.json');
 
 const index = 'src/js/index.js';
 const dependencies = Object.keys(pkg.dependencies);

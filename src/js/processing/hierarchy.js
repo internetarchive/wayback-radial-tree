@@ -59,8 +59,7 @@ function buildHierarchInDepth (parent, path) {
  */
 export function buildHierarchy (fields, data, { targetField }) {
   return data.reduce((res, row) => {
-    const value = fields.getValueByName(row, targetField);
-    const [host, ...path] = value.split('/');
+    const [host, ...path] = fields.getValueByName(row, targetField).split('/');
     res.name = surtToUrl(host);
     buildHierarchInDepth(res, path);
     return res;

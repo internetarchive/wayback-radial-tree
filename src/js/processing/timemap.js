@@ -2,7 +2,6 @@ import _ from 'lodash';
 
 /**
  * extract fields from time map data
- *
  */
 export class Fields {
   constructor (data) {
@@ -93,14 +92,7 @@ export function processTimeMap (data, { groupBy, dedupBy, orderBy } = {}) {
   return Object.keys(groupedData).reduce((acc, key) => {
     const values = Object.values(groupedData[key]);
 
-    // Sort values by the 'orderBy' field
-    values.sort((a, b) => {
-      const valA = a[orderByIndex];
-      const valB = b[orderByIndex];
-      return valA < valB ? -1 : valA > valB ? 1 : 0;
-    });
-
-    acc[key] = values;
+    acc[key] = values.sort((a, b) => a[orderByIndex] - b[orderByIndex]);
     return acc;
   }, {});
 }

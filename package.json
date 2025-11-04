@@ -54,10 +54,7 @@
     "postcss": "^8.4.40",
     "rollup": "^3.29.5",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-scss": "^4.0.0",
     "rollup-plugin-serve": "^1.1.1",
-    "sass": "^1.86",
-    "sass-loader": "^16.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.98.0"
   },

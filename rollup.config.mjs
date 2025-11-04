@@ -1,10 +1,10 @@
 import { babel } from '@rollup/plugin-babel';
 import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
-import scss from 'rollup-plugin-scss'
 import terser from "@rollup/plugin-terser";
 import cssnano from 'cssnano';
 import postcss from 'postcss';
+import fs from 'fs';
 
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -19,6 +19,16 @@ const createBabelConfig = (babelrc, presets) => ({
   exclude: ['node_modules/**']
 });
 
+// simple function to process & emit CSS
+const processCSS = async () => {
+  const css = fs.readFileSync('src/css/radialTree.css', 'utf8');
+  const result = await postcss([cssnano]).process(css, { from: undefined });
+  fs.mkdirSync('build', { recursive: true });
+  fs.writeFileSync('build/radial-tree.css', result.css);
+};
+
+await processCSS();
+
 export default [
   // browser-friendly UMD build
   {
@@ -30,7 +40,6 @@ export default [
         format: 'umd',
         name: 'wb',
         globals: {
-          _: '_',
           d3: 'd3',
         },
         sourcemap: true,
@@ -64,22 +73,6 @@ export default [
       commonjs(),
       resolve(),
       babel(createBabelConfig(false, ['@babel/preset-env']))
-    ],
-  },
-
-  //styles
-  {
-    input: 'src/sass/radialTree.scss',
-    output: {
-      format: 'es',
-    },
-    plugins: [
-      scss({
-        processor: css => postcss([cssnano])
-          .process(css)
-          .then(result => result.css),
-        output: 'build/radial-tree.css',
-      })
     ],
   },
 ];

@@ -32,8 +32,7 @@
     "Radial Tree Library"
   ],
   "dependencies": {
-    "d3": "^7.9.0",
-    "lodash": "^4.17.21"
+    "d3": "^7.9.0"
   },
   "devDependencies": {
     "@babel/core": "^7.26",

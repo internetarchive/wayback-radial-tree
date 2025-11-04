@@ -1,12 +1,10 @@
-import _ from 'lodash';
-
 /**
  * extract fields from time map data
  */
 export class Fields {
   constructor (data) {
     this.fields = data[0];
-    this.getIndexByName = _.memoize(this.getIndexByName);
+    this._indexCache = new Map();
   }
 
   /**
@@ -15,7 +13,13 @@ export class Fields {
    * @param name
    */
   getIndexByName (name) {
-    return this.fields.indexOf(name);
+    if (this._indexCache.has(name)) {
+      return this._indexCache.get(name);
+    }
+
+    const index = this.fields.indexOf(name);
+    this._indexCache.set(name, index);
+    return index;
   }
 
   /**

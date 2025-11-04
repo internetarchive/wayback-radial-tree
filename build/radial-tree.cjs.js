@@ -1,7 +1,6 @@
 'use strict';
 
 var d3 = require('d3');
-var _ = require('lodash');
 
 function _interopNamespaceDefault(e) {
   var n = Object.create(null);
@@ -113,7 +112,7 @@ function buildHierarchy(fields, data, _ref) {
 class Fields {
   constructor(data) {
     this.fields = data[0];
-    this.getIndexByName = _.memoize(this.getIndexByName);
+    this._indexCache = new Map();
   }
 
   /**
@@ -122,7 +121,12 @@ class Fields {
    * @param name
    */
   getIndexByName(name) {
-    return this.fields.indexOf(name);
+    if (this._indexCache.has(name)) {
+      return this._indexCache.get(name);
+    }
+    const index = this.fields.indexOf(name);
+    this._indexCache.set(name, index);
+    return index;
   }
 
   /**
@@ -259,7 +263,7 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
     // TODO skip the reverse to speed it up.
     const anc = d.ancestors().reverse();
     let url = anc.slice(1).map(node => node.data.name).join('/');
-    return `${baseURL}/web/${currentYear}0630/${url}`;
+    return "".concat(baseURL, "/web/").concat(currentYear, "0630/").concat(url);
   }
   function mouseover(e, d) {
     const sequenceArray = d.ancestors().reverse();
@@ -278,7 +282,7 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   }
   function updateBreadcrumbs(nodeArray, url) {
     const text = nodeArray.map(node => node.data.name).join('/');
-    sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
+    sequenceEl.innerHTML = "<a href=\"".concat(url, "\">").concat(decodeURIComponent(text), "</a>");
   }
 }
 

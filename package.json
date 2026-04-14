@@ -1,9 +1,10 @@
 {
   "name": "@internetarchive/wayback-radial-tree",
-  "version": "1.1.1",
+  "version": "1.1.2",
   "description": "Radial Tree Library for Wayback Machine",
   "main": "build/radial-tree.cjs.js",
   "module": "build/radial-tree.esm.js",
+  "modules": "auto",
   "browser": "build/radial-tree.umd.js",
   "browserslist": "> 0.25%, not dead",
   "directories": {
@@ -14,12 +15,20 @@
     "build": "rollup -c rollup.config.mjs",
     "example": "rollup -c rollup.example.mjs",
     "lint": "eslint --ignore-pattern .gitignore src",
-    "mocha": "mochapack --webpack-config ./config/webpack.config.test.js --recursive ./tests",
-    "test": "npm run lint && npm run mocha"
+    "test": "jest"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/internetarchive/wayback-radial-tree.git"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "transform": {
+      "^.+\\.js$": "babel-jest"
+    },
+    "transformIgnorePatterns": [
+      "/node_modules/(?!d3|d3-.*|internmap|delaunator|d3-delaunay|robust-predicates)"
+    ]
   },
   "author": "Internet Archive",
   "license": "AGPL-3.0",
@@ -43,20 +52,14 @@
     "@rollup/plugin-commonjs": "^28.0.1",
     "@rollup/plugin-node-resolve": "^16.0",
     "@rollup/plugin-terser": "^0.4.4",
-    "babel-loader": "^9.2.1",
-    "chai": "^5.2",
-    "css-loader": "^7.1.2",
+    "babel-jest": "^30.3.0",
     "cssnano": "^7.1",
     "eslint": "^8.57",
-    "html-webpack-plugin": "^5.5.0",
-    "mocha": "^10.7.3",
-    "mochapack": "^2.1.5",
+    "jest": "^30.3.0",
     "postcss": "^8.5",
     "rollup": "^4.52",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-serve": "^1.1.1",
-    "style-loader": "^4.0.0",
-    "webpack": "^5.102"
+    "rollup-plugin-serve": "^1.1.1"
   },
   "publishConfig": {
     "access": "public"

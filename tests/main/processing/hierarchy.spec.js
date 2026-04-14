@@ -1,4 +1,3 @@
-import {expect} from 'chai';
 import {buildHierarchy} from '../../../src/js/processing/hierarchy';
 import {Fields, processTimeMap, processTimeMapData} from '../../../src/js/processing/timemap';
 
@@ -20,7 +19,7 @@ describe('hierarchy', () => {
       {
         targetField: 'urlkey',
       }
-    )).to.be.deep.equal({
+    )).toEqual({
       name: 'iskme.org',
       children: [{
         name: 'about-us',

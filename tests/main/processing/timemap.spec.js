@@ -1,4 +1,3 @@
-import {expect} from 'chai';
 import {
   Fields,
   extractYearsFromGroupedTimeMap,
@@ -12,19 +11,19 @@ describe('time map processing', () => {
     it('should extract index by field name', () => {
       expect(
         new Fields(fixture).getIndexByName('urlkey')
-      ).to.be.equal(1);
+      ).toBe(1);
     });
 
     it('should extract value by field name', () => {
       expect(
         new Fields(fixture).getValueByName(fixture[1], 'urlkey')
-      ).to.be.equal('org,iskme)/');
+      ).toBe('org,iskme)/');
     });
   });
 
   describe('getYearsFromGroupedTimeMap', () => {
     it('should return null years for null data', () => {
-      expect(extractYearsFromGroupedTimeMap(null)).to.be.null;
+      expect(extractYearsFromGroupedTimeMap(null)).toBeNull();
     });
 
     it('should return sorted years from data', () => {
@@ -40,12 +39,12 @@ describe('time map processing', () => {
           ['2005', 'org,iskme)/about-us', 'iskme.org/about-us'],
           ['2005', 'org,iskme)/about-us/about-iskme', 'iskme.org/about-us/about-iskme'],
         ],
-      })).to.be.deep.equal(['2003', '2004', '2005']);
+      })).toEqual(['2003', '2004', '2005']);
     });
   });
 
   it('should pack null or timemap to null', () => {
-    expect(processTimeMap(null)).to.be.null;
+    expect(processTimeMap(null)).toBeNull();
   });
 
   it('should group by year, dedup by urlkey and order by urlkey', () => {
@@ -56,7 +55,7 @@ describe('time map processing', () => {
         dedupBy: 'urlkey',
         orderBy: 'urlkey',
       }
-    )).to.be.deep.equal({
+    )).toEqual({
       2003: [
         ['2003', 'org,iskme)/'],
       ],

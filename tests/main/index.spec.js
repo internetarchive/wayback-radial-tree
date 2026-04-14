@@ -1,9 +1,7 @@
-import {expect} from 'chai';
-import {RadialTree} from '../../src/js';
-
+const { RadialTree } = require('../../src/js');
 
 describe('RadialTree', () => {
   it('should exist', () => {
-    expect(RadialTree).to.be.exist;
+    expect(RadialTree).toBeDefined();
   });
 });

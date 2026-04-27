@@ -49,37 +49,31 @@ inside of build.
 
 ### Testing
 
-Right now we run `eslint` for style checking and `mocha` for unit tests.
+Right now we run `eslint` for style checking and `jest` for unit tests.
 
 ```
-npm test
+yarn test
 ```
 
 linting only
 
 ```
-npm run lint
+yarn lint
 ```
 
 unit testing
 
 ```
-npm run mocha
+yarn test
 ```
 
 ### Local Build
 
-Build library and example on `webpack` and expose example on `8000`
+Build library and example on `webpack` and expose example on `5000`
 port.
 
 ```
-npm run example:local
-```
-
-if you need custom port. For example for 4567
-
-```
-npm run example:local -- --port 4567
+yarn example
 ```
 
 ### Production build
@@ -87,7 +81,7 @@ npm run example:local -- --port 4567
 Assemble library for production use.
 
 ```
-npm run build
+yarn build
 ```
 
 In result you will get `radial-tree.umd.js` (browser-friendly UMD build),

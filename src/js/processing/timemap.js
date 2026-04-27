@@ -74,29 +74,44 @@ export function processTimeMap (data, { groupBy, dedupBy, orderBy } = {}) {
   const dedupByIndex = fields.getIndexByName(dedupBy);
   const orderByIndex = fields.getIndexByName(orderBy);
 
-  // Use an object to group and deduplicate rows
-  const groupedData = data.slice(1).reduce((result, row) => {
+  if (groupByIndex < 0 || dedupByIndex < 0) {
+    throw new Error('Invalid groupBy/dedupBy field');
+  }
+
+  // Map-based grouping + dedup avoids large intermediate objects and
+  // keeps lookups O(1) even for big timemaps (e.g. 100k rows).
+  const grouped = new Map(); // groupKey -> Map(dedupKey -> row)
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
     const groupKey = row[groupByIndex];
     const dedupKey = row[dedupByIndex];
 
-    // Initialize group if not exists
-    if (!result[groupKey]) {
-      result[groupKey] = {};
+    let dedupMap = grouped.get(groupKey);
+    if (!dedupMap) {
+      dedupMap = new Map();
+      grouped.set(groupKey, dedupMap);
     }
 
-    // Add row if it hasn't been deduplicated already
-    if (!result[groupKey][dedupKey]) {
-      result[groupKey][dedupKey] = row;
+    if (!dedupMap.has(dedupKey)) {
+      dedupMap.set(dedupKey, row);
     }
+  }
 
-    return result;
-  }, {});
+  const compareOrder = (a, b) => {
+    if (orderByIndex < 0) return 0;
+    const av = a[orderByIndex];
+    const bv = b[orderByIndex];
+    if (typeof av === 'number' && typeof bv === 'number') return av - bv;
+    // `urlkey` and similar fields are strings; numeric subtraction is wrong (NaN).
+    return av === bv ? 0 : (av > bv ? 1 : -1);
+  };
 
-  // Convert groups to arrays and sort by orderBy field
-  return Object.keys(groupedData).reduce((acc, key) => {
-    const values = Object.values(groupedData[key]);
-
-    acc[key] = values.sort((a, b) => a[orderByIndex] - b[orderByIndex]);
-    return acc;
-  }, {});
+  const out = {};
+  for (const [key, dedupMap] of grouped) {
+    const values = Array.from(dedupMap.values());
+    values.sort(compareOrder);
+    out[key] = values;
+  }
+  return out;
 }

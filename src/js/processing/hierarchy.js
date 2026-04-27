@@ -15,31 +15,20 @@ function buildHierarchInDepth (parent, path) {
   }
 
   let currentParent = parent;
-  let currentPath = path;
+  for (let i = 0; i < path.length; i++) {
+    const name = path[i];
+    if (!name) continue;
 
-  while (currentPath.length > 0) {
-    const [name, ...rest] = currentPath;
+    if (!currentParent.children) currentParent.children = [];
+    if (!currentParent._childByName) currentParent._childByName = new Map();
 
-    if (!name) {
-      return;
-    }
-
-    // Cache the children reference to avoid repeated lookups
-    if (!currentParent.children) {
-      currentParent.children = [];
-    }
-
-    // Find the child node or create a new one
-    let nextParent = currentParent.children.find(child => child.name === name);
-
+    let nextParent = currentParent._childByName.get(name);
     if (!nextParent) {
       nextParent = { name };
       currentParent.children.push(nextParent);
+      currentParent._childByName.set(name, nextParent);
     }
-
-    // Move down the hierarchy
     currentParent = nextParent;
-    currentPath = rest;
   }
 }
 
@@ -59,9 +48,17 @@ function buildHierarchInDepth (parent, path) {
  */
 export function buildHierarchy (fields, data, { targetField }) {
   return data.reduce((res, row) => {
-    const [host, ...path] = fields.getValueByName(row, targetField).split('/');
-    res.name = surtToUrl(host);
-    buildHierarchInDepth(res, path);
+    const urlkey = fields.getValueByName(row, targetField);
+    if (!urlkey) return res;
+
+    const slashIdx = urlkey.indexOf('/');
+    const host = slashIdx === -1 ? urlkey : urlkey.slice(0, slashIdx);
+    if (!res.name) res.name = surtToUrl(host);
+
+    const rest = slashIdx === -1 ? '' : urlkey.slice(slashIdx + 1);
+    if (!rest) return res;
+
+    buildHierarchInDepth(res, rest.split('/'));
     return res;
   }, {});
 }

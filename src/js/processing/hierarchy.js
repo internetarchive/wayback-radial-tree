@@ -20,7 +20,13 @@ function buildHierarchInDepth (parent, path) {
     if (!name) continue;
 
     if (!currentParent.children) currentParent.children = [];
-    if (!currentParent._childByName) currentParent._childByName = new Map();
+    if (!currentParent._childByName) {
+      // Make it non-enumerable so it doesn't leak into output objects / tests.
+      Object.defineProperty(currentParent, '_childByName', {
+        value: new Map(),
+        enumerable: false
+      });
+    }
 
     let nextParent = currentParent._childByName.get(name);
     if (!nextParent) {

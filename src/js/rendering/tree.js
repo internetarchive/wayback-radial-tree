@@ -29,11 +29,27 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   const nodes = partition(root).descendants();
   const sequenceEl = element.querySelector('.sequence');
 
-  vis.selectAll('path')
+  // Cache per-node data used during hover to keep interaction snappy.
+  // (Ancestors()/reverse()/join() inside mousemove-style handlers gets expensive quickly.)
+  for (const d of nodes) {
+    // Exclude the artificial root (depth 0) from the displayed breadcrumb/path.
+    const anc = d.ancestors();
+    const parts = [];
+    for (let i = anc.length - 2; i >= 0; i--) parts.push(anc[i].data.name);
+    const path = parts.join('/');
+
+    d._wb = {
+      breadcrumbText: parts.join('/'),
+      url: `${baseURL}/web/${currentYear}0630/${path}`,
+      ancestorsExcludingRoot: anc.slice(0, -1) // without the artificial root
+    };
+  }
+
+  const pathSel = vis.selectAll('path')
     .data(nodes)
     .enter()
     .append('a')
-    .attr('xlink:href', currentUrl)
+    .attr('xlink:href', d => d._wb.url)
     .on('touchstart', touchStart)
     .append('svg:path')
     .attr('display', d => d.depth ? null : 'none')
@@ -53,36 +69,29 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   function touchStart (e, d) {
     e.preventDefault();
     e.stopPropagation();
-    mouseover(d);
+    mouseover(e, d);
     return false;
   }
 
-  function currentUrl (d) {
-    // TODO skip the reverse to speed it up.
-    const anc = d.ancestors().reverse();
-    let url = anc.slice(1).map(node => node.data.name).join('/');
-    return `${baseURL}/web/${currentYear}0630/${url}`;
-  }
-
   function mouseover (e, d) {
-    const sequenceArray = d.ancestors().reverse();
-    sequenceArray.shift();
-    const url = currentUrl(d);
-    updateBreadcrumbs(sequenceArray, url);
-    d3.selectAll('path').style('opacity', 0.3);
+    const { ancestorsExcludingRoot, url } = d._wb;
+    updateBreadcrumbs(d, url);
 
-    vis.selectAll('path')
-      .filter(node => sequenceArray.indexOf(node) >= 0)
+    pathSel.style('opacity', 0.3);
+
+    const highlight = new Set(ancestorsExcludingRoot);
+    pathSel
+      .filter(node => highlight.has(node))
       .style('opacity', 1);
   }
 
   function mouseleave () {
     sequenceEl.innerHTML = '';
 
-    d3.selectAll('path')
+    pathSel
       .on('mouseover', null);
 
-    d3.selectAll('path')
+    pathSel
       .transition()
       .style('opacity', 1)
       .on('end', function () {
@@ -90,8 +99,8 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
       });
   }
 
-  function updateBreadcrumbs(nodeArray, url) {
-    const text = nodeArray.map(node => node.data.name).join('/');
+  function updateBreadcrumbs(d, url) {
+    const text = d._wb.breadcrumbText;
     sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
   }
 }

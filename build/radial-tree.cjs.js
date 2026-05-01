@@ -53,30 +53,26 @@ function buildHierarchInDepth(parent, path) {
     return;
   }
   let currentParent = parent;
-  let currentPath = path;
-  while (currentPath.length > 0) {
-    const [name, ...rest] = currentPath;
-    if (!name) {
-      return;
+  for (let i = 0; i < path.length; i++) {
+    const name = path[i];
+    if (!name) continue;
+    if (!currentParent.children) currentParent.children = [];
+    if (!currentParent._childByName) {
+      // Make it non-enumerable so it doesn't leak into output objects / tests.
+      Object.defineProperty(currentParent, '_childByName', {
+        value: new Map(),
+        enumerable: false
+      });
     }
-
-    // Cache the children reference to avoid repeated lookups
-    if (!currentParent.children) {
-      currentParent.children = [];
-    }
-
-    // Find the child node or create a new one
-    let nextParent = currentParent.children.find(child => child.name === name);
+    let nextParent = currentParent._childByName.get(name);
     if (!nextParent) {
       nextParent = {
         name
       };
       currentParent.children.push(nextParent);
+      currentParent._childByName.set(name, nextParent);
     }
-
-    // Move down the hierarchy
     currentParent = nextParent;
-    currentPath = rest;
   }
 }
 
@@ -99,9 +95,14 @@ function buildHierarchy(fields, data, _ref) {
     targetField
   } = _ref;
   return data.reduce((res, row) => {
-    const [host, ...path] = fields.getValueByName(row, targetField).split('/');
-    res.name = surtToUrl(host);
-    buildHierarchInDepth(res, path);
+    const urlkey = fields.getValueByName(row, targetField);
+    if (!urlkey) return res;
+    const slashIdx = urlkey.indexOf('/');
+    const host = slashIdx === -1 ? urlkey : urlkey.slice(0, slashIdx);
+    if (!res.name) res.name = surtToUrl(host);
+    const rest = slashIdx === -1 ? '' : urlkey.slice(slashIdx + 1);
+    if (!rest) return res;
+    buildHierarchInDepth(res, rest.split('/'));
     return res;
   }, {});
 }
@@ -183,30 +184,42 @@ function processTimeMap(data) {
   const groupByIndex = fields.getIndexByName(groupBy);
   const dedupByIndex = fields.getIndexByName(dedupBy);
   const orderByIndex = fields.getIndexByName(orderBy);
+  if (groupByIndex < 0 || dedupByIndex < 0) {
+    throw new Error('Invalid groupBy/dedupBy field');
+  }
 
-  // Use an object to group and deduplicate rows
-  const groupedData = data.slice(1).reduce((result, row) => {
+  // Map-based grouping + dedup avoids large intermediate objects and
+  // keeps lookups O(1) even for big timemaps (e.g. 100k rows).
+  const grouped = new Map(); // groupKey -> Map(dedupKey -> row)
+
+  for (let i = 1; i < data.length; i++) {
+    const row = data[i];
     const groupKey = row[groupByIndex];
     const dedupKey = row[dedupByIndex];
-
-    // Initialize group if not exists
-    if (!result[groupKey]) {
-      result[groupKey] = {};
+    let dedupMap = grouped.get(groupKey);
+    if (!dedupMap) {
+      dedupMap = new Map();
+      grouped.set(groupKey, dedupMap);
     }
-
-    // Add row if it hasn't been deduplicated already
-    if (!result[groupKey][dedupKey]) {
-      result[groupKey][dedupKey] = row;
+    if (!dedupMap.has(dedupKey)) {
+      dedupMap.set(dedupKey, row);
     }
-    return result;
-  }, {});
-
-  // Convert groups to arrays and sort by orderBy field
-  return Object.keys(groupedData).reduce((acc, key) => {
-    const values = Object.values(groupedData[key]);
-    acc[key] = values.sort((a, b) => a[orderByIndex] - b[orderByIndex]);
-    return acc;
-  }, {});
+  }
+  const compareOrder = (a, b) => {
+    if (orderByIndex < 0) return 0;
+    const av = a[orderByIndex];
+    const bv = b[orderByIndex];
+    if (typeof av === 'number' && typeof bv === 'number') return av - bv;
+    // `urlkey` and similar fields are strings; numeric subtraction is wrong (NaN).
+    return av === bv ? 0 : av > bv ? 1 : -1;
+  };
+  const out = {};
+  for (const [key, dedupMap] of grouped) {
+    const values = Array.from(dedupMap.values());
+    values.sort(compareOrder);
+    out[key] = values;
+  }
+  return out;
 }
 
 function renderContainer() {
@@ -247,7 +260,22 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   }).sum(d => !d.children).sort((a, b) => b.value - a.value);
   const nodes = partition(root).descendants();
   const sequenceEl = element.querySelector('.sequence');
-  vis.selectAll('path').data(nodes).enter().append('a').attr('xlink:href', currentUrl).on('touchstart', touchStart).append('svg:path').attr('display', d => d.depth ? null : 'none').attr('d', arc).attr('fill-rule', 'evenodd').style('fill', d => colors((d.children ? d : d.parent).data.name)).style('opacity', 1).style('cursor', 'pointer').on('mouseover', mouseover);
+
+  // Cache per-node data used during hover to keep interaction snappy.
+  // (Ancestors()/reverse()/join() inside mousemove-style handlers gets expensive quickly.)
+  for (const d of nodes) {
+    // Exclude the artificial root (depth 0) from the displayed breadcrumb/path.
+    const anc = d.ancestors();
+    const parts = [];
+    for (let i = anc.length - 2; i >= 0; i--) parts.push(anc[i].data.name);
+    const path = parts.join('/');
+    d._wb = {
+      breadcrumbText: parts.join('/'),
+      url: "".concat(baseURL, "/web/").concat(currentYear, "0630/").concat(path),
+      ancestorsExcludingRoot: anc.slice(0, -1) // without the artificial root
+    };
+  }
+  const pathSel = vis.selectAll('path').data(nodes).enter().append('a').attr('xlink:href', d => d._wb.url).on('touchstart', touchStart).append('svg:path').attr('display', d => d.depth ? null : 'none').attr('d', arc).attr('fill-rule', 'evenodd').style('fill', d => colors((d.children ? d : d.parent).data.name)).style('opacity', 1).style('cursor', 'pointer').on('mouseover', mouseover);
   d3__namespace.select('#d3_container').on('mouseleave', mouseleave);
 
   /** on mobile devices, touching the RadialTree prevents the ``click``
@@ -256,32 +284,28 @@ function createVisualization(element, vis, radius, baseURL, currentYear, data) {
   function touchStart(e, d) {
     e.preventDefault();
     e.stopPropagation();
-    mouseover();
+    mouseover(e, d);
     return false;
   }
-  function currentUrl(d) {
-    // TODO skip the reverse to speed it up.
-    const anc = d.ancestors().reverse();
-    let url = anc.slice(1).map(node => node.data.name).join('/');
-    return "".concat(baseURL, "/web/").concat(currentYear, "0630/").concat(url);
-  }
   function mouseover(e, d) {
-    const sequenceArray = d.ancestors().reverse();
-    sequenceArray.shift();
-    const url = currentUrl(d);
-    updateBreadcrumbs(sequenceArray, url);
-    d3__namespace.selectAll('path').style('opacity', 0.3);
-    vis.selectAll('path').filter(node => sequenceArray.indexOf(node) >= 0).style('opacity', 1);
+    const {
+      ancestorsExcludingRoot,
+      url
+    } = d._wb;
+    updateBreadcrumbs(d, url);
+    pathSel.style('opacity', 0.3);
+    const highlight = new Set(ancestorsExcludingRoot);
+    pathSel.filter(node => highlight.has(node)).style('opacity', 1);
   }
   function mouseleave() {
     sequenceEl.innerHTML = '';
-    d3__namespace.selectAll('path').on('mouseover', null);
-    d3__namespace.selectAll('path').transition().style('opacity', 1).on('end', function () {
+    pathSel.on('mouseover', null);
+    pathSel.transition().style('opacity', 1).on('end', function () {
       d3__namespace.select(this).on('mouseover', mouseover);
     });
   }
-  function updateBreadcrumbs(nodeArray, url) {
-    const text = nodeArray.map(node => node.data.name).join('/');
+  function updateBreadcrumbs(d, url) {
+    const text = d._wb.breadcrumbText;
     sequenceEl.innerHTML = "<a href=\"".concat(url, "\">").concat(decodeURIComponent(text), "</a>");
   }
 }

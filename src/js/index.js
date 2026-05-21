@@ -1,4 +1,4 @@
-import * as d3 from 'd3';
+import { select } from 'd3-selection';
 import {
   buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap
 } from './processing';
@@ -64,7 +64,7 @@ export function RadialTree (element, cdxData, options = {}) {
     const height = width;
     const radius = width / 2;
 
-    const vis = d3.select('#chart')
+    const vis = select('#chart')
       .append('svg:svg')
       .attr('width', width)
       .attr('height', height)

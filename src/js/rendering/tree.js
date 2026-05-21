@@ -1,12 +1,16 @@
-import * as d3 from 'd3';
+import { arc as d3Arc } from 'd3-shape';
+import { hierarchy, partition as d3Partition } from 'd3-hierarchy';
+import { scaleOrdinal } from 'd3-scale';
+import { schemePaired } from 'd3-scale-chromatic';
+import { select } from 'd3-selection';
 
-const arc = d3.arc()
+const arc = d3Arc()
   .startAngle(d => d.x0)
   .endAngle(d => d.x1)
   .innerRadius(d => Math.sqrt(d.y0))
   .outerRadius(d => Math.sqrt(d.y1));
 
-const colors = d3.scaleOrdinal(d3.schemePaired);
+const colors = scaleOrdinal(schemePaired);
 
 /**
  * Render d3.hierarchy from passed hierarchical data
@@ -19,10 +23,10 @@ const colors = d3.scaleOrdinal(d3.schemePaired);
  * @param data
  */
 export function createVisualization (element, vis, radius, baseURL, currentYear, data) {
-  const partition = d3.partition().size([2 * Math.PI, radius * radius]);
+  const partition = d3Partition().size([2 * Math.PI, radius * radius]);
 
   // append 'root' we will exclude it on rendering
-  const root = d3.hierarchy({ children: [data] })
+  const root = hierarchy({ children: [data] })
     .sum(d => !d.children)
     .sort((a, b) => b.value - a.value);
 
@@ -60,7 +64,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     .style('cursor', 'pointer')
     .on('mouseover', mouseover);
 
-  d3.select('#d3_container')
+  select('#d3_container')
     .on('mouseleave', mouseleave);
 
   /** on mobile devices, touching the RadialTree prevents the ``click``
@@ -95,7 +99,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
       .transition()
       .style('opacity', 1)
       .on('end', function () {
-        d3.select(this).on('mouseover', mouseover);
+        select(this).on('mouseover', mouseover);
       });
   }
 

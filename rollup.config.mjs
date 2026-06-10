@@ -30,18 +30,14 @@ const processCSS = async () => {
 await processCSS();
 
 export default [
-  // browser-friendly UMD build
+  // browser-friendly UMD build — bundles d3 subpackages for self-contained use
   {
     input: index,
-    external: dependencies,
     output: [
       {
         file: pkg.browser,
         format: 'umd',
         name: 'wb',
-        globals: {
-          d3: 'd3',
-        },
         sourcemap: true,
       },
     ],
@@ -54,6 +50,7 @@ export default [
   },
 
   // CommonJS (for Node) and ES module (for bundlers) build.
+  // Externalizes d3 subpackages so the consumer's bundler can tree-shake them.
   {
     input: index,
     external: dependencies,

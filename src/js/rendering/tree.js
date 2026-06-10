@@ -3,6 +3,7 @@ import { hierarchy, partition as d3Partition } from 'd3-hierarchy';
 import { scaleOrdinal } from 'd3-scale';
 import { schemePaired } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
+import 'd3-transition';
 
 const arc = d3Arc()
   .startAngle(d => d.x0)

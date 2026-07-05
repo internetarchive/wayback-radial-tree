@@ -1,12 +1,13 @@
 import { renderYearButton, getYearByBtn } from './year-button';
 
-export function renderYearButtons (element, allYears, onYearSelect) {
+export function renderYearButtons (element, allYears, onYearSelect, urlsByYear, host) {
   const divBtn = element.querySelector('.div-btn');
   divBtn.onclick = (evt) => onYearSelect(getYearByBtn(evt.target));
 
   if (!element.querySelector('.year-btn')) {
-    allYears.forEach(year =>
-      divBtn.appendChild(renderYearButton(year))
-    );
+    allYears.forEach(year => {
+      const count = urlsByYear && urlsByYear[year] ? urlsByYear[year].length : undefined;
+      divBtn.appendChild(renderYearButton(year, count, host));
+    });
   }
 }

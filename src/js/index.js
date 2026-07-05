@@ -1,6 +1,6 @@
 import { select } from 'd3-selection';
 import {
-  buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap
+  buildHierarchy, extractYearsFromGroupedTimeMap, Fields, processTimeMap, surtToUrl
 } from './processing';
 import {
   createVisualization, getButtonByYear, renderContainer, renderYearButtons
@@ -33,7 +33,11 @@ export function RadialTree (element, cdxData, options = {}) {
   });
   const years = extractYearsFromGroupedTimeMap(urlsByYear);
 
-  renderYearButtons(element, years, selectYear);
+  const firstUrlkey = cdxData[1] ? fields.getValueByName(cdxData[1], 'urlkey') : '';
+  const slashIdx = firstUrlkey.indexOf('/');
+  const host = surtToUrl(slashIdx === -1 ? firstUrlkey : firstUrlkey.slice(0, slashIdx));
+
+  renderYearButtons(element, years, selectYear, urlsByYear, host);
 
   // highlight the 2nd last year if available, else hightlight the last.
   // necessary because the last year may not have much data.
@@ -64,7 +68,7 @@ export function RadialTree (element, cdxData, options = {}) {
     const height = width;
     const radius = width / 2;
 
-    const legendWidth = 180;
+    const legendWidth = 230;
 
     const vis = select('#chart')
       .append('svg:svg')

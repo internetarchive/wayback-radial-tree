@@ -120,31 +120,52 @@ function truncate (str, max) {
 }
 
 function renderLegend (vis, radius, height, nodes) {
-  const rowHeight = 20;
-  const maxItems = Math.floor(height / rowHeight);
-  const items = nodes.slice(0, maxItems);
+  const rowHeight = 24;
+  const swatchSize = 14;
+  const fontSize = '15px';
+  const pad = 10;
+  const boxWidth = 195;
+  const items = nodes.slice(0, 20);
+  const boxHeight = pad + 20 + 6 + items.length * rowHeight + pad;
+
+  vis.append('defs').append('filter')
+    .attr('id', 'rt-legend-shadow')
+    .append('feDropShadow')
+    .attr('dx', 2).attr('dy', 2)
+    .attr('stdDeviation', 3)
+    .attr('flood-opacity', 0.18);
 
   const g = vis.append('g')
     .attr('class', 'rt-legend')
     .attr('transform', `translate(${radius + 20}, ${-height / 2 + 8})`);
 
+  g.append('rect')
+    .attr('width', boxWidth)
+    .attr('height', boxHeight)
+    .attr('rx', 6).attr('ry', 6)
+    .attr('fill', 'white')
+    .attr('stroke', '#ccc')
+    .attr('stroke-width', 1)
+    .attr('filter', 'url(#rt-legend-shadow)');
+
+  g.append('text')
+    .attr('dx', pad)
+    .attr('dy', pad + 13)
+    .style('font-size', '15px')
+    .style('font-weight', 'bold')
+    .text(`Top unique sub-pages`);
+
   items.forEach((d, i) => {
-    const row = g.append('g').attr('transform', `translate(0, ${i * rowHeight})`);
+    const row = g.append('g').attr('transform', `translate(${pad}, ${pad + 26 + i * rowHeight})`);
     row.append('rect')
-      .attr('width', 12)
-      .attr('height', 12)
+      .attr('width', swatchSize)
+      .attr('height', swatchSize)
       .attr('fill', colors(d.data.name));
     row.append('text')
-      .attr('dx', 16)
-      .attr('dy', 11)
-      .style('font-size', '11px')
-      .text(truncate(d.data.name, 16));
-    row.append('text')
-      .attr('x', 160)
-      .attr('dy', 11)
-      .attr('text-anchor', 'end')
-      .style('font-size', '11px')
-      .style('fill', '#555')
-      .text(d.value);
+      .attr('dx', swatchSize + 5)
+      .attr('dy', swatchSize / 2)
+      .attr('dominant-baseline', 'central')
+      .style('font-size', fontSize)
+      .text(`/${truncate(d.data.name, 16)} (${d.value})`);
   });
 }

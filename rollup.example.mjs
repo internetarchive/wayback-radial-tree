@@ -42,7 +42,12 @@ export default [
         format: 'umd',
         name: 'wb',
         globals: {
-          d3: 'd3',
+          'd3-selection': 'd3',
+          'd3-shape': 'd3',
+          'd3-hierarchy': 'd3',
+          'd3-scale': 'd3',
+          'd3-scale-chromatic': 'd3',
+          'd3-transition': 'd3',
         },
         sourcemap: true,
       },

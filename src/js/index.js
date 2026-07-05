@@ -64,9 +64,11 @@ export function RadialTree (element, cdxData, options = {}) {
     const height = width;
     const radius = width / 2;
 
+    const legendWidth = 180;
+
     const vis = select('#chart')
       .append('svg:svg')
-      .attr('width', width)
+      .attr('width', width + legendWidth)
       .attr('height', height)
       .append('svg:g')
       .attr('id', 'd3_container')
@@ -81,6 +83,6 @@ export function RadialTree (element, cdxData, options = {}) {
       targetField: 'urlkey'
     });
 
-    createVisualization(element, vis, radius, baseURL, currentYear, hierarchy);
+    createVisualization(element, vis, radius, baseURL, currentYear, hierarchy, height);
   }
 }

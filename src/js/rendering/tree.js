@@ -23,7 +23,7 @@ const colors = scaleOrdinal(schemePaired);
  * @param currentYear
  * @param data
  */
-export function createVisualization (element, vis, radius, baseURL, currentYear, data) {
+export function createVisualization (element, vis, radius, baseURL, currentYear, data, height) {
   const partition = d3Partition().size([2 * Math.PI, radius * radius]);
 
   // append 'root' we will exclude it on rendering
@@ -108,4 +108,43 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     const text = d._wb.breadcrumbText;
     sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
   }
+
+  const legendNodes = nodes
+    .filter(d => d.depth === 2)
+    .sort((a, b) => b.value - a.value);
+  renderLegend(vis, radius, height, legendNodes);
+}
+
+function truncate (str, max) {
+  return str.length > max ? str.slice(0, max) + '…' : str;
+}
+
+function renderLegend (vis, radius, height, nodes) {
+  const rowHeight = 20;
+  const maxItems = Math.floor(height / rowHeight);
+  const items = nodes.slice(0, maxItems);
+
+  const g = vis.append('g')
+    .attr('class', 'rt-legend')
+    .attr('transform', `translate(${radius + 20}, ${-height / 2 + 8})`);
+
+  items.forEach((d, i) => {
+    const row = g.append('g').attr('transform', `translate(0, ${i * rowHeight})`);
+    row.append('rect')
+      .attr('width', 12)
+      .attr('height', 12)
+      .attr('fill', colors(d.data.name));
+    row.append('text')
+      .attr('dx', 16)
+      .attr('dy', 11)
+      .style('font-size', '11px')
+      .text(truncate(d.data.name, 16));
+    row.append('text')
+      .attr('x', 160)
+      .attr('dy', 11)
+      .attr('text-anchor', 'end')
+      .style('font-size', '11px')
+      .style('fill', '#555')
+      .text(d.value);
+  });
 }

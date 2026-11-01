@@ -1,7 +1,6 @@
 import { arc as d3Arc } from 'd3-shape';
 import { hierarchy, partition as d3Partition } from 'd3-hierarchy';
-import { scaleOrdinal } from 'd3-scale';
-import { schemePaired } from 'd3-scale-chromatic';
+import { schemeTableau10 } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
 import 'd3-transition';
 
@@ -9,7 +8,19 @@ import 'd3-transition';
 const CENTER_RATIO = 0.3;
 const CENTER_COLOR = '#f3f3f3';
 
-const colors = scaleOrdinal(schemePaired);
+// one hue per top-level section, biggest first; the rest share a neutral gray
+const SECTION_COLORS = schemeTableau10.slice(0, 9);
+const MINOR_SECTION_COLOR = schemeTableau10[9];
+// how much lighter each ring gets than the one inside it, and at most
+const TINT_STEP = 0.15;
+const MAX_TINT = 0.45;
+// neighbouring sub-pages cycle through these tints relative to their ring
+// (positive is lighter, negative darker) so they can be told apart; rings
+// start at TINT_STEP, so the darkest is the section color itself
+const SIBLING_SHADES = [0, 0.2, -TINT_STEP];
+// segments narrower than this (px, at their outer edge) get no separator,
+// it would hide their color
+const MIN_SEPARATED_WIDTH = 4;
 
 /**
  * Render d3.hierarchy from passed hierarchical data
@@ -39,7 +50,29 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     .startAngle(d => d.x0)
     .endAngle(d => d.x1)
     .innerRadius(d => d.depth ? centerRadius + (d.depth - 1) * ringWidth : 0)
-    .outerRadius(d => d.depth ? centerRadius + d.depth * ringWidth : centerRadius);
+    .outerRadius(d => d.depth ? centerRadius + d.depth * ringWidth : centerRadius)
+    .cornerRadius(2);
+
+  // sections are sorted by size, so the biggest ones get their own hue
+  const sectionColor = new Map();
+  (root.children || []).forEach((section, i) => {
+    sectionColor.set(section, SECTION_COLORS[i] || MINOR_SECTION_COLOR);
+  });
+
+  // white separators: bold between sections, thin inside them
+  function separatorWidth (d) {
+    if (d.depth === 1) return 1.5;
+    const width = (d.x1 - d.x0) * arc.outerRadius()(d);
+    return d.depth && width >= MIN_SEPARATED_WIDTH ? 0.5 : 0;
+  }
+
+  function color (d) {
+    if (!d.depth) return CENTER_COLOR;
+    const section = d.ancestors()[d.depth - 1];
+    const ringTint = Math.min(MAX_TINT, (d.depth - 1) * TINT_STEP);
+    const siblingShade = d.depth > 1 ? SIBLING_SHADES[d._wb.siblingIndex % SIBLING_SHADES.length] : 0;
+    return tint(sectionColor.get(section), ringTint + siblingShade);
+  }
 
   // Cache per-node data used during hover to keep interaction snappy.
   // (Ancestors()/reverse()/join() inside mousemove-style handlers gets expensive quickly.)
@@ -52,8 +85,15 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     d._wb = {
       breadcrumbText: path,
       url: `${baseURL}/web/${currentYear}0630/${path}`,
-      ancestors: anc
+      ancestors: anc,
+      siblingIndex: 0
     };
+  }
+  // children are sorted, so the index is also their order around the ring
+  for (const d of nodes) {
+    (d.children || []).forEach((child, i) => {
+      child._wb.siblingIndex = i;
+    });
   }
 
   const pathSel = vis.selectAll('path')
@@ -66,7 +106,9 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     .append('svg:path')
     .attr('d', arc)
     .attr('fill-rule', 'evenodd')
-    .style('fill', d => d.depth ? colors((d.children ? d : d.parent).data.name) : CENTER_COLOR)
+    .style('fill', color)
+    .style('stroke', '#fff')
+    .style('stroke-width', separatorWidth)
     .style('opacity', 1)
     .style('cursor', 'pointer')
     .on('mouseover', mouseover);
@@ -139,7 +181,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   const legendNodes = nodes
     .filter(d => d.depth === 1)
     .sort((a, b) => b.value - a.value);
-  renderLegend(vis, radius, height, legendNodes);
+  renderLegend(vis, radius, height, legendNodes, color);
 }
 
 function safeDecodeURIComponent (str) {
@@ -151,11 +193,24 @@ function safeDecodeURIComponent (str) {
   }
 }
 
+/**
+ * mix a hex color with white
+ *
+ * @param hex '#rrggbb'
+ * @param amount 0 keeps the color, 1 is white
+ */
+function tint (hex, amount) {
+  const channels = [1, 3, 5].map(i => parseInt(hex.slice(i, i + 2), 16));
+  return '#' + channels
+    .map(c => Math.round(c + (255 - c) * amount).toString(16).padStart(2, '0'))
+    .join('');
+}
+
 function truncate (str, max) {
   return str.length > max ? str.slice(0, max) + '…' : str;
 }
 
-function renderLegend (vis, radius, height, nodes) {
+function renderLegend (vis, radius, height, nodes, color) {
   const rowHeight = 24;
   const swatchSize = 14;
   const fontSize = '15px';
@@ -196,7 +251,7 @@ function renderLegend (vis, radius, height, nodes) {
     row.append('rect')
       .attr('width', swatchSize)
       .attr('height', swatchSize)
-      .attr('fill', colors(d.data.name));
+      .attr('fill', color(d));
     row.append('text')
       .attr('dx', swatchSize + 5)
       .attr('dy', swatchSize / 2)

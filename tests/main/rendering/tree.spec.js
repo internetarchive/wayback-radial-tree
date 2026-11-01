@@ -20,6 +20,10 @@ const data = {
 };
 
 
+function leaves (n, prefix = 'leaf') {
+  return Array.from({length: n}, (_, i) => ({name: `${prefix}-${i}`}));
+}
+
 // one URL per page without sub-pages, unless the test data says otherwise
 function withLeafCounts (node) {
   const children = node.children && node.children.map(withLeafCounts);
@@ -201,6 +205,83 @@ describe('createVisualization', () => {
     // mouseover is re-enabled once the transition ends
     dispatch(path, 'mouseover');
     expect(element.querySelector('.sequence a')).not.toBeNull();
+  });
+
+  describe('colors', () => {
+    function pathOf (element, url) {
+      return Array.from(element.querySelectorAll('#d3_container > a'))
+        .find(a => a.getAttributeNS(XLINK, 'href') === 'https://web.archive.org/web/20050630/' + url)
+        .querySelector('path');
+    }
+
+    it('should give each section its own hue, biggest first', () => {
+      const element = render();
+      expect(pathOf(element, 'iskme.org/about-us').style.fill).toBe('#4e79a7');
+      expect(pathOf(element, 'iskme.org/contact').style.fill).toBe('#f28e2c');
+    });
+
+    it('should draw sub-pages in a lighter tint of their section', () => {
+      const element = render();
+      expect(pathOf(element, 'iskme.org/about-us/about-iskme-1').style.fill).toBe('#698db4');
+    });
+
+    it('should cycle neighbouring sub-pages through different tints', () => {
+      const element = render({name: 'iskme.org', children: [{name: 's', children: leaves(4)}]});
+      const fills = [0, 1, 2, 3].map(i => pathOf(element, `iskme.org/s/leaf-${i}`).style.fill);
+      // 15%, 35% and 0% white, then again
+      expect(fills).toEqual(['#698db4', '#8ca8c6', '#4e79a7', '#698db4']);
+    });
+
+    it('should not cycle tints of top-level sections', () => {
+      const element = render({name: 'iskme.org', children: leaves(3, 's')});
+      // s-2 is the third section, so it gets the third hue untinted
+      expect(pathOf(element, 'iskme.org/s-2').style.fill).toBe('#e15759');
+    });
+
+    it('should cap how light deep rings get', () => {
+      const element = render({name: 'iskme.org', children: [{name: 'a', children: [{name: 'b', children: [
+        {name: 'c', children: [{name: 'd', children: [{name: 'e'}]}]},
+      ]}]}]});
+      // 4e79a7 mixed with 45% white
+      expect(pathOf(element, 'iskme.org/a/b/c/d/e').style.fill).toBe('#9eb5cf');
+    });
+
+    it('should share a neutral color among sections after the ninth', () => {
+      const children = Array.from({length: 11}, (_, i) => ({name: `s${i}`, children: leaves(20 - i)}));
+      const element = render({name: 'iskme.org', children});
+      expect(pathOf(element, 'iskme.org/s8').style.fill).toBe('#9c755f');
+      expect(pathOf(element, 'iskme.org/s9').style.fill).toBe('#bab0ab');
+      expect(pathOf(element, 'iskme.org/s10').style.fill).toBe('#bab0ab');
+    });
+
+    it('should use section colors in the legend', () => {
+      const element = render();
+      const swatches = Array.from(element.querySelectorAll('.rt-legend > g rect')).map(r => r.getAttribute('fill'));
+      expect(swatches).toEqual(['#4e79a7', '#f28e2c']);
+    });
+  });
+
+  describe('separators', () => {
+    function strokeWidth (element, url) {
+      return Array.from(element.querySelectorAll('#d3_container > a'))
+        .find(a => a.getAttributeNS(XLINK, 'href') === 'https://web.archive.org/web/20050630/' + url)
+        .querySelector('path').style.strokeWidth;
+    }
+
+    it('should separate sections with bold white lines and sub-pages with thin ones', () => {
+      const element = render();
+      expect(element.querySelector('.rt-center path').style.strokeWidth).toBe('0');
+      expect(strokeWidth(element, 'iskme.org/about-us')).toBe('1.5');
+      expect(strokeWidth(element, 'iskme.org/about-us/about-iskme-1')).toBe('0.5');
+      expect(element.querySelector('#d3_container > a > path').style.stroke).toBe('#fff');
+    });
+
+    it('should not separate segments too narrow to show their color otherwise', () => {
+      // 200 pages of one URL each: 1.8° or about 3px at the outer edge
+      const element = render({name: 'iskme.org', children: [{name: 'big', children: leaves(200)}]});
+      expect(strokeWidth(element, 'iskme.org/big')).toBe('1.5');
+      expect(strokeWidth(element, 'iskme.org/big/leaf-0')).toBe('0');
+    });
   });
 
   describe('legend', () => {

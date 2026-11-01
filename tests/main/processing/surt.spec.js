@@ -11,6 +11,10 @@ describe('surtToUrl', () => {
   });
 
   it('should return "" for "" SURT', () => {
-    expect(surtToUrl(null)).toBe(null);
+    expect(surtToUrl('')).toBe('');
+  });
+
+  it('should translate SURT with subdomains to URL', () => {
+    expect(surtToUrl('uk,co,bbc,news)')).toBe('news.bbc.co.uk');
   });
 });

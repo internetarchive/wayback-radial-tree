@@ -92,6 +92,34 @@ describe('createVisualization', () => {
     expect(element.querySelector('.sequence a').textContent).toBe('iskme.org/café');
   });
 
+  it('should show raw name in breadcrumbs when it is not valid url-encoding', () => {
+    const element = render({name: 'iskme.org', children: [{name: '100%'}]});
+    dispatch(pathByUrl(element, 'https://web.archive.org/web/20050630/iskme.org/100%'), 'mouseover');
+    expect(element.querySelector('.sequence a').textContent).toBe('iskme.org/100%');
+  });
+
+  it('should not interpret decoded names in breadcrumbs as HTML', () => {
+    const name = '%3Cimg%20src%3Dx%20onerror%3Dalert(1)%3E';
+    const element = render({name: 'iskme.org', children: [{name}]});
+    dispatch(pathByUrl(element, `https://web.archive.org/web/20050630/iskme.org/${name}`), 'mouseover');
+
+    const sequence = element.querySelector('.sequence');
+    expect(sequence.querySelector('img')).toBeNull();
+    expect(sequence.children).toHaveLength(1);
+    expect(sequence.querySelector('a').textContent).toBe('iskme.org/<img src=x onerror=alert(1)>');
+  });
+
+  it('should not break out of breadcrumb href with quotes in names', () => {
+    const name = '"><img src=x>';
+    const element = render({name: 'iskme.org', children: [{name}]});
+    dispatch(element.querySelectorAll('#d3_container > a > path')[2], 'mouseover');
+
+    const sequence = element.querySelector('.sequence');
+    expect(sequence.querySelector('img')).toBeNull();
+    expect(sequence.querySelector('a').getAttribute('href'))
+      .toBe(`https://web.archive.org/web/20050630/iskme.org/${name}`);
+  });
+
   it('should show breadcrumbs on touchstart and prevent default navigation', () => {
     const element = render();
     const url = 'https://web.archive.org/web/20050630/iskme.org/contact';

@@ -20,6 +20,13 @@ const data = {
 };
 
 
+// one URL per page without sub-pages, unless the test data says otherwise
+function withLeafCounts (node) {
+  const children = node.children && node.children.map(withLeafCounts);
+  const urlCount = node.urlCount !== undefined ? node.urlCount : (children ? undefined : 1);
+  return {...node, urlCount, children};
+}
+
 function render (hierarchy = data) {
   const element = document.createElement('div');
   element.appendChild(renderContainer());
@@ -30,7 +37,7 @@ function render (hierarchy = data) {
     .append('svg:g')
     .attr('id', 'd3_container');
 
-  createVisualization(element, vis, radius, 'https://web.archive.org', '2005', hierarchy, height);
+  createVisualization(element, vis, radius, 'https://web.archive.org', '2005', withLeafCounts(hierarchy), height);
   return element;
 }
 
@@ -50,11 +57,59 @@ describe('createVisualization', () => {
     document.body.innerHTML = '';
   });
 
-  it('should render a path per node including hidden artificial root', () => {
+  it('should render a path per node with the host as center circle', () => {
     const element = render();
-    const paths = element.querySelectorAll('#d3_container > a > path');
-    expect(paths).toHaveLength(6);
-    expect(Array.from(paths).filter(p => p.getAttribute('display') === 'none')).toHaveLength(1);
+    expect(element.querySelectorAll('#d3_container > a > path')).toHaveLength(5);
+
+    const center = element.querySelector('#d3_container > a.rt-center');
+    expect(center.getAttributeNS(XLINK, 'href')).toBe('https://web.archive.org/web/20050630/iskme.org');
+    expect(center.querySelector('path').style.fill).toBe('#f3f3f3');
+  });
+
+  it('should label the center circle with host and number of URLs', () => {
+    const element = render();
+    expect(element.querySelector('.rt-center-label').textContent).toBe('iskme.org');
+    expect(element.querySelector('.rt-center-value').textContent).toBe('3 unique URLs from 2005');
+  });
+
+  it('should count pages that also have sub-pages, including the host', () => {
+    const element = render({
+      name: 'iskme.org',
+      urlCount: 1,
+      children: [{
+        name: 'about-us',
+        urlCount: 1,
+        children: [{name: 'about-iskme-1'}, {name: 'about-iskme-2'}],
+      }, {
+        name: 'contact',
+      }],
+    });
+    expect(element.querySelector('.rt-center-value').textContent).toBe('5 unique URLs from 2005');
+    const rows = Array.from(element.querySelectorAll('.rt-legend > g text')).map(t => t.textContent);
+    expect(rows).toEqual(['/about-us (3)', '/contact (1)']);
+  });
+
+  it('should use singular URL in center label for one URL', () => {
+    const element = render({name: 'iskme.org'});
+    expect(element.querySelector('.rt-center-value').textContent).toBe('1 unique URL from 2005');
+  });
+
+  it('should truncate long host names in center label', () => {
+    const element = render({name: 'a-very-long-host-name.example.org'});
+    expect(element.querySelector('.rt-center-label').textContent).toBe('a-very-long-host-n…');
+  });
+
+  it('should draw host as fixed-size center and rings of equal width', () => {
+    const element = render();
+    const outer = url => {
+      const link = Array.from(element.querySelectorAll('#d3_container > a'))
+        .find(a => a.getAttributeNS(XLINK, 'href') === 'https://web.archive.org/web/20050630/' + url);
+      return link.querySelector('path').getAttribute('d');
+    };
+    // radius 100: center 30, two rings of 35
+    expect(outer('iskme.org')).toMatch(/^M0,-30A30,30/);
+    expect(outer('iskme.org/contact')).toMatch(/A65,65/);
+    expect(outer('iskme.org/about-us/about-iskme-1')).toMatch(/A100,100/);
   });
 
   it('should link each node to its wayback url in the middle of the year', () => {
@@ -112,7 +167,7 @@ describe('createVisualization', () => {
   it('should not break out of breadcrumb href with quotes in names', () => {
     const name = '"><img src=x>';
     const element = render({name: 'iskme.org', children: [{name}]});
-    dispatch(element.querySelectorAll('#d3_container > a > path')[2], 'mouseover');
+    dispatch(element.querySelectorAll('#d3_container > a > path')[1], 'mouseover');
 
     const sequence = element.querySelector('.sequence');
     expect(sequence.querySelector('img')).toBeNull();

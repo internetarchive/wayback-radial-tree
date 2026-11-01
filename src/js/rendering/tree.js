@@ -187,7 +187,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
 function safeDecodeURIComponent (str) {
   try {
     return decodeURIComponent(str);
-  } catch (e) {
+  } catch {
     // malformed escape sequence, e.g. a literal '%'
     return str;
   }

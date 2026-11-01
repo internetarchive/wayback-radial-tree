@@ -53,19 +53,19 @@
     "@babel/eslint-parser": "^7.29",
     "@babel/plugin-external-helpers": "^7.29",
     "@babel/preset-env": "^7.29",
-    "@rollup/plugin-babel": "^6.1.0",
-    "@rollup/plugin-commonjs": "^28.0.1",
+    "@rollup/plugin-babel": "^7.1",
+    "@rollup/plugin-commonjs": "^29.0",
     "@rollup/plugin-node-resolve": "^16.0",
     "@rollup/plugin-terser": "^1.0.2",
     "babel-jest": "^30.3.0",
-    "cssnano": "^7.1",
-    "eslint": "^8.57",
+    "cssnano": "^9.9",
+    "eslint": "^9.39",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.5.2",
     "postcss": "^8.5",
-    "rollup": "^4.52",
+    "rollup": "^4.67",
     "rollup-plugin-postcss": "^4.0.2",
-    "rollup-plugin-serve": "^1.1.1"
+    "rollup-plugin-serve": "^3.0"
   },
   "publishConfig": {
     "access": "public"

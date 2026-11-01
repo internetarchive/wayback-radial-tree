@@ -69,6 +69,13 @@ describe('RadialTree', () => {
       .toBe('View 2 unique URLs of iskme.org from 2010');
   });
 
+  it('should render empty container when there are no captures', () => {
+    expect(() => RadialTree(element, [['timestamp:4', 'urlkey']])).not.toThrow();
+    expect(element.querySelector('.rt-content')).not.toBeNull();
+    expect(element.querySelectorAll('.year-btn')).toHaveLength(0);
+    expect(element.querySelector('#chart').innerHTML).toBe('');
+  });
+
   it('should size svg from chart width plus legend', () => {
     RadialTree(element, fixture);
     const svg = element.querySelector('#chart svg');

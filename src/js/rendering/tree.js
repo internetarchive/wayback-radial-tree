@@ -105,14 +105,28 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   }
 
   function updateBreadcrumbs(d, url) {
-    const text = d._wb.breadcrumbText;
-    sequenceEl.innerHTML = `<a href="${url}">${decodeURIComponent(text)}</a>`;
+    // Build the link via DOM APIs: urlkeys come from crawled URLs, so the
+    // decoded text must never be parsed as HTML.
+    const link = document.createElement('a');
+    link.setAttribute('href', url);
+    link.textContent = safeDecodeURIComponent(d._wb.breadcrumbText);
+    sequenceEl.innerHTML = '';
+    sequenceEl.appendChild(link);
   }
 
   const legendNodes = nodes
     .filter(d => d.depth === 2)
     .sort((a, b) => b.value - a.value);
   renderLegend(vis, radius, height, legendNodes);
+}
+
+function safeDecodeURIComponent (str) {
+  try {
+    return decodeURIComponent(str);
+  } catch (e) {
+    // malformed escape sequence, e.g. a literal '%'
+    return str;
+  }
 }
 
 function truncate (str, max) {

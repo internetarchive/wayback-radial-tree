@@ -39,6 +39,11 @@ export function RadialTree (element, cdxData, options = {}) {
 
   renderYearButtons(element, years, selectYear, urlsByYear, host);
 
+  // nothing to render when there are no captures, only the header row.
+  if (years.length === 0) {
+    return;
+  }
+
   // highlight the 2nd last year if available, else hightlight the last.
   // necessary because the last year may not have much data.
   // const lastButOneYear = allYears[allYears.length - 2] || allYears[0];

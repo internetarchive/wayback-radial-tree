@@ -41,8 +41,8 @@ describe('year button', () => {
 
   it('should render volume bar scaled to max count', () => {
     const bar = count => renderYearButton('2005', count, 'iskme.org', 600).querySelector('.year-btn-bar');
-    expect(bar(600).style.height).toBe('6px');
-    expect(bar(300).style.height).toBe('3px');
+    expect(bar(600).style.height).toBe('4px');
+    expect(bar(300).style.height).toBe('2px');
     // tiny years still get a visible bar
     expect(bar(1).style.height).toBe('1px');
   });
@@ -114,7 +114,7 @@ describe('renderYearButtons', () => {
     renderYearButtons(element, ['2003', '2004'], () => {}, urlsByYear, 'iskme.org');
 
     const heights = Array.from(element.querySelectorAll('.year-btn-bar')).map(b => b.style.height);
-    expect(heights).toEqual(['3px', '6px']);
+    expect(heights).toEqual(['2px', '4px']);
   });
 
   it('should render disabled buttons for years without captures', () => {

@@ -1,5 +1,5 @@
 // tallest volume bar, in px; the busiest year gets the full height.
-const MAX_BAR_HEIGHT = 6;
+const MAX_BAR_HEIGHT = 4;
 
 export function renderYearButton (year, count, host, maxCount) {
   const btn = document.createElement('button');

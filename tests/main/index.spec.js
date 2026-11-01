@@ -47,7 +47,7 @@ describe('RadialTree', () => {
   it('should render a volume bar per year', () => {
     RadialTree(element, fixture);
     expect(Array.from(element.querySelectorAll('.year-btn-bar')).map(b => b.style.height))
-      .toEqual(['2px', '2px', '6px']);
+      .toEqual(['1px', '1px', '4px']);
   });
 
   it('should gray out years without captures and select among years with data', () => {

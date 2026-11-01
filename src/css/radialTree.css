@@ -36,39 +36,48 @@
 .rt-content .div-btn .year-btn {
   cursor: pointer;
   float: left;
-  background: black;
-  color: white;
-  font-size: 18px;
-  padding: 5px;
+  background: #f4f4f4;
+  /* Wayback Machine link blue */
+  color: rgb(66, 139, 202);
+  font-size: 13px;
+  line-height: 1.2;
+  padding: 3px 6px 6px;
+  margin: 0 1px 1px 0;
+  border: 1px solid #ddd;
   text-align: center;
   text-decoration: none;
   font-style: normal;
   font-weight: normal;
-  border-radius: 0px;
+  border-radius: 3px;
   position: relative;
-  padding-bottom: 9px;
 }
 
 /* capture volume of the year, side by side the bars read as a sparkline */
 .rt-content .div-btn .year-btn-bar {
   position: absolute;
-  left: 2px;
-  right: 2px;
+  left: 3px;
+  right: 3px;
   bottom: 1px;
-  background: #8fd18f;
+  /* same color as the year text, in every button state */
+  background: currentColor;
   pointer-events: none;
 }
 
-.rt-content .div-btn .year-btn-empty,
-.rt-content .div-btn .year-btn-empty:hover {
-  cursor: default;
-  background: #555;
-  color: #999;
+/* the selected year keeps its style on hover */
+.rt-content .div-btn .year-btn:not(.year-btn-empty):not(.active-btn):hover {
+  background: #e6e6e6;
 }
 
-.rt-content .div-btn .active-btn,
-.rt-content .div-btn .year-btn:not(.year-btn-empty):hover {
-  cursor: pointer;
-  background: green;
-  color: white;
+/* Wayback Machine selected link */
+.rt-content .div-btn .active-btn {
+  background: rgb(190, 19, 24);
+  border-color: rgb(190, 19, 24);
+  color: rgb(255, 255, 255);
+}
+
+.rt-content .div-btn .year-btn-empty {
+  cursor: default;
+  background: transparent;
+  border-color: #eee;
+  color: #bbb;
 }

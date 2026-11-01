@@ -45,10 +45,29 @@
   font-style: normal;
   font-weight: normal;
   border-radius: 0px;
+  position: relative;
+  padding-bottom: 9px;
+}
+
+/* capture volume of the year, side by side the bars read as a sparkline */
+.rt-content .div-btn .year-btn-bar {
+  position: absolute;
+  left: 2px;
+  right: 2px;
+  bottom: 1px;
+  background: #8fd18f;
+  pointer-events: none;
+}
+
+.rt-content .div-btn .year-btn-empty,
+.rt-content .div-btn .year-btn-empty:hover {
+  cursor: default;
+  background: #555;
+  color: #999;
 }
 
 .rt-content .div-btn .active-btn,
-.rt-content .div-btn .year-btn:hover {
+.rt-content .div-btn .year-btn:not(.year-btn-empty):hover {
   cursor: pointer;
   background: green;
   color: white;

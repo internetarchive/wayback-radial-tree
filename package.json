@@ -61,6 +61,7 @@
     "cssnano": "^7.1",
     "eslint": "^8.57",
     "jest": "^30.3.0",
+    "jest-environment-jsdom": "^30.5.2",
     "postcss": "^8.5",
     "rollup": "^4.52",
     "rollup-plugin-postcss": "^4.0.2",

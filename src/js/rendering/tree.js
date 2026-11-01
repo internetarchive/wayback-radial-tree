@@ -5,16 +5,17 @@ import { schemePaired } from 'd3-scale-chromatic';
 import { select } from 'd3-selection';
 import 'd3-transition';
 
-const arc = d3Arc()
-  .startAngle(d => d.x0)
-  .endAngle(d => d.x1)
-  .innerRadius(d => Math.sqrt(d.y0))
-  .outerRadius(d => Math.sqrt(d.y1));
+// share of the radius taken by the host circle in the center
+const CENTER_RATIO = 0.3;
+const CENTER_COLOR = '#f3f3f3';
 
 const colors = scaleOrdinal(schemePaired);
 
 /**
  * Render d3.hierarchy from passed hierarchical data
+ *
+ * The host is drawn as a neutral circle in the center and its sub-pages as
+ * rings of equal width around it.
  *
  * @param element
  * @param vis
@@ -24,29 +25,34 @@ const colors = scaleOrdinal(schemePaired);
  * @param data
  */
 export function createVisualization (element, vis, radius, baseURL, currentYear, data, height) {
-  const partition = d3Partition().size([2 * Math.PI, radius * radius]);
-
-  // append 'root' we will exclude it on rendering
-  const root = hierarchy({ children: [data] })
-    .sum(d => !d.children)
+  // count every captured URL, including pages that also have sub-pages
+  const root = hierarchy(data)
+    .sum(d => d.urlCount || 0)
     .sort((a, b) => b.value - a.value);
 
-  const nodes = partition(root).descendants();
+  const nodes = d3Partition().size([2 * Math.PI, 1])(root).descendants();
   const sequenceEl = element.querySelector('.sequence');
+
+  const centerRadius = radius * CENTER_RATIO;
+  const ringWidth = (radius - centerRadius) / Math.max(1, root.height);
+  const arc = d3Arc()
+    .startAngle(d => d.x0)
+    .endAngle(d => d.x1)
+    .innerRadius(d => d.depth ? centerRadius + (d.depth - 1) * ringWidth : 0)
+    .outerRadius(d => d.depth ? centerRadius + d.depth * ringWidth : centerRadius);
 
   // Cache per-node data used during hover to keep interaction snappy.
   // (Ancestors()/reverse()/join() inside mousemove-style handlers gets expensive quickly.)
   for (const d of nodes) {
-    // Exclude the artificial root (depth 0) from the displayed breadcrumb/path.
     const anc = d.ancestors();
     const parts = [];
-    for (let i = anc.length - 2; i >= 0; i--) parts.push(anc[i].data.name);
+    for (let i = anc.length - 1; i >= 0; i--) parts.push(anc[i].data.name);
     const path = parts.join('/');
 
     d._wb = {
-      breadcrumbText: parts.join('/'),
+      breadcrumbText: path,
       url: `${baseURL}/web/${currentYear}0630/${path}`,
-      ancestorsExcludingRoot: anc.slice(0, -1) // without the artificial root
+      ancestors: anc
     };
   }
 
@@ -54,16 +60,32 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
     .data(nodes)
     .enter()
     .append('a')
+    .attr('class', d => d.depth ? null : 'rt-center')
     .attr('xlink:href', d => d._wb.url)
     .on('touchstart', touchStart)
     .append('svg:path')
-    .attr('display', d => d.depth ? null : 'none')
     .attr('d', arc)
     .attr('fill-rule', 'evenodd')
-    .style('fill', d => colors((d.children ? d : d.parent).data.name))
+    .style('fill', d => d.depth ? colors((d.children ? d : d.parent).data.name) : CENTER_COLOR)
     .style('opacity', 1)
     .style('cursor', 'pointer')
     .on('mouseover', mouseover);
+
+  vis.append('text')
+    .attr('class', 'rt-center-label')
+    .attr('text-anchor', 'middle')
+    .attr('dy', '-0.2em')
+    .style('font-size', '14px')
+    .style('pointer-events', 'none')
+    .text(truncate(safeDecodeURIComponent(root.data.name || ''), 18));
+  vis.append('text')
+    .attr('class', 'rt-center-value')
+    .attr('text-anchor', 'middle')
+    .attr('dy', '1.1em')
+    .style('font-size', '12px')
+    .style('fill', '#666')
+    .style('pointer-events', 'none')
+    .text(`${root.value} unique ${root.value === 1 ? 'URL' : 'URLs'} from ${currentYear}`);
 
   select('#d3_container')
     .on('mouseleave', mouseleave);
@@ -79,12 +101,12 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   }
 
   function mouseover (e, d) {
-    const { ancestorsExcludingRoot, url } = d._wb;
+    const { ancestors, url } = d._wb;
     updateBreadcrumbs(d, url);
 
     pathSel.style('opacity', 0.3);
 
-    const highlight = new Set(ancestorsExcludingRoot);
+    const highlight = new Set(ancestors);
     pathSel
       .filter(node => highlight.has(node))
       .style('opacity', 1);
@@ -115,7 +137,7 @@ export function createVisualization (element, vis, radius, baseURL, currentYear,
   }
 
   const legendNodes = nodes
-    .filter(d => d.depth === 2)
+    .filter(d => d.depth === 1)
     .sort((a, b) => b.value - a.value);
   renderLegend(vis, radius, height, legendNodes);
 }

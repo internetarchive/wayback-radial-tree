@@ -62,6 +62,13 @@ describe('RadialTree', () => {
     expect(element.querySelector('.active-btn').id).toBe('2006');
   });
 
+  it('should show the same number of URLs in center as in year tooltip', () => {
+    RadialTree(element, fixture);
+    element.querySelector('[id="2005"]').click();
+    expect(element.querySelector('[id="2005"]').title).toBe('View 3 unique URLs of iskme.org from 2005');
+    expect(element.querySelector('.rt-center-value').textContent).toBe('3 unique URLs from 2005');
+  });
+
   it('should select the last but one year by default', () => {
     RadialTree(element, fixture);
     expect(element.querySelector('.active-btn').id).toBe('2004');

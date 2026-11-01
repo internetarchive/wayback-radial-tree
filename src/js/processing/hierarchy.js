@@ -7,11 +7,11 @@ import { surtToUrl } from './surt';
  *
  * @param parent is current node
  * @param path is array of names
- * @returns {*}
+ * @returns {*} the node at the end of the path
  */
 function buildHierarchInDepth (parent, path) {
   if (!path || path.length === 0) {
-    return;
+    return parent;
   }
 
   let currentParent = parent;
@@ -36,15 +36,17 @@ function buildHierarchInDepth (parent, path) {
     }
     currentParent = nextParent;
   }
+  return currentParent;
 }
 
 /**
  * build hierarchical structure:
  *
- * {name: '{name}': children: [...]}
+ * {name: '{name}', urlCount: n, children: [...]}
  *
  * which is valid for d3.hierarchy
- * from timemap site data
+ * from timemap site data. `urlCount` is the number of urlkeys ending at the
+ * node; nodes that only exist as a parent of other URLs have none.
  *
  * @param fields -
  * @param data - source
@@ -62,9 +64,8 @@ export function buildHierarchy (fields, data, { targetField }) {
     if (!res.name) res.name = surtToUrl(host);
 
     const rest = slashIdx === -1 ? '' : urlkey.slice(slashIdx + 1);
-    if (!rest) return res;
-
-    buildHierarchInDepth(res, rest.split('/'));
+    const node = rest ? buildHierarchInDepth(res, rest.split('/')) : res;
+    node.urlCount = (node.urlCount || 0) + 1;
     return res;
   }, {});
 }

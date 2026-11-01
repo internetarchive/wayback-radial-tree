@@ -1,6 +1,5 @@
 
 import { babel } from '@rollup/plugin-babel';
-import commonjs from '@rollup/plugin-commonjs';
 import resolve from '@rollup/plugin-node-resolve';
 import terser from "@rollup/plugin-terser";
 import serve from 'rollup-plugin-serve';
@@ -53,7 +52,6 @@ export default [
       },
     ],
     plugins: [
-      commonjs(),
       resolve(),
       babel(createBabelConfig(false, ['@babel/preset-env'])),
       terser(),
@@ -83,7 +81,6 @@ export default [
       },
     ],
     plugins: [
-      commonjs(),
       resolve(),
       babel(createBabelConfig(false, ['@babel/preset-env'])),
     ],

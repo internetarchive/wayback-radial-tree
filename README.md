@@ -52,19 +52,19 @@ inside of build.
 Right now we run `eslint` for style checking and `jest` for unit tests.
 
 ```
-yarn test
+npm test
 ```
 
 linting only
 
 ```
-yarn lint
+npm run lint
 ```
 
 unit testing
 
 ```
-yarn test
+npm test
 ```
 
 ### Local Build
@@ -73,7 +73,7 @@ Build library and example on `webpack` and expose example on `5000`
 port.
 
 ```
-yarn example
+npm run example
 ```
 
 ### Production build
@@ -81,7 +81,7 @@ yarn example
 Assemble library for production use.
 
 ```
-yarn build
+npm run build
 ```
 
 In result you will get `radial-tree.umd.js` (browser-friendly UMD build),

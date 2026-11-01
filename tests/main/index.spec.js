@@ -44,6 +44,24 @@ describe('RadialTree', () => {
       .toBe('View 3 unique URLs of iskme.org from 2005');
   });
 
+  it('should render a volume bar per year', () => {
+    RadialTree(element, fixture);
+    expect(Array.from(element.querySelectorAll('.year-btn-bar')).map(b => b.style.height))
+      .toEqual(['2px', '2px', '6px']);
+  });
+
+  it('should gray out years without captures and select among years with data', () => {
+    RadialTree(element, [
+      ['timestamp:4', 'urlkey'],
+      ['2003', 'org,iskme)/'],
+      ['2006', 'org,iskme)/'],
+      ['2007', 'org,iskme)/'],
+    ]);
+    expect(Array.from(element.querySelectorAll('.year-btn-empty')).map(b => b.id))
+      .toEqual(['2004', '2005']);
+    expect(element.querySelector('.active-btn').id).toBe('2006');
+  });
+
   it('should select the last but one year by default', () => {
     RadialTree(element, fixture);
     expect(element.querySelector('.active-btn').id).toBe('2004');

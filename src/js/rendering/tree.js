@@ -217,6 +217,9 @@ function renderLegend (vis, radius, height, nodes, color) {
   const pad = 10;
   const boxWidth = 195;
   const items = nodes.slice(0, 20);
+  if (items.length === 0) {
+    return;
+  }
   const boxHeight = pad + 20 + 6 + items.length * rowHeight + pad;
 
   vis.append('defs').append('filter')

@@ -306,6 +306,12 @@ describe('createVisualization', () => {
       expect(rows[19]).toBe('/a-very-long-page… (6)');
     });
 
+    it('should not render legend when there are no sub-pages', () => {
+      const element = render({name: 'iskme.org'});
+      expect(element.querySelector('.rt-legend')).toBeNull();
+      expect(element.querySelector('#rt-legend-shadow')).toBeNull();
+    });
+
     it('should not truncate names of 16 characters or fewer', () => {
       const element = render({name: 'iskme.org', children: [{name: 'exactly-16-chars'}]});
       expect(element.querySelector('.rt-legend > g text').textContent).toBe('/exactly-16-chars (1)');
